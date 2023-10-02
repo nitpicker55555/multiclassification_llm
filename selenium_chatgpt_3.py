@@ -33,7 +33,7 @@ cd C:\Program Files\Google\Chrome\Application
 chrome.exe --remote-debugging-port=9222 --disable-web-security --user-data-dir=remote-profile   
 """
 
-def selenium_spider(order_num,input_str):
+def selenium_spider(input_str):
     input_element = driver.find_element(By.XPATH, '//*[@id="prompt-textarea"]')
     for ii in input_str.split("\n"):
 
@@ -50,9 +50,10 @@ def selenium_spider(order_num,input_str):
     #     except (ElementClickInterceptedException, NoSuchElementException, ElementNotInteractableException) as e:
     #         print(f"点击失败: {e}")
     #         time.sleep(1)  # 等待1秒再次尝试
-    order_num =(order_num+ 1)*2
+    # order_num =(order_num+ 1)*2
     element_xpath_indication = '//*[@id="__next"]/div[1]/div[2]/div/main/div/div[2]/form/div/div[1]/div/div[2]/div/button/div'
-    element_xpath = '//*[@id="__next"]/div[1]/div[2]/div/main/div/div[1]/div/div/div/div[%s]/div/div[2]/div[1]/div/div'%order_num
+    xpath_str = '//*[@id="__next"]/div[1]/div/div/main/div/div[1]/div/div/div/div/div/div/div[2]/div[1]/div/div'
+    
 #//*[@id="__next"]/div[1]/div gpt3
     # //*[@id="__next"]/div[1]/div[2] gpt4
     indication = "generate"
@@ -61,7 +62,8 @@ def selenium_spider(order_num,input_str):
     while indication !="Regenerate":
         # print(indication)
         try:
-            text = driver.find_element_by_xpath(element_xpath).text
+            elements = driver.find_elements_by_xpath(xpath_str)
+            text = elements[-1].text
             indication = driver.find_element_by_xpath(element_xpath_indication).text
 
 
@@ -103,7 +105,7 @@ for num, i in enumerate(data_list):
         num_true+=1
         print(num)
 
-        ans = selenium_spider(num_true,
+        ans = selenium_spider(
                      i + "\n" + "。以上案例属于下列哪些标签：['驾驶员过分依赖技术导致的注意力分散', '驾驶员操作问题', '除驾驶员外的人为因素', 'AI的决策制定缺陷', '路径规划问题', '紧急响应问题', '传感器或数据输入错误', '数据处理错误', '响应时延问题', '训练数据和验证问题', '硬件或软件故障', '系统集成和硬件问题', '控制与执行问题', '人机交互问题', '透明性与可解释性问题', '通讯和交互问题', '对乘客造成安全威胁', '对乘客外的他人造成安全威胁', '系统的鲁棒性和容错能力问题', '反馈机制不足', '数据不准确或不完整']")
 
         time.sleep(1)

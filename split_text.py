@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+
 with open(r"C:\Users\Morning\Desktop\gpt4分类.txt", "r", encoding="utf-8") as file:
     content = file.read()
 
