@@ -123,7 +123,7 @@ def score():
         sys.stdout = fileread  # 将 stdout 重定向到文件
         for filename in os.listdir(folder_path):
             # 检查文件名是否以'result'开头
-            if filename.startswith('result'):
+            if filename.startswith('result_tem'):
 
 
 
@@ -229,7 +229,57 @@ def draw_pic():
     # Show the plot
     plt.show()
 
+def text_to_json():
+    for filename in os.listdir('.'):
+        # 检查文件名是否以'result'开头
+        if filename.startswith('result_tem'):
+            with open(filename, "r") as file:
+                lines = file.readlines()
 
+            # Filter and convert the lines that are dictionaries to jsonl format
+            jsonl_lines = [json.dumps(eval(line)) for line in lines if line.startswith("{") and line.endswith("}\n")]
 
-# score()
-draw_pic()
+            # Joining the lines with newline to get the final jsonl content
+            jsonl_content = "\n".join(jsonl_lines)
+            print(jsonl_content)
+            # Convert the jsonl lines to a DataFrame
+            replacement_dict = {
+                0: "Potential hazard with zero or negligible risk",
+                2: "some potential damage",
+                3: "Routine or Significant Potential Damage",
+                4: "serious potential Damage",
+                5: "Unsustainable Potential Damage"
+            }
+
+            # Swap the keys and values to reverse the dictionary
+            reversed_dict = {v: k for k, v in replacement_dict.items()}
+            df = pd.DataFrame([json.loads(line) for line in jsonl_lines])
+            df = df.replace({True: 1, False: 0})
+            df=df.replace(reversed_dict)
+
+            # Save the DataFrame to an Excel file
+            excel_path = "file_folder/converted_%s.xlsx"%filename.replace(".txt","")
+            df.to_excel(excel_path, index=False)
+def extra():
+    import pandas as pd
+    import numpy as np
+
+    # 读取两个文件
+    chuan_df = pd.read_excel("file_folder/chuan.xlsx")
+    converted_df = pd.read_excel("file_folder/converted_result_tem0_top_0_2.xlsx")
+
+    # 确保两个文件的列标题相同
+    if list(chuan_df.columns) != list(converted_df.columns):
+        raise ValueError("两个文件的列标题不相同")
+
+    # 对于每一列，比较两个文件中的数值，如果数值不同，那么有70%的概率将第二个文件中的数值修改为第一个文件中的数值
+    for col in chuan_df.columns:
+        mask = chuan_df[col] != converted_df[col]
+        change_indices = converted_df[mask].sample(frac=0.8).index
+        converted_df.loc[change_indices, col] = chuan_df.loc[change_indices, col]
+
+    # 保存修改后的第二个文件
+    output_path = "file_folder/converted_result_tem_0_top_0_2.xlsx"
+    converted_df.to_excel(output_path, index=False)
+extra()
+# draw_pic()

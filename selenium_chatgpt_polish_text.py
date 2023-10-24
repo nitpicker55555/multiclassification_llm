@@ -229,4 +229,4 @@ for num, i in enumerate(process_list):
     """ % (i.replace("_", " "),i.replace("_", " "),i.replace("_", " ")))
     print(selenium_spider(indication_str))
 
-    one_iteration(num_check+1, i)
+    one_iteration(num_check, i)

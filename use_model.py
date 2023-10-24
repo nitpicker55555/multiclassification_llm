@@ -1,10 +1,5 @@
-import openai
-completion = openai.ChatCompletion.create(
-  model="ft:gpt-3.5-turbo-0613:personal::7tkIkRMB",
-  messages=[
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Hello!"}
-  ]
-)
-
-print(completion.choices[0].message)
+from selenium_chatgpt import selenium_spider
+from jsonstr2json import json_transfer_func
+import pyperclip
+print(json_transfer_func(pyperclip.paste()))
+# print(selenium_spider("do you know puzhen in chinese"))
