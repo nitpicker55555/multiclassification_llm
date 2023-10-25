@@ -1,9 +1,25 @@
-original_list = ["apple", "banana", "cherry date", "fig", "grape"]
+import json
+import re
 
-# 使用列表推导式分割含有空格的元素并组合成一个大列表
-split_and_combined_list = [word.split() if ' ' in word else [word] for word in original_list]
+text = """Based on the provided information, it is not clear whether there is a privacy violation in the news. Privacy violations typically involve the unauthorized or inappropriate disclosure of personal information. The information provided in the news article does not explicitly mention a privacy violation. Therefore, the answer is:
+asd
+{
+  "Boolean_value": true,
+  "asd": false
+}
+asd
+"""
 
-# 将嵌套的列表展平
-flattened_list = [item for sublist in split_and_combined_list for item in sublist]
+# 使用正则表达式提取JSON字符串
+# 这个正则表达式试图匹配从 '{' 开始，到 '}' 结束的内容
+match = re.search(r'({[^{}]*})', text)
+json_str = match.group(1) if match else None
 
-print(flattened_list)
+if json_str:
+    dictionary = json.loads(json_str)
+
+    for i in dictionary:
+        if dictionary[i]==True:
+            print(dictionary.keys())
+else:
+    print("在文本中未找到JSON字符串。")
