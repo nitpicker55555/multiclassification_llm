@@ -1,5 +1,8 @@
 import json
 import random
+import time
+from infoweb_client import send_message_to_server
+import asyncio
 import pandas as pd
 import openpyxl
 from selenium_chatgpt import selenium_spider
@@ -56,7 +59,13 @@ def generate_col():
 
 
 # for col in corrected_headers_between_bold:
-
+sensitivity="""
+personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs;
+trade-union membership;
+genetic data, biometric data processed solely to identify a human being;
+health-related data;
+data concerning a person’s sex life or sexual orientation.
+"""
 # if has_values_under_header(col) 后面的键值在键名成立后才考虑
 economic_loss={1:'''• A slight economic loss that may equal or slightly exceed daily expenses. • Losses can be recovered quickly without affecting the overall financial condition of the individual or organization.
 • For example, loss of small consumer goods or minor investment losses.
@@ -274,24 +283,51 @@ def create_data():
 
                 f.write(json.dumps(json_dict) + "\n")
 
-def extract_dict(text,key_str="boolean_value"):
-    text=text.lower()
-    if key_str=="boolean_value":
-        match = re.search(r'{\s*"key_str":\s*(true|false)\s*}', text)
-        json_str = match.group(0) if match else None
-        if json_str:
+def extract_dict(text,key_str):
+
+
+    while True:
+        try:
+            text = text.lower()
+            match = re.search(r'({[^{}]*})', text)
+            json_str = match.group(1) if match else None
+
             dictionary = json.loads(json_str)
-            # print(dictionary['boolean_value'])
-            return dictionary[key_str]
-    elif key_str=="multikey":
-        match = re.search(r'({[^{}]*})', text)
-        json_str = match.group(1) if match else None
-        if json_str:
-            dictionary = json.loads(json_str)
-            for i in dictionary:
-                if dictionary[i]==True:
-            # print(dictionary['boolean_value'])
-                    return i
+            if key_str!="multikey":
+                    if len(dictionary)!=1:
+                        text = selenium_spider("please set key value of {'%s'} to true or false"%key_str, True, False)
+                        continue
+                    else:
+
+                        for i in dictionary:
+                            if not isinstance(dictionary[i],bool):
+                                if "false" in dictionary[i]:
+                                    return False
+                                elif "true" in dictionary[i]:
+                                    return True
+                            else:
+                                return dictionary[i]
+                        # return true or false
+
+
+            elif key_str=="multikey":
+
+
+                    for i in dictionary:
+                        if not isinstance(dictionary[i], bool):
+                            if "false" in dictionary[i]:
+                                dictionary[i]=False
+                            elif "true" in dictionary[i]:
+                                dictionary[i]=True
+                    for i in dictionary:
+                        if dictionary[i]==True:
+
+                            return i  #return the key is true
+
+        except:
+            print("key value error")
+            text=selenium_spider("please set key value to true or false",True,False)
+            print(text)
 
     # Parse the JSON string to a Python dictionary
 
@@ -301,78 +337,87 @@ def dict_generate(list_):
         dict_[i]=""
     return dict_
 def checking_layer():
-    description_list=df["Description"].fillna("", inplace=True)
+    ques_num=0
+    description_list=df["Description"].fillna("").tolist()
     result_dict = generate_col()
-    detailed_description_list=df["Detailed Description"].fillna("", inplace=True)
+    detailed_description_list=df["Detailed Description"].fillna("").tolist()
     for num, element in enumerate(description_list):
-        case_str=element+detailed_description_list[num]
-        selenium_spider(case_str+", according to the case above, please answer my question below with json format.{'boolean_value':""}")
+        if num>=2:
+            ques_num+=1
+            selenium_spider("", False, True)
+            case_str=element+detailed_description_list[num]
+            selenium_spider(case_str+", according to the case above, please answer my question below with json format.{'boolean_value':""}")
+            final_dict = {}
+            question = ""
+
+            for bold_col in result_dict:
+                bold_col=bold_col.lower()
+                if has_values_under_header(bold_col):  # 有实际意义的col
+                    question = "Please combine the news above to determine whether %s is true in the news,If true, set the following json value to True, else set following json value to False : %s" % (
+                    bold_col, {bold_col: ""})
+                    boolean_feedback=selenium_spider(question,True,False)
+
+                    bold_attribute=extract_dict(boolean_feedback,bold_col)
+                    final_dict[bold_col] = bold_attribute
+                    print({bold_col:bold_attribute})
+
+                    if bold_attribute:
+                        if "extent of impact is identified" in bold_col:
+                            question="In terms of extend of impact, which one of them is True? please set the corresponding key as True:  %s "%dict_generate(result_dict[bold_col])
+                            boolean_feedback=selenium_spider(question,True,False)
+                            bold_attribute = extract_dict(boolean_feedback,"multikey")
+                            final_dict.update({bold_attribute:True})  # local people:True
+                            print({bold_attribute: True})
+                        elif "sensitive privacy breach" in bold_col:
+                            question="In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (sensitivity,{"sensitive privacy breach":""})
+                            boolean_feedback=selenium_spider(question,True,False)
+                            bold_attribute = extract_dict(boolean_feedback,bold_col)
+                            final_dict.update({bold_attribute: True})  # local people:True
+                            print({bold_attribute: True})
+                        else:
+
+                            for element in result_dict[bold_col]:
+
+                                if "severity" in element.lower():
+
+                                    attribute_value = dict_generate([1, 2, 3, 4, 5])
+                                    question = "In terms of %s ，please determin its severity, Severity ranges from 1 to 5, with 1 being the least severe and 5 being the most severe, Please change the key value after the severity you think in the following json to True, and give me this json back%s" % (bold_col,attribute_value)
+                                    boolean_feedback=selenium_spider(question,True,False)
+
+                                    bold_attribute = extract_dict(boolean_feedback, "multikey")
+
+                                    # final_dict.update({element:bold_attribute}) # severity:5
+                                else:
+                                    question="Based on %s is True in news, Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s"%(bold_col,element,{element:""})
+                                    boolean_feedback = selenium_spider(question, True, False)
+                                    bold_attribute = extract_dict(boolean_feedback,element)
+                                print({element: bold_attribute})
+                                final_dict.update({element:bold_attribute}) # severity:5
 
 
 
+                else:
 
-        final_dict = {}
-        question = ""
+                    question_first = "Under the topic %s, " % bold_col
+                    for element in result_dict[bold_col]:
+                        if "severity" in  element.lower():
 
-        for bold_col in result_dict:
+                            attribute_value = dict_generate([1, 2, 3, 4, 5])
+                            question =question_first+ "In terms of %s ，please determin its severity, Severity ranges from 1 to 5, with 1 being the least severe and 5 being the most severe, Please change the key value after the severity you think in the following json to True, and give me this json back%s" % (
+                            bold_col, attribute_value)
+                            boolean_feedback = selenium_spider(question, True, False)
 
-            if has_values_under_header(bold_col):  # 有实际意义的col
-                question = "Please combine the news above to determine whether %s is related to the news,If relevant, set the following json value to True, else set following json value to False : %s" % (
-                bold_col, {bold_col: ""})
-                boolean_feedback=selenium_spider(question,True,False).lower()
-
-                bold_attribute=extract_dict(boolean_feedback)
-                final_dict[bold_col] = bold_attribute
-                print({bold_col:bold_attribute})
-                if bold_attribute:
-                    if "extent of impact is Identified" in bold_col:
-
-                        boolean_feedback=selenium_spider("In terms of extend of impact, which one of them is True? please set the corresponding key as True:  %s "%dict_generate(result_dict[bold_col]),True,False)
-                        bold_attribute = extract_dict(boolean_feedback,"multikey")
-                        final_dict.update({bold_attribute:True})  # local people:True
-                        print(bold_attribute)
-                    else:
-
-                        for element in result_dict[bold_col]:
-
-                            if "severity" in element:
-
-                                attribute_value = dict_generate([1, 2, 3, 4, 5])
-                                question = "In terms of %s ，please determin its severity, Severity ranges from 1 to 5, with 1 being the least severe and 5 being the most severe, Please change the key value after the severity you think in the following json to True, and give me this json back%s" % (bold_col,attribute_value)
-                                boolean_feedback=selenium_spider(question,True,False)
-
-                                bold_attribute = extract_dict(boolean_feedback, "multikey")
-                                # final_dict.update({element:bold_attribute}) # severity:5
-                            else:
-                                question="Please combine the news above to determine whether %s is related to the news,If relevant, set the following json value to True, else set following json value to false: %s"%(element,{element:""})
-                                boolean_feedback = selenium_spider(question, True, False)
-                                bold_attribute = extract_dict(boolean_feedback)
-                            final_dict.update({element:bold_attribute}) # severity:5
-
-
-
-            else:
-
-                question += "\nUnder the topic %s, Detailed rules are as follows:" % bold_col
-                for element in result_dict[bold_col]:
-                    if "severity" in element:
-                        attribute_value = random.choice([1, 2, 3, 4, 5])
-                        question += "%s is  \n %s，" % (element, globals().get(
-                            str(element).replace("severity of ", "").replace(" ", '_').lower())[attribute_value])
-
-
-                    else:
-
-                        attribute_value = True if random.random() < 0.5 else False
-
-                        question += "%s is %s，" % (element, attribute_value)
-                    final_dict[element] = attribute_value
-                    if bold_col == "Data Production Process":
-                        question += "Those are all the rules. Please output a news item and do not explicitly display the rules I sent you."
-
-        json_dict = {"attribute": final_dict, "news": result}
-        with open("output.jsonl", "a", encoding='utf-8') as f:
-
-            f.write(json.dumps(json_dict) + "\n")
-# create_data()
-# checking_layer()
+                            bold_attribute = extract_dict(boolean_feedback, "multikey")
+                            # final_dict.update({element:bold_attribute}) # severity:5
+                        else:
+                            question  =question_first+ " Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
+                            element, {element: ""})
+                            boolean_feedback = selenium_spider(question, True, False)
+                            bold_attribute = extract_dict(boolean_feedback,element)
+                        final_dict.update({element: bold_attribute})  # severity:5
+            # json_dict = {"attribute": final_dict, "news": result}
+            print(len(final_dict),"+========================================")
+            with open("output_final_dict.jsonl", "a", encoding='utf-8') as f:
+                f.write(json.dumps(final_dict) + "\n")
+            time.sleep(15)
+checking_layer()
