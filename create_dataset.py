@@ -1,14 +1,17 @@
 import json
+import queue
 import random
 import time
 from infoweb_client import send_message_to_server
 import asyncio
 import pandas as pd
 import openpyxl
-from selenium_chatgpt import selenium_spider
-xlsx_path=r'C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\副本Geo-AI ethics cases(1).xlsx'
+# from selenium_chatgpt import selenium_spider
+xlsx_path=r'C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx'
 df = pd.read_excel(xlsx_path)
 wb = openpyxl.load_workbook(xlsx_path)
+import threading
+from gpt_api import change_statement
 import re
 def has_values_under_header(header_name):
 
@@ -73,7 +76,6 @@ economic_loss={1:'''• A slight economic loss that may equal or slightly exceed
                 2:'''
 Smaller financial losses, but beyond daily budget, may require financial adjustments.
 It may take some time to recoup these losses, but there may not be a serious impact on the financial health of the individual or organization in the long run.
-For example, damage or loss to an item of moderate value, or the failure of a small investment.
 '''
                 ,3:"""
                 • Significant financial losses, which may require significant financial adjustments or changes in strategy.
@@ -94,18 +96,16 @@ For example, damage or loss to an item of moderate value, or the failure of a sm
 """}
 physical_harm={1:'''• • Minor scratches or abrasions that do not require medical intervention.
 • No ongoing pain or discomfort.
-• Natural recovery is fully expected within a short period of time.
+
 
 ''',
                 2:'''
 Some minor injuries:
 • Superficial cuts, bruises, or minor strains.
-• Basic home treatments may be needed, such as disinfecting or applying a band-aid.
 • Recovery can be expected within a week.
 
 '''
                 ,3:"""
-                • • Visible physical injury such as broken bones, burns, or severe cuts.
 • Medical intervention may be required, such as suturing wounds or fixing fractures.
 • Recovery may take a period of time, with potential long-term effects, but full or partial recovery is generally expected.
 
@@ -113,46 +113,39 @@ Some minor injuries:
                 4:"""
 • Causes major organ damage or loss of function, such as severe concussion or blindness.
 • Requires immediate and ongoing medical intervention.
-• May have lasting physical impairments or require lengthy rehabilitation.
+
 
                 """,5:"""
 • Injuries that are directly fatal or cause imminent death.
 • Causes permanent serious injuries such as high degree of paraplegia.
-• Completely and permanently alters the individual's quality of life and cannot return to pre-injury conditions.
 
 """}
 discrimination={1:'''• • • Prejudice based on unconscious, non-malicious, everyday minor misunderstandings or beliefs.
 • Does not involve any explicit discriminatory behavior or remarks.
-• The person being discriminated against may not know or feel that they are being discriminated against.
 
 
 ''',
                 2:'''
 • Comments or actions based on stereotypes are, may cause some discomfort but are not sustained or deep.
-• In the workplace or social settings, there may be mild rejection or neglect.
 • The person being discriminated against feels mildly upset or confused.
 
 '''
                 ,3:"""
 • Long-term, systemic unequal treatment, such as unfair promotion or pay in the workplace.
-• Explicit insult or humiliation based on race, gender, religion or other identity characteristics.
 • People who have been discriminated against may experience severe emotional harm, damaged self-esteem or social isolation.
                 """,
                 4:"""
 • Experiencing physical violence or threats, such as racial or religious hate crimes.
-• Being explicitly and openly excluded or isolated, such as being discriminated against in the community.
 • Seriously affects the quality of life, economic status or personal safety of the person being discriminated against.
 
                 """,5:"""
 • Cause serious bodily injury or death.
-• Institutionalized discrimination at a social or national level, such as ethnic cleansing or apartheid.
 • Complete deprivation of basic human rights and dignity of those discriminated against, resulting in long-term psychological, social and material deprivation.
 
 
 """}
 privacy_violation={1:'''
 • • Violated information is data that is publicly available or widely known, such as public social media profile information.
-• The information is insufficient to be used for fraud or identity theft.
 • Will not result in any form of discrimination or negative impact.
 
 
@@ -160,55 +153,46 @@ privacy_violation={1:'''
                 2:'''
 • The leaked information may be used for harmless commercial purposes, such as advertising.
 • May receive unwanted spam or phone calls.
-• Mild privacy concerns, but no long-term effects
 
 
 '''
                 ,3:"""
 • The leaked information could be used for targeted advertising or other more intrusive marketing strategies.
 • Be used for demographic profiling that may result in unfair price discrimination or other forms of discrimination.
-• Causes moderate social or psychological distress.
 
 
                 """,
                 4:"""
 • Leaked information, such as health data or biometric data, could be used for discrimination, fraud, or other illegal activities.
-• Result in identity theft and possible financial loss.
-• Cause long-term social distrust or psychological stress.
+• Result in possible financial loss.
 
 
                 """,5:"""
 • Disclosure of information, such as about a person's sexual life, political opinions or religious beliefs, could lead to extreme discrimination, social ostracism or violence.
 • A direct threat to an individual's safety, liberty, or quality of life.
-• Long-term and irreparable social, economic or psychological harm.
 
 
 """}
 mental_harm={1:'''• • • Mildly unpleasant, probably quickly forgotten.
 • Brief mood changes, such as momentary surprise or disappointment.
-• No outside intervention or psychological assistance is required.
+
 ''',
                 2:'''
 • Temporary anxiety, irritability, or sadness that does not interfere with daily life.
 • is sad about the event, but able to adjust.
-• May avoid certain incident-related situations briefly, but not long-term.
+
 '''
                 ,3:"""
 • Persistent low mood or anxiety that takes some time to recover from.
-• You may need to communicate with family and friends to deal with it or seek psychological assistance.
 • Persistent avoidance of certain incident-related situations.
-• May temporarily affect daily functions or work.
+
                 """,
                 4:"""
 • Persistent, intense negative emotions such as hopelessness and deep anxiety.
-• Professional psychotherapy or counseling is required.
-• Intense and chronic avoidance of situations related to the incident.
 • Significantly affects daily functions such as work, school, or relationships.
                 """,5:"""
 • Extreme emotional pain, such as deep depression, intense anxiety, or feelings of hopelessness.
 • Suicidal thoughts or tendencies toward self-harm may occur.
-• Severe interference with daily life and functioning, may require emergency intervention or hospitalization.
-• Inability to recover from the event over an extended period of time, with lasting and profound effects on quality of life.
 
 """}
 def create_data():
@@ -279,54 +263,72 @@ def create_data():
         print(final_dict)
         print(result)
         json_dict={"attribute":final_dict,"news":result}
-        with open("output.jsonl", "a", encoding='utf-8') as f:
+        with open("generated_dict.jsonl", "a", encoding='utf-8') as f:
 
                 f.write(json.dumps(json_dict) + "\n")
 
-def extract_dict(text,key_str):
+def extract_dict(text,question,system_text,key_str="boo"):
 
-
+    mistake_num=0
     while True:
+        mistake_num+=1
         try:
             text = text.lower()
+            key_str = key_str.lower()
             match = re.search(r'({[^{}]*})', text)
             json_str = match.group(1) if match else None
+            print(json_str)
 
-            dictionary = json.loads(json_str)
             if key_str!="multikey":
-                    if len(dictionary)!=1:
-                        text = selenium_spider("please set key value of {'%s'} to true or false"%key_str, True, False)
-                        continue
-                    else:
 
-                        for i in dictionary:
-                            if not isinstance(dictionary[i],bool):
-                                if "false" in dictionary[i]:
-                                    return False
-                                elif "true" in dictionary[i]:
-                                    return True
-                            else:
-                                return dictionary[i]
-                        # return true or false
+                result =re.sub(r'[^a-zA-Z]', '', json_str)
+                key_str=re.sub(r'[^a-zA-Z]', '', key_str)
+
+                # print(result,key_str)
+                if key_str in result:
+
+                    first_letter = result.replace(key_str,"")[0]
+                    # print(first_letter)
+                    if "f" in first_letter:
+                        return False
+                    elif "t" in first_letter:
+                        return True
+                    # print(first_letter)
+                else:
+                        aa=input("出错了,要继续吗")
+
+                        text=change_statement (question, system_text)
+                        continue
+
 
 
             elif key_str=="multikey":
-
-
+                    json_str = re.sub(r"'", '"', json_str)
+                    dictionary = json.loads(json_str)
                     for i in dictionary:
                         if not isinstance(dictionary[i], bool):
                             if "false" in dictionary[i]:
                                 dictionary[i]=False
                             elif "true" in dictionary[i]:
                                 dictionary[i]=True
+
                     for i in dictionary:
                         if dictionary[i]==True:
 
                             return i  #return the key is true
+                    print("all false")
+                    return list(dictionary.keys())[0]
 
-        except:
-            print("key value error")
-            text=selenium_spider("please set key value to true or false",True,False)
+                    # text = change_statement(question, system_text)
+                    # continue
+
+        except Exception as e:
+            if mistake_num>=2:
+                if key_str=="multikey":
+                    return 0
+            print("key value error :",e)
+            aa = input("出错了,要继续吗")
+            text=change_statement (question, system_text)
             print(text)
 
     # Parse the JSON string to a Python dictionary
@@ -334,90 +336,133 @@ def extract_dict(text,key_str):
 def dict_generate(list_):
     dict_={}
     for i in list_:
-        dict_[i]=""
+        dict_["%s"%i]=""
     return dict_
 def checking_layer():
     ques_num=0
-    description_list=df["Description"].fillna("").tolist()
-    result_dict = generate_col()
-    detailed_description_list=df["Detailed Description"].fillna("").tolist()
+    description_list=df["description"].fillna("").tolist()
+
+    detailed_description_list=df["detailed description"].fillna("").tolist()
+    threads = []
+    lock = threading.Lock()
+    data_queue = queue.Queue()
+
     for num, element in enumerate(description_list):
-        if num>=2:
-            ques_num+=1
-            selenium_spider("", False, True)
-            case_str=element+detailed_description_list[num]
-            selenium_spider(case_str+", according to the case above, please answer my question below with json format.{'boolean_value':""}")
-            final_dict = {}
-            question = ""
+        # print(true_col)
+        if num>=4:
 
-            for bold_col in result_dict:
-                bold_col=bold_col.lower()
-                if has_values_under_header(bold_col):  # 有实际意义的col
-                    question = "Please combine the news above to determine whether %s is true in the news,If true, set the following json value to True, else set following json value to False : %s" % (
+            data_queue.put((num,description_list[num] + detailed_description_list[num]))
+
+        # if num>=2:
+        #     ques_num+=1
+            # selenium_spider("", False, True)
+
+    for i in range(1):
+        t = threading.Thread(target=one_process, args=(
+            data_queue, lock,i))
+        t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
+def one_process(data_queue,lock,index_):
+    while True:
+        try:
+            data_queue_tuple=data_queue.get(timeout=3)
+        except:
+            break
+        print(index_,"processing++++++++++++++++=",data_queue_tuple[0])
+        case_str=data_queue_tuple[1]
+        system_text = (
+                    case_str + ", according to the case above, please answer my question below with json format.{'':ture | false}, and do not output anything else json.")
+        print(system_text)
+        final_dict = {}
+        question = ""
+        result_dict = generate_col()
+        for bold_col in result_dict:
+            # bold_col=bold_col.lower()
+            if has_values_under_header(bold_col):  # 有实际意义的col
+                question = "Please combine the news above to determine whether %s is true in the news,If true, set the following json value to True, else set following json value to False : %s" % (
                     bold_col, {bold_col: ""})
-                    boolean_feedback=selenium_spider(question,True,False)
+                boolean_feedback = change_statement(question, system_text)
+                # if ques_num==1:
+                #     boolean_feedback=selenium_spider(question,True,False)
+                # else:
+                #     boolean_feedback = selenium_spider(question, False, False)
 
-                    bold_attribute=extract_dict(boolean_feedback,bold_col)
-                    final_dict[bold_col] = bold_attribute
-                    print({bold_col:bold_attribute})
+                bold_attribute = extract_dict(boolean_feedback, question, system_text, bold_col)
+                final_dict[bold_col] = bold_attribute
+                print({bold_col: bold_attribute})
 
-                    if bold_attribute:
-                        if "extent of impact is identified" in bold_col:
-                            question="In terms of extend of impact, which one of them is True? please set the corresponding key as True:  %s "%dict_generate(result_dict[bold_col])
-                            boolean_feedback=selenium_spider(question,True,False)
-                            bold_attribute = extract_dict(boolean_feedback,"multikey")
-                            final_dict.update({bold_attribute:True})  # local people:True
-                            print({bold_attribute: True})
-                        elif "sensitive privacy breach" in bold_col:
-                            question="In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (sensitivity,{"sensitive privacy breach":""})
-                            boolean_feedback=selenium_spider(question,True,False)
-                            bold_attribute = extract_dict(boolean_feedback,bold_col)
-                            final_dict.update({bold_attribute: True})  # local people:True
-                            print({bold_attribute: True})
-                        else:
+                if bold_attribute:
+                    if "extent of impact is identified" in bold_col.lower():
+                        question = "Based on the extend of impact is fixed, Please determine the scope of the incident’s impact in the news,  Set the key you think is correct to True (please set only one key to true):  %s " % dict_generate(
+                            result_dict[bold_col])
+                        boolean_feedback = change_statement(question, system_text)
+                        bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
+                        final_dict.update({bold_attribute: True})  # local people:True
+                        print({bold_attribute: True})
+                    elif "sensitive privacy breach" in bold_col.lower():
+                        question = "In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (
+                        sensitivity, {"sensitive privacy breach": ""})
+                        boolean_feedback = change_statement(question, system_text)
+                        bold_attribute = extract_dict(boolean_feedback, question, system_text, bold_col)
+                        final_dict.update({bold_attribute: True})  # local people:True
+                        print({bold_attribute: True})
+                    else:
 
-                            for element in result_dict[bold_col]:
+                        for element in result_dict[bold_col]:
 
-                                if "severity" in element.lower():
+                            if "severity" in element.lower():
 
-                                    attribute_value = dict_generate([1, 2, 3, 4, 5])
-                                    question = "In terms of %s ，please determin its severity, Severity ranges from 1 to 5, with 1 being the least severe and 5 being the most severe, Please change the key value after the severity you think in the following json to True, and give me this json back%s" % (bold_col,attribute_value)
-                                    boolean_feedback=selenium_spider(question,True,False)
+                                attribute_value = dict_generate([1, 2, 3, 4, 5])
+                                question = "In terms of %s ，please determin its severity,according to guideline below: \n%s\n, Please change the key value after the severity you think in the following json to True (least severity is 1)(please only select one severity), and give me this json back%s" % (
+                                    bold_col,
+                                    globals().get(str(element).replace("severity of ", "").replace(" ", '_')),
+                                    attribute_value)
+                                boolean_feedback = change_statement(question, system_text)
+                                bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
+                                # final_dict.update({element:bold_attribute}) # severit2y:5
+                            else:
+                                question = "Based on %s is True in news, Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
+                                bold_col, element, {element: ""})
+                                boolean_feedback = change_statement(question, system_text)
+                                bold_attribute = extract_dict(boolean_feedback, question, system_text, element)
+                            print({element: bold_attribute})
+                            final_dict.update({element: bold_attribute})  # severity:5
 
-                                    bold_attribute = extract_dict(boolean_feedback, "multikey")
-
-                                    # final_dict.update({element:bold_attribute}) # severity:5
-                                else:
-                                    question="Based on %s is True in news, Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s"%(bold_col,element,{element:""})
-                                    boolean_feedback = selenium_spider(question, True, False)
-                                    bold_attribute = extract_dict(boolean_feedback,element)
-                                print({element: bold_attribute})
-                                final_dict.update({element:bold_attribute}) # severity:5
 
 
+            else:
 
-                else:
+                question_first = "Under the topic %s, " % bold_col
+                for element in result_dict[bold_col]:
+                    if "severity" in element.lower():
 
-                    question_first = "Under the topic %s, " % bold_col
-                    for element in result_dict[bold_col]:
-                        if "severity" in  element.lower():
+                        attribute_value = dict_generate([1, 2, 3, 4, 5])
+                        question = question_first + "In terms of %s ，please determin its severity,according to guideline below: \n%s\n, Please change the key value after the severity you think in the following json to True (least severity is 1)(please only select one severity), and give me this json back%s" % (
+                            bold_col, globals().get(str(element).replace("severity of ", "").replace(" ", '_')),
+                            attribute_value)
+                        boolean_feedback = change_statement(question, system_text)
 
-                            attribute_value = dict_generate([1, 2, 3, 4, 5])
-                            question =question_first+ "In terms of %s ，please determin its severity, Severity ranges from 1 to 5, with 1 being the least severe and 5 being the most severe, Please change the key value after the severity you think in the following json to True, and give me this json back%s" % (
-                            bold_col, attribute_value)
-                            boolean_feedback = selenium_spider(question, True, False)
-
-                            bold_attribute = extract_dict(boolean_feedback, "multikey")
-                            # final_dict.update({element:bold_attribute}) # severity:5
-                        else:
-                            question  =question_first+ " Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
+                        bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
+                        # final_dict.update({element:bold_attribute}) # severity:5
+                    else:
+                        question = question_first + " Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
                             element, {element: ""})
-                            boolean_feedback = selenium_spider(question, True, False)
-                            bold_attribute = extract_dict(boolean_feedback,element)
-                        final_dict.update({element: bold_attribute})  # severity:5
-            # json_dict = {"attribute": final_dict, "news": result}
-            print(len(final_dict),"+========================================")
-            with open("output_final_dict.jsonl", "a", encoding='utf-8') as f:
+                        boolean_feedback = change_statement(question, system_text)
+                        bold_attribute = extract_dict(boolean_feedback, question, system_text, element)
+                    final_dict.update({element: bold_attribute})  # severity:5
+        # json_dict = {"attribute": final_dict, "news": result}
+        print(len(final_dict), "+========================================")
+        with lock:
+            with open("output_final_dict_t.jsonl", "a", encoding='utf-8') as f:
                 f.write(json.dumps(final_dict) + "\n")
-            time.sleep(15)
+
+    # time.sleep(15)
 checking_layer()
+# ques="""
+# {
+#   'privacy violation': true
+# }"""
+# extract_dict(ques,"privacy violation")
