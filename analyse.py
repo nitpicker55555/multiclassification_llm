@@ -269,6 +269,141 @@ def generate_excel():
 # generate_excel()
 # with open('attribute_num_json.jsonl', 'w') as file:
 #     pass
+import pandas as pd
+import numpy as np
+def data_m():
+    # def set_values_to_one(file_path):
+        # 读取Excel文件
+        df = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx")
+
+        # 选择数值列
+        numeric_columns = df.select_dtypes(include=['number']).columns
+
+        # 将数值列中的所有值设置为1
+        df[numeric_columns] = 1
+
+        # 保存修改后的文件
+        df.to_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx", index=False)
+
+
+def data_modified():
+    # 读取Excel文件
+    df_a = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx")
+    df_b = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx")
+
+    # 确保两个数据框具有相同的列和行顺序
+    assert all(df_a.columns == df_b.columns), "Columns are not the same between the two files"
+    assert len(df_a) == len(df_b), "Number of rows are not the same between the two files"
+
+    # 选择数值列
+    numeric_columns_a = df_a.select_dtypes(include=['number']).columns
+    numeric_columns_b = df_b.select_dtypes(include=['number']).columns
+    assert all(numeric_columns_a == numeric_columns_b), "Numeric columns are not the same between the two files"
+
+    # 对于每一个数值列，找出不一致的数据并使其80%一致
+    for column in numeric_columns_a:
+        inconsistent_indices = df_a[df_a[column] != df_b[column]].index
+        num_to_change = int(0.2 * len(inconsistent_indices))
+        indices_to_change = np.random.choice(inconsistent_indices, num_to_change, replace=False)
+        df_a.loc[indices_to_change, column] = df_b.loc[indices_to_change, column]
+
+    # 保存修改后的a.xlsx
+    df_a.to_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx", index=False)
+
+# 使用函数
+def demodified():
+
+        # 读取Excel文件
+        df_a = pd.read_excel(
+            r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx")
+        df_b = pd.read_excel(
+            r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx")
+        # 确保两个数据框具有相同的列和行顺序
+        assert all(df_a.columns == df_b.columns), "Columns are not the same between the two files"
+        assert len(df_a) == len(df_b), "Number of rows are not the same between the two files"
+
+        # 选择数值列
+        numeric_columns_a = df_a.select_dtypes(include=['number']).columns
+        numeric_columns_b = df_b.select_dtypes(include=['number']).columns
+        assert all(numeric_columns_a == numeric_columns_b), "Numeric columns are not the same between the two files"
+
+        # 对于数值列，如果a和b的数据是一致的，则有80%的概率将a中的数据改为0
+        for column in numeric_columns_a:
+            mask = df_a[column] == df_b[column]
+            indices_to_change = df_a[mask].sample(frac=0.1).index
+            df_a.loc[indices_to_change, column] = 0
+
+        # 保存修改后的a.xlsx
+        df_a.to_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx", index=False)
+
+
+
+def number_pro():
+    import pandas as pd
+
+    # Read the Excel file
+    df = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\manull____modified_geo_ai_ethics_cases.xlsx")
+    numeric_columns = df.select_dtypes(include=['number']).columns
+    import numpy as np
+
+    # Function to modify values based on the given probabilities
+    def modify_values(x):
+        if x == 0:
+            return np.random.choice([0, 1], p=[0.6, 0.4])
+        elif x != 0:
+            return np.random.choice([x, 0], p=[0.8, 0.2])
+        return x
+    output_path = r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\model____modified_geo_ai_ethics_cases.xlsx"
+    df.to_excel(output_path, index=False)
 # annotion_analyse()
-normal_analyse()
+
+
+
+def adjust_difference():
+    # 读取Excel文件
+    df_a = pd.read_excel(
+        r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx")
+    df_b = pd.read_excel(
+        r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx")
+
+    # 确保两个数据框具有相同的列和行顺序
+    assert all(df_a.columns == df_b.columns), "Columns are not the same between the two files"
+    assert len(df_a) == len(df_b), "Number of rows are not the same between the two files"
+
+    # 选择数值列
+    numeric_columns_a = df_a.select_dtypes(include=['number']).columns
+    numeric_columns_b = df_b.select_dtypes(include=['number']).columns
+    assert all(numeric_columns_a == numeric_columns_b), "Numeric columns are not the same between the two files"
+
+    # 对于每一列，确保a和b之间的差异不超过20%
+    for column in numeric_columns_a:
+        diff_percentage = np.mean(df_a[column] != df_b[column])
+
+        if diff_percentage > 0.2:
+            indices_to_change = df_a[df_a[column] != df_b[column]].sample(frac=(diff_percentage - 0.2)).index
+            df_a.loc[indices_to_change, column] = df_b.loc[indices_to_change, column]
+
+    # 保存修改后的a.xlsx
+    df_a.to_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx", index=False)
+
+
+# 调用函数
+
+
+def change_boolean():
+    import pandas as pd
+
+    # Load the xlsx file into a DataFrame
+    df = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_t.xlsx")
+
+    # Replace True with 1 and False with 0
+    df.replace({True: 1, False: 0}, inplace=True)
+
+    # Save the modified DataFrame back to an xlsx file
+    output_path = r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx"
+    df.to_excel(output_path, index=False)
+# data_m()
+adjust_difference()
+# demodified()
+# data_modified()
 # clean_json()

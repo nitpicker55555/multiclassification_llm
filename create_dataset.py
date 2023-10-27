@@ -7,7 +7,7 @@ import asyncio
 import pandas as pd
 import openpyxl
 # from selenium_chatgpt import selenium_spider
-xlsx_path=r'C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\modified_geo_ai_ethics_cases.xlsx'
+xlsx_path=r'C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\____modified_geo_ai_ethics_cases.xlsx'
 df = pd.read_excel(xlsx_path)
 wb = openpyxl.load_workbook(xlsx_path)
 import threading
@@ -340,16 +340,16 @@ def dict_generate(list_):
     return dict_
 def checking_layer():
     ques_num=0
-    description_list=df["description"].fillna("").tolist()
+    description_list=df["Title"].fillna("").tolist()
 
-    detailed_description_list=df["detailed description"].fillna("").tolist()
+    detailed_description_list=df["Content"].fillna("").tolist()
     threads = []
     lock = threading.Lock()
     data_queue = queue.Queue()
 
     for num, element in enumerate(description_list):
         # print(true_col)
-        if num>=4:
+        if num<=61 and num>=7:
 
             data_queue.put((num,description_list[num] + detailed_description_list[num]))
 
@@ -456,7 +456,7 @@ def one_process(data_queue,lock,index_):
         # json_dict = {"attribute": final_dict, "news": result}
         print(len(final_dict), "+========================================")
         with lock:
-            with open("output_final_dict_t.jsonl", "a", encoding='utf-8') as f:
+            with open("output_final_dict_t2.jsonl", "a", encoding='utf-8') as f:
                 f.write(json.dumps(final_dict) + "\n")
 
     # time.sleep(15)
