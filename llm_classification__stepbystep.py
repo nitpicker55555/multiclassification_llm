@@ -273,10 +273,20 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
 
         try:
             row_num  = data_queue.get(timeout=3)
-            send_info="news_title:"+str(title_column[row_num])+","+str(overview_column[row_num]).replace('"Is_relevant": true',"").replace("{","").replace("}","")
+
+            overview_text=overview_column[row_num]
+            try:
+                overview_text_matches = re.findall(r'\{(.*?)\}', overview_text, re.DOTALL)
+            except Exception as e:
+                print("正则错误，",e)
+                overview_text_matches=[overview_text]
+            if overview_text_matches[0]=="":
+                print("正则为空，文本：", overview_text)
+                overview_text_matches=[overview_text]
+            send_info="news_title:"+str(title_column[row_num])+","+overview_text_matches[0].replace('"Is_relevant": true',"").replace("{","").replace("}","")
             case_str=send_info
-        except queue.Empty:
-            print(excel_file, "empty===========")
+        except Exception as e:
+            print(excel_file, "empty===========",e)
             with lock:
                 with open(folder + '\\' + excel_file.split("\\")[-1].split(".")[0] + "step_classification_result_json.jsonl",
                           'a', encoding='utf-8') as f:
@@ -407,6 +417,7 @@ def checking_layer():
                             data = json.loads(line)
                             if "excel_num" in data:
                                 processed_row_nums.append(str(data["excel_num"]))
+                print(excel_file,"processed ",len(processed_row_nums))
                 df = pd.read_excel(excel_file, engine='openpyxl')
 
                 overview_column = df['Overview']
@@ -431,7 +442,7 @@ def checking_layer():
 
                 # 排除掉data_queue中已经存在的"row_num"值
 
-                for i in range(5):
+                for i in range(3):
                     t = threading.Thread(target=one_process, args=(
                         data_queue, overview_column, title_column, num_col, folder, excel_file, lock, i))
                     t.start()
@@ -441,7 +452,7 @@ def checking_layer():
                     t.join()
 
 
-
+checking_layer()
                     # json_result,each_token=change_statement(overview_column[row_num],'',"fine-tune")
                     # totoal_token+=each_token
                     # specific_num=num_col[row_num]
