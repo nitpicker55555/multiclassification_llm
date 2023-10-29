@@ -1,90 +1,28 @@
-import json
-import re
-#
-# text = """Based on the provided information, it is not clear whether there is a privacy violation in the news. Privacy violations typically involve the unauthorized or inappropriate disclosure of personal information. The information provided in the news article does not explicitly mention a privacy violation. Therefore, the answer is:
-# asd
-# Based on the information provided in the news, there doesn't appear to be any mention or indication of privacy violation. The incident revolves around an accident with a robot and bear repellent at an Amazon warehouse.
-#
-# Therefore, the appropriate JSON response would be:
-#
-# ```json
-# {
-#     "privacy violation": "False"
-# }
-#
-# ```
-# asd
-# """
+import asyncio
+import random
 
 
-def extract_dict(text,key_str):
+async def async_func(efe):
+    try:
+        # 这只是一个示例，您可以替换为您的真实异步操作3
+        timess=random.randint(0,8)
+        print(timess)
+        await asyncio.sleep(timess)
+        return "Hello from async function!%s"%str(timess)
+    except asyncio.CancelledError:
+        print("Async function was cancelled!")
+        return None
 
+async def execute_with_timeout():
+    while True:
+        task = asyncio.create_task(async_func(efe=1))  # 创建一个Task对象
+        try:
+            result = await asyncio.wait_for(task, timeout=5)
+            return result
+        except asyncio.TimeoutError:
+            print("Function took too long, cancelling and restarting...")
+            task.cancel()
+            await task  # 确保任何清理操作都已完成
 
-
-            text = text.lower()
-            key_str=key_str.lower()
-            match = re.search(r'({[^{}]*})', text)
-            json_str = match.group(1) if match else None
-            print(json_str)
-
-            if key_str!="multikey":
-
-                result =re.sub(r'[^a-zA-Z]', '', json_str)
-                key_str=re.sub(r'[^a-zA-Z]', '', key_str)
-
-                print(result,key_str)
-
-                if key_str in result:
-
-                    first_letter = result.replace(key_str,"")
-                    print(first_letter)
-                    if "f" in first_letter:
-                        return False
-                    elif "t" in first_letter:
-                        return True
-                    print(first_letter)
-                # else:
-                #
-                #         text = selenium_spider("please set key value of {'%s'} to true or false"%key_str, True, False)
-                #         continue
-
-
-
-            elif key_str=="multikey":
-                    json_str = re.sub(r"'", '"', json_str)
-                    print(json_str)
-                    dictionary = json.loads(json_str)
-                    for i in dictionary:
-                        if not isinstance(dictionary[i], bool):
-                            if "false" in dictionary[i]:
-                                dictionary[i]=False
-                            elif "true" in dictionary[i]:
-                                dictionary[i]=True
-                    for i in dictionary:
-                        if dictionary[i]==True:
-
-                            return i  #return the key is true
-
-
-    # Parse the JSON string to a Python dictionary
-                    # return i
-text="""zxcz
-{'individual': false, 'local population ': true, 'global': false}
-"""
-
-# text = """Based on the provided information, it is not clear whether there is a privacy violation in the news. Privacy violations typically involve the unauthorized or inappropriate disclosure of personal information. The information provided in the news article does not explicitly mention a privacy violation. Therefore, the answer is:
-# asd
-# Based on the information provided in the news, there doesn't appear to be any mention or indication of privacy violation. The incident revolves around an accident with a robot and bear repellent at an Amazon warehouse.
-#
-# Therefore, the appropriate JSON response would be:
-#
-# ```json
-# {
-#     "privacy violation": "False"
-# }
-#
-# ```
-# asd
-# """
-
-print(extract_dict(text,"multikey"))
+# result = asyncio.run(execute_with_timeout())
+# print(result)

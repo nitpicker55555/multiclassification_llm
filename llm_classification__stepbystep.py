@@ -8,6 +8,7 @@ start_directory = '.'
 import threading,queue
 from gpt_api import change_statement
 import re,openpyxl
+import asyncio
 file_num=0
 # totoal_token=[]
 xlsx_path=r'C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\____modified_geo_ai_ethics_cases.xlsx'
@@ -225,7 +226,7 @@ def extract_dict(text,question,system_text,key_str="boo"):
                 else:
                         aa=input("出错了,要继续吗")
 
-                        text=change_statement (question, system_text)
+                        text=asyncio.run(change_statement (question, system_text))
                         continue
 
 
@@ -247,7 +248,7 @@ def extract_dict(text,question,system_text,key_str="boo"):
                     print("all false")
                     return list(dictionary.keys())[0]
 
-                    # text = change_statement(question, system_text)
+                    # text = asyncio.run(change_statement (question, system_text))
                     # continue
 
         except Exception as e:
@@ -256,7 +257,7 @@ def extract_dict(text,question,system_text,key_str="boo"):
                     return 0
             print("key value error :",e)
             aa = input("出错了,要继续吗")
-            text=change_statement (question, system_text)
+            text=asyncio.run(change_statement (question, system_text))
             print(text)
 
     # Parse the JSON string to a Python dictionary
@@ -286,7 +287,7 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
             send_info="news_title:"+str(title_column[row_num])+","+overview_text_matches[0].replace('"Is_relevant": true',"").replace("{","").replace("}","")
             case_str=send_info
         except Exception as e:
-            print(excel_file, "empty===========",e)
+            print(excel_file, "empty===========",thread_num,e)
             with lock:
                 with open(folder + '\\' + excel_file.split("\\")[-1].split(".")[0] + "step_classification_result_json.jsonl",
                           'a', encoding='utf-8') as f:
@@ -305,7 +306,7 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
             if has_values_under_header(bold_col):  # 有实际意义的col
                 question = "Please combine the news above to determine whether %s is true in the news,If true, set the following json value to True, else set following json value to False : %s" % (
                     bold_col, {bold_col: ""})
-                boolean_feedback = change_statement(question, system_text)
+                boolean_feedback = asyncio.run(change_statement (question, system_text))
                 # if ques_num==1:
                 #     boolean_feedback=selenium_spider(question,True,False)
                 # else:
@@ -319,14 +320,14 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
                     if "extent of impact is identified" in bold_col.lower():
                         question = "Based on the extend of impact is fixed, Please determine the scope of the incident’s impact in the news,  Set the key you think is correct to True (please set only one key to true):  %s " % dict_generate(
                             result_dict[bold_col])
-                        boolean_feedback = change_statement(question, system_text)
+                        boolean_feedback = asyncio.run(change_statement (question, system_text))
                         bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
                         format_json_result.update({bold_attribute: True})  # local people:True
                         print({bold_attribute: True})
                     elif "sensitive privacy breach" in bold_col.lower():
                         question = "In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (
                         sensitivity, {"sensitive privacy breach": ""})
-                        boolean_feedback = change_statement(question, system_text)
+                        boolean_feedback = asyncio.run(change_statement (question, system_text))
                         bold_attribute = extract_dict(boolean_feedback, question, system_text, bold_col)
                         format_json_result.update({bold_attribute: True})  # local people:True
                         print({bold_attribute: True})
@@ -341,13 +342,13 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
                                     bold_col,
                                     globals().get(str(element).replace("severity of ", "").replace(" ", '_')),
                                     attribute_value)
-                                boolean_feedback = change_statement(question, system_text)
+                                boolean_feedback = asyncio.run(change_statement (question, system_text))
                                 bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
                                 # format_json_result.update({element:bold_attribute}) # severit2y:5
                             else:
                                 question = "Based on %s is True in news, Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
                                 bold_col, element, {element: ""})
-                                boolean_feedback = change_statement(question, system_text)
+                                boolean_feedback = asyncio.run(change_statement (question, system_text))
                                 bold_attribute = extract_dict(boolean_feedback, question, system_text, element)
                             print({element: bold_attribute})
                             format_json_result.update({element: bold_attribute})  # severity:5
@@ -364,14 +365,14 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
                         question = question_first + "In terms of %s ，please determin its severity,according to guideline below: \n%s\n, Please change the key value after the severity you think in the following json to True (least severity is 1)(please only select one severity), and give me this json back%s" % (
                             bold_col, globals().get(str(element).replace("severity of ", "").replace(" ", '_')),
                             attribute_value)
-                        boolean_feedback = change_statement(question, system_text)
+                        boolean_feedback = asyncio.run(change_statement (question, system_text))
 
                         bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
                         # format_json_result.update({element:bold_attribute}) # severity:5
                     else:
                         question = question_first + " Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
                             element, {element: ""})
-                        boolean_feedback = change_statement(question, system_text)
+                        boolean_feedback = asyncio.run(change_statement (question, system_text))
                         bold_attribute = extract_dict(boolean_feedback, question, system_text, element)
                     format_json_result.update({element: bold_attribute})  # severity:5
         # json_dict = {"attribute": format_json_result, "news": result}
@@ -442,7 +443,7 @@ def checking_layer():
 
                 # 排除掉data_queue中已经存在的"row_num"值
 
-                for i in range(3):
+                for i in range(6):
                     t = threading.Thread(target=one_process, args=(
                         data_queue, overview_column, title_column, num_col, folder, excel_file, lock, i))
                     t.start()
