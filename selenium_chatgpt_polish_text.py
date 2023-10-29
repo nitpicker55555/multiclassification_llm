@@ -224,9 +224,12 @@ for num, i in enumerate(process_list):
     sleep_time = random.uniform(2, 3)
     time.sleep(sleep_time)
     print("process_list number: ",num, "num_check: ",num_check,i, "____________________ processing")
+    # indication_str = ("""I will send you a piece of news,your answer need to be json format which has two keys{'Is_relevant','Specific_information'}
+    # please determine whether the news is about %s. If so, tell me why this news fits %s and the part of this news that fits %s as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".
+    # """ % (i.replace("_", " "),i.replace("_", " "),i.replace("_", " ")))
     indication_str = ("""I will send you a piece of news,your answer need to be json format which has two keys{'Is_relevant','Specific_information'}
-    please determine whether the news is about %s. If so, tell me why this news fits %s and the part of this news that fits %s as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".
-    """ % (i.replace("_", " "),i.replace("_", " "),i.replace("_", " ")))
+    please determine whether the news is about Problems caused by maps or geographical information. If so, tell me why this news fits and the part of this news that fits as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".""")
+
     print(selenium_spider(indication_str))
 
     one_iteration(num_check, i)

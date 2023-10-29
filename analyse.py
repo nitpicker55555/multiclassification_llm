@@ -5,8 +5,69 @@ current_dir = os.getcwd()
 
 # 初始化一个字典来存储每个文件夹中'Is_relevant=True'的数量
 folder_count = {}
+def step_classification_analyse():
+    import os
+    sum_dict={}
+    folder_sum=[]
+    def count_valid_lines_in_jsonl(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return sum(1 for line in file if "Finish_json_file" not in line)
 
+    def main(directory):
+        for dirpath, dirnames, filenames in os.walk(directory):
+            # Check if the directory starts with "content"
+            if os.path.basename(dirpath).startswith("content"):
+                sum_dict[os.path.basename(dirpath)]=[]
+                for filename in filenames:
+                    # Check if the file ends with "classification_result_json.jsonl"
+                    if filename.endswith("step_classification_result_json.jsonl"):
+                        file_path = os.path.join(dirpath, filename)
+                        line_count = count_valid_lines_in_jsonl(file_path)
+                        print(f"'{filename}' __________________ {line_count} ")
+                        sum_dict[os.path.basename(dirpath)].append(line_count)
+                print(os.path.basename(dirpath),"==========",sum(sum_dict[os.path.basename(dirpath)]))
+                folder_sum.append(sum(sum_dict[os.path.basename(dirpath)]))
+    # Replace with the path to the directory where you want to start the search.
+
+    start_directory = "."
+    main(start_directory)
+    print(sum(folder_sum))
+step_classification_analyse()
 # 遍历当前目录下的每个以"content"开头的文件夹
+def relevant_count():
+    import os
+    import pandas as pd
+    sum_dict={}
+    folder_sum=[]
+    def count_relevant_rows_in_xlsx(folder_path):
+        # 存储每个文件及其相关行数的字典
+        relevant_counts = {}
+        sum_dict = {}
+        # 遍历指定文件夹
+        for root, dirs, files in os.walk(folder_path):
+            # 如果当前文件夹以'content'开头
+            if os.path.basename(root).startswith('content'):
+                sum_dict [os.path.basename(root)]=[]
+                for file in files:
+                    # 如果是.xlsx文件
+                    if file.endswith('.xlsx'):
+                        file_path = os.path.join(root, file)
+                        # 使用pandas读取文件
+                        df = pd.read_excel(file_path)
+                        # 计算'Relevant'为True的行数
+                        count = df[df['Relevant'] == True].shape[0]
+                        relevant_counts[file_path] = count
+                        sum_dict [os.path.basename(root)].append(count)
+                print(os.path.basename(root),"==========",sum(sum_dict[os.path.basename(root)]))
+        return relevant_counts
+
+    folder_path = '.'
+    result = count_relevant_rows_in_xlsx(folder_path)
+
+    for file_path, count in result.items():
+        print(f"{file_path}: {count} relevant rows")
+    print(sum(result.values()))
+relevant_count()
 def normal_analyse():
     sum_list=[]
     for folder in os.listdir(current_dir):
@@ -26,11 +87,12 @@ def normal_analyse():
                     # 读取文件内容并计算'Is_relevant=True'的数量
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
-                        count += content.count('Is_relevant": false')
-                        file_num+=content.count('Is_relevant": false')
-
-                        num_cases+=content.count('__________________________________________________')
-                        file_cases+=content.count('__________________________________________________')
+                    count += content.count('Is_relevant": false')
+                    # file_num+=content.count('Is_relevant": false')
+                    file_num += content.count("False")
+                    file_num += content.count("false")
+                    num_cases+=content.count('__________________________________________________')
+                    file_cases+=content.count('__________________________________________________')
                     print(file_path,file_cases-file_num)
                     sum_list.append(file_cases-file_num)
             # 将计算结果存储到字典中
@@ -170,7 +232,7 @@ def annotion_analyse():
             counter = {}
 
             for filename in filenames:
-                if filename.endswith('classification_result_json.jsonl'):
+                if filename.endswith('step_classification_result_json.jsonl'):
                     filepath = os.path.join(dirpath, filename)
                     query_attribute = {}
                     # query_attribute["Query"]=filename.replace("classification_result_json.jsonl","").replace("updated_file_","")
@@ -193,8 +255,8 @@ def annotion_analyse():
                                     pass
 
                         print(counter, "counter===")
-                    attribute_dict = iteration(filename.replace("classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
-                    with open('attribute_num_json.jsonl', 'a') as json_file:
+                    attribute_dict = iteration(filename.replace("step_classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
+                    with open('step_attribute_num_json.jsonl', 'a') as json_file:
                         json_str = json.dumps(attribute_dict)
                         json_file.write(json_str + '\n')
 
@@ -204,7 +266,7 @@ def annotion_analyse():
             content_folder_list.append(dirpath[2:])
             attribute_dict=iteration( "SUM_" + dirpath[2:],counter)
 
-            with open('attribute_num_json.jsonl', 'a') as json_file:
+            with open('step_attribute_num_json.jsonl', 'a') as json_file:
                 json_str = json.dumps(attribute_dict)
                 json_file.write(json_str + '\n')
     attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
@@ -232,17 +294,18 @@ def annotion_analyse():
                       'Data Production Process-Analysis and Processing',
                       'Data Production Process-Application Communication']
 
-    content_folder_list=(content_folder_list+attribute_list)
-    print(len(content_folder_list))
+    # content_folder_list=(content_folder_list+attribute_list)
+    # print(len(content_folder_list))
     print(content_folder_list)
     # draw_plotify(content_folder_list,4,num_value_list)
+# annotion_analyse()
 # normal_analyse()
 # get_number("autonomous_driving_accidents")
 def generate_excel():
     import json
 
     # Read the jsonl file
-    with open("attribute_num_json.jsonl", "r") as file:
+    with open("step_attribute_num_json.jsonl", "r") as file:
         lines = file.readlines()
 
     # Convert each line (string) to a dictionary
@@ -264,9 +327,10 @@ def generate_excel():
     df = pd.DataFrame(data)
 
     # Save the DataFrame to an xlsx file
-    output_path = "attribute_num_json.xlsx"
+    output_path = "step_attribute_num_json.xlsx"
     df.to_excel(output_path, index=False)
 # generate_excel()
+
 # with open('attribute_num_json.jsonl', 'w') as file:
 #     pass
 import pandas as pd
@@ -390,7 +454,7 @@ def adjust_difference():
 # 调用函数
 
 
-def change_boolean():
+def change_boolean2number():
     import pandas as pd
 
     # Load the xlsx file into a DataFrame
@@ -402,8 +466,9 @@ def change_boolean():
     # Save the modified DataFrame back to an xlsx file
     output_path = r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx"
     df.to_excel(output_path, index=False)
+# normal_analyse()
 # data_m()
-adjust_difference()
+# adjust_difference()
 # demodified()
 # data_modified()
 # clean_json()

@@ -288,11 +288,11 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
             case_str=send_info
         except Exception as e:
             print(excel_file, "empty===========",thread_num,e)
-            with lock:
-                with open(folder + '\\' + excel_file.split("\\")[-1].split(".")[0] + "step_classification_result_json.jsonl",
-                          'a', encoding='utf-8') as f:
-                    json_str = json.dumps({'Finish_json_file': True})
-                    f.write(json_str + '\n')  # 写入一行并添加换行符
+            # with lock:
+            #     with open(folder + '\\' + excel_file.split("\\")[-1].split(".")[0] + "step_classification_result_json.jsonl",
+            #               'a', encoding='utf-8') as f:
+            #         json_str = json.dumps({'Finish_json_file': True})
+            #         f.write(json_str + '\n')  # 写入一行并添加换行符
             break
 
 
@@ -410,14 +410,14 @@ def checking_layer():
                         content = f.read()
 
                         # 检查是否存在"finish"字符
-                    if "Finish_json_file" in content:
-                        print(excel_file, "  finished")
-                        continue
-                    else:
-                        for line in content.splitlines():
-                            data = json.loads(line)
-                            if "excel_num" in data:
-                                processed_row_nums.append(str(data["excel_num"]))
+                    # if "Finish_json_file" in content:
+                    #     print(excel_file, "  finished")
+                    #     continue
+                    # else:
+                    for line in content.splitlines():
+                        data = json.loads(line)
+                        if "excel_num" in data:
+                            processed_row_nums.append(str(data["excel_num"]))
                 print(excel_file,"processed ",len(processed_row_nums))
                 df = pd.read_excel(excel_file, engine='openpyxl')
 
