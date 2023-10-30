@@ -213,13 +213,15 @@ def annotion_analyse():
                 elif value == False:
                     false_value = count
                 else:
-                    attribute_dict[key + "_" + value] = round(count / sum(values.values()), 2)
+                    # attribute_dict[key + "_" + value] = round(count / sum(values.values()), 2)
+                    attribute_dict[key + "_" + value] = count
                     print(f"    Value: {value}, Count: {count}")
 
             if (true_num, false_value) != (0, 0):
 
                 num_value_list.append((true_num / (true_num + false_value)) * 100)
-                attribute_dict[key] = round(true_num / (true_num + false_value), 2)
+                attribute_dict[key] = true_num
+                # attribute_dict[key] = round(true_num / (true_num + false_value), 2)
                 print((true_num / (true_num + false_value)) * 100)
             else:
                 num_value_list.append(1)

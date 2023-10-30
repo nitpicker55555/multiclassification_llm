@@ -194,14 +194,14 @@ def one_iteration(num_check, search_name):
                 print(playgorund_feedback)
                 if "Is_relevant" not in playgorund_feedback:
                     playgorund_feedback="'Is_relevant'=False "+ playgorund_feedback
-                with open("case_text_%s.txt" % search_name, 'a', encoding='utf-8') as filewrite:
+                with open(r"C:\Users\Morning\Desktop\hiwi\heart\paper\content_mapping_error\case_text_%s.txt" % search_name, 'a', encoding='utf-8') as filewrite:
                     filewrite.write(str(i) + "__________________________________________________" + '\n')
                     filewrite.write(playgorund_feedback + '\n')
                 sleep_time = random.uniform(1, 3)
                 time.sleep(sleep_time)
             else:
                 print(i,"行为空",description_column1[i])
-                with open("case_text_%s.txt" % search_name, 'a', encoding='utf-8') as filewrite:
+                with open(r"C:\Users\Morning\Desktop\hiwi\heart\paper\content_mapping_error\case_text_%s.txt" % search_name, 'a', encoding='utf-8') as filewrite:
                     filewrite.write(str(i) + "__________________________________________________" + '\n')
                     filewrite.write("'Is_relevant'=False" + '\n')
 
@@ -228,7 +228,7 @@ for num, i in enumerate(process_list):
     # please determine whether the news is about %s. If so, tell me why this news fits %s and the part of this news that fits %s as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".
     # """ % (i.replace("_", " "),i.replace("_", " "),i.replace("_", " ")))
     indication_str = ("""I will send you a piece of news,your answer need to be json format which has two keys{'Is_relevant','Specific_information'}
-    please determine whether the news is about Problems caused by maps or geographical information. If so, tell me why this news fits and the part of this news that fits as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".""")
+    please determine whether the news is about Problems about privacy leakage or Location information leakage. If so, tell me why this news fits and the part of this news that fits as detailed as possible and output {'Is_relevant'=True,'Specific_information'= (specific information as detailed as possible)}, If not, {'Is_relevant'=False,'Specific_information'=None}. if you understand, please simply answer "ok".""")
 
     print(selenium_spider(indication_str))
 
