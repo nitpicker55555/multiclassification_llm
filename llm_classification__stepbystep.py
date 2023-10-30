@@ -324,13 +324,7 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
                         bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
                         format_json_result.update({bold_attribute: True})  # local people:True
                         print({bold_attribute: True})
-                    elif "sensitive privacy breach" in bold_col.lower():
-                        question = "In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (
-                        sensitivity, {"sensitive privacy breach": ""})
-                        boolean_feedback = asyncio.run(change_statement (question, system_text))
-                        bold_attribute = extract_dict(boolean_feedback, question, system_text, bold_col)
-                        format_json_result.update({bold_attribute: True})  # local people:True
-                        print({bold_attribute: True})
+
                     else:
 
                         for element in result_dict[bold_col]:
@@ -345,7 +339,15 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
                                 boolean_feedback = asyncio.run(change_statement (question, system_text))
                                 bold_attribute = extract_dict(boolean_feedback, question, system_text, "multikey")
                                 # format_json_result.update({element:bold_attribute}) # severit2y:5
+                            elif "sensitive privacy breach" in element.lower():
+                                question = "In terms of sensitive privacy breach, Do you think the following types of privacy data breaches are in the news %s? If true, set the following json value to True, else set following json value to False  :  %s " % (
+                                    sensitivity, {"sensitive privacy breach": ""})
+                                boolean_feedback = asyncio.run(change_statement(question, system_text))
+                                bold_attribute = extract_dict(boolean_feedback, question, system_text, element)
+                                # format_json_result.update({bold_attribute: True})  # local people:True
+                                # print({element: bold_attribute})
                             else:
+
                                 question = "Based on %s is True in news, Please combine the news above to determine whether %s is true in the news, If true, set the following json value to True, else set following json value to false: %s" % (
                                 bold_col, element, {element: ""})
                                 boolean_feedback = asyncio.run(change_statement (question, system_text))
@@ -397,6 +399,7 @@ def one_process(data_queue,overview_column,title_column,num_col,folder,excel_fil
 
 
 def checking_layer():
+    print(generate_col())
     for folder in glob.glob(os.path.join(start_directory, 'content_*')):
 
         if os.path.isdir(folder):
@@ -442,15 +445,16 @@ def checking_layer():
                 print("original length ", len(true_col), excel_file)
 
                 # 排除掉data_queue中已经存在的"row_num"值
+                if not data_queue.empty():
 
-                for i in range(6):
-                    t = threading.Thread(target=one_process, args=(
-                        data_queue, overview_column, title_column, num_col, folder, excel_file, lock, i))
-                    t.start()
-                    threads.append(t)
+                    for i in range(6):
+                        t = threading.Thread(target=one_process, args=(
+                            data_queue, overview_column, title_column, num_col, folder, excel_file, lock, i))
+                        t.start()
+                        threads.append(t)
 
-                for t in threads:
-                    t.join()
+                    for t in threads:
+                        t.join()
 
 
 checking_layer()

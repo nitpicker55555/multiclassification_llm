@@ -5,6 +5,33 @@ current_dir = os.getcwd()
 
 # 初始化一个字典来存储每个文件夹中'Is_relevant=True'的数量
 folder_count = {}
+
+def get_num_step_classification_analyse(name):
+    import os
+    sum_dict={}
+    folder_sum=[]
+    def count_valid_lines_in_jsonl(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return sum(1 for line in file if "Finish_json_file" not in line)
+
+    def main(directory):
+        for dirpath, dirnames, filenames in os.walk(directory):
+            # Check if the directory starts with "content"
+            if os.path.basename(dirpath).startswith("content"):
+                sum_dict[os.path.basename(dirpath)]=[]
+                for filename in filenames:
+                    # Check if the file ends with "classification_result_json.jsonl"
+                    if filename.endswith(name+"step_classification_result_json.jsonl"):
+                        file_path = os.path.join(dirpath, filename)
+                        line_count = count_valid_lines_in_jsonl(file_path)
+                        return line_count
+
+    start_directory = "."
+
+    return     main(start_directory)
+
+print(get_num_step_classification_analyse("autonomous_driving_accidents"))
+# 遍历当前目录下的每个以"content"开头的文件夹
 def step_classification_analyse():
     import os
     sum_dict={}
@@ -35,39 +62,41 @@ def step_classification_analyse():
 step_classification_analyse()
 # 遍历当前目录下的每个以"content"开头的文件夹
 def relevant_count():
-    import os
     import pandas as pd
-    sum_dict={}
-    folder_sum=[]
-    def count_relevant_rows_in_xlsx(folder_path):
-        # 存储每个文件及其相关行数的字典
-        relevant_counts = {}
-        sum_dict = {}
-        # 遍历指定文件夹
-        for root, dirs, files in os.walk(folder_path):
-            # 如果当前文件夹以'content'开头
-            if os.path.basename(root).startswith('content'):
-                sum_dict [os.path.basename(root)]=[]
-                for file in files:
-                    # 如果是.xlsx文件
-                    if file.endswith('.xlsx'):
-                        file_path = os.path.join(root, file)
-                        # 使用pandas读取文件
-                        df = pd.read_excel(file_path)
-                        # 计算'Relevant'为True的行数
-                        count = df[df['Relevant'] == True].shape[0]
-                        relevant_counts[file_path] = count
-                        sum_dict [os.path.basename(root)].append(count)
-                print(os.path.basename(root),"==========",sum(sum_dict[os.path.basename(root)]))
-        return relevant_counts
+    def count_unique_urls_in_folder(folder_path):
+        # 存储已经遍历过的URL
+        url_set = set()
+        count = 0  # 计数器
 
-    folder_path = '.'
-    result = count_relevant_rows_in_xlsx(folder_path)
+        # 遍历文件夹中的所有文件
+        for file_name in os.listdir(folder_path):
+            # 只处理.xlsx文件
+            if not file_name.endswith('.xlsx'):
+                continue
 
-    for file_path, count in result.items():
-        print(f"{file_path}: {count} relevant rows")
-    print(sum(result.values()))
-relevant_count()
+            file_path = os.path.join(folder_path, file_name)
+            df = pd.read_excel(file_path, engine='openpyxl')
+
+            # 过滤满足条件的行
+            filtered_df = df[(df['Relevant'] == True) & (~df['Url'].isin(url_set))]
+
+            # 更新已遍历的URL集合和计数器
+            unique_urls = filtered_df['Url'].unique()
+            count += len(unique_urls)
+            url_set.update(unique_urls)
+
+        return count
+
+    # 使用函数
+    for folder in os.listdir(current_dir):
+        if folder.startswith('content_') and os.path.isdir(folder):
+
+            # folder_path = "content"  # 根据您的具体路径修改
+            result = count_unique_urls_in_folder(folder)
+            print(f"满足条件的URL数量为：{result}")
+
+
+# relevant_count()
 def normal_analyse():
     sum_list=[]
     for folder in os.listdir(current_dir):
@@ -192,39 +221,53 @@ def get_number(name):
 # print(folder, "---------------", num_cases - count)
 # folder_count[folder] = num_cases - count
 def annotion_analyse():
-
+    with open("step_attribute_num_json_procent.jsonl", 'w') as file:
+        pass
     def iteration(name,counter):
         attribute_dict = {}
         # attribute_dict['Query'] = "SUM_" + dirpath[2:]
         attribute_dict['Query'] = name
+
         if not name.startswith("SUM"):
-            attribute_dict['cases_num']=get_number(name)
+            attribute_dict['cases_num']=get_num_step_classification_analyse(name)
+            # attribute_dict['cases_num']=get_number(name)
         else:
             attribute_dict['cases_num'] =0
+        scope_impact_count = {}
         for key, values in counter.items():
             print(f"Key: {key}")
             # print(sum(counter[key].values()))
             true_num = 0
+
             false_value = 0
             print(values, "============")
             for value, count in values.items():
+                if key in ['individual','global','local people']:
+                    scope_impact_count[key]=count
+
                 if value == True:
                     true_num = int(count)
                 elif value == False:
                     false_value = count
                 else:
-                    # attribute_dict[key + "_" + value] = round(count / sum(values.values()), 2)
-                    attribute_dict[key + "_" + value] = count
+                    attribute_dict[key + "_" + value] = round(count / sum(values.values()), 4)
+                    # attribute_dict[key + "_" + value] = count
                     print(f"    Value: {value}, Count: {count}")
+            print(scope_impact_count,"scope_impact_count.values()",sum(scope_impact_count.values()))
 
             if (true_num, false_value) != (0, 0):
 
                 num_value_list.append((true_num / (true_num + false_value)) * 100)
-                attribute_dict[key] = true_num
-                # attribute_dict[key] = round(true_num / (true_num + false_value), 2)
-                print((true_num / (true_num + false_value)) * 100)
+                # attribute_dict[key] = true_num
+                attribute_dict[key] = round(true_num / (true_num + false_value), 4)
+                # print((true_num / (true_num + false_value)) * 100)
             else:
                 num_value_list.append(1)
+        for scope_impact in scope_impact_count:
+
+            # attribute_dict["scope of impact_"+scope_impact]=scope_impact_count[scope_impact]
+            attribute_dict["scope of impact_"+scope_impact]=round(scope_impact_count[scope_impact]/sum(scope_impact_count.values()),4)
+            del attribute_dict[scope_impact]
         return attribute_dict
     exception_list = ["excel_num", "row_num", "each_token", "Finish_json_file", "Specific_information"]
     content_folder_list = []
@@ -258,7 +301,7 @@ def annotion_analyse():
 
                         print(counter, "counter===")
                     attribute_dict = iteration(filename.replace("step_classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
-                    with open('step_attribute_num_json.jsonl', 'a') as json_file:
+                    with open('step_attribute_num_json_procent.jsonl', 'a') as json_file:
                         json_str = json.dumps(attribute_dict)
                         json_file.write(json_str + '\n')
 
@@ -268,7 +311,7 @@ def annotion_analyse():
             content_folder_list.append(dirpath[2:])
             attribute_dict=iteration( "SUM_" + dirpath[2:],counter)
 
-            with open('step_attribute_num_json.jsonl', 'a') as json_file:
+            with open('step_attribute_num_json_procent.jsonl', 'a') as json_file:
                 json_str = json.dumps(attribute_dict)
                 json_file.write(json_str + '\n')
     attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
@@ -298,16 +341,17 @@ def annotion_analyse():
 
     # content_folder_list=(content_folder_list+attribute_list)
     # print(len(content_folder_list))
+
     print(content_folder_list)
     # draw_plotify(content_folder_list,4,num_value_list)
-# annotion_analyse()
+annotion_analyse()
 # normal_analyse()
 # get_number("autonomous_driving_accidents")
 def generate_excel():
     import json
 
     # Read the jsonl file
-    with open("step_attribute_num_json.jsonl", "r") as file:
+    with open("step_attribute_num_json_procent.jsonl", "r") as file:
         lines = file.readlines()
 
     # Convert each line (string) to a dictionary
@@ -322,16 +366,16 @@ def generate_excel():
     for entry in data:
         for key in all_keys:
             if key not in entry:
-                entry[key] = 0.0
+                entry[key] = 0
     import pandas as pd
 
     # Convert the list of dictionaries to a DataFrame
     df = pd.DataFrame(data)
 
     # Save the DataFrame to an xlsx file
-    output_path = "step_attribute_num_json.xlsx"
+    output_path = "step_attribute_num_json_procent.xlsx"
     df.to_excel(output_path, index=False)
-# generate_excel()
+generate_excel()
 
 # with open('attribute_num_json.jsonl', 'w') as file:
 #     pass
