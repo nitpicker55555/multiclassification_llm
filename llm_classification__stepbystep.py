@@ -455,9 +455,115 @@ def checking_layer():
 
                     for t in threads:
                         t.join()
+def one_process_ques(data_queue, overview_column, title_column, num_col, folder, excel_file, lock, thread_num):
+    # def one_process(data_queue, overview_column, title_column, num_col, folder, excel_file, lock, thread_num):
+    #     result_dict = generate_col()
+
+        while True:
+
+            try:
+                row_num = data_queue.get(timeout=3)
+
+                overview_text = overview_column[row_num]
+
+                try:
+                    overview_text_matches = re.findall(r'\{(.*?)\}', overview_text, re.DOTALL)
+                except Exception as e:
+                    print("正则错误，", e)
+                    overview_text_matches = [overview_text]
+                if overview_text_matches[0] == "":
+                    print("正则为空，文本：", overview_text)
+                    overview_text_matches = [overview_text]
+                send_info = "news_title:" + str(title_column[row_num]) + "," + overview_text_matches[0].replace(
+                    '"Is_relevant": true', "").replace("{", "").replace("}", "")
+                case_str = send_info
+            except Exception as e:
+                print(excel_file, "empty===========", thread_num, e)
+                # with lock:
+                #     with open(folder + '\\' + excel_file.split("\\")[-1].split(".")[0] + "step_classification_result_json.jsonl",
+                #               'a', encoding='utf-8') as f:
+                #         json_str = json.dumps({'Finish_json_file': True})
+                #         f.write(json_str + '\n')  # 写入一行并添加换行符
+                break
+
+            # json_result, each_token = change_statement(send_info, '', "fine-tune")
+            format_json_result = {}
+            # format_json_result['folder']=folder
+            format_json_result['file']=excel_file
+            format_json_result['row_num']=row_num
+            system_text = (
+                    case_str + ", according to the case above, I want to judge whether this news involves the leakage of sensitive private information. Sensitive privacy information is regulated as follows: "+sensitivity+". Answer my question with json format like {'sensitive privacy breach': ""}")
+            question = "If sensitive privacy information is involved in news according to the regulation I gave you, set the following json value to True, else set following json value to False  :  %s " % (
+                 {"sensitive privacy breach": ""})
+            boolean_feedback = asyncio.run(change_statement(question, system_text))
+            bold_attribute = extract_dict(boolean_feedback, question, system_text, "sensitive privacy breach")
+            format_json_result.update({"sensitive privacy breach": bold_attribute})  # severity:5
+            with lock:
+                with open("sensitive privacy breach.jsonl",
+                          'a',
+                          encoding='utf-8') as f:
+                    json_str = json.dumps(format_json_result)
+                    f.write(json_str + '\n')
 
 
-checking_layer()
+def one_more_ques():
+    for folder in glob.glob(os.path.join(start_directory, 'content_*')):
+
+        if os.path.isdir(folder):
+            print(folder)
+            # 在每个 'content_' 文件夹中，查找所有以 'updated_file' 开头的 .xlsx 文件
+            for excel_file in (glob.glob(os.path.join(folder, 'updated_file*.xlsx'))):
+                processed_row_nums = []
+                jsonl_file_path = excel_file.replace(".xlsx", "step_classification_result_json.jsonl")
+                if os.path.exists(jsonl_file_path):
+                    with open(jsonl_file_path, 'r') as f:
+                        content = f.read()
+
+                        # 检查是否存在"finish"字符
+                    # if "Finish_json_file" in content:
+                    #     print(excel_file, "  finished")
+                    #     continue
+                    # else:
+                    for line in content.splitlines():
+                        data = json.loads(line)
+                        if "privacy violation" in data:
+                            if data['privacy violation']==True:
+                                if "row_num" in data:
+                                    processed_row_nums.append(int(data["row_num"]))
+                print(excel_file,"processed ",len(processed_row_nums))
+                df = pd.read_excel(excel_file, engine='openpyxl')
+
+                overview_column = df['Overview']
+
+                title_column = df['Title']
+
+                true_col = df['Relevant']
+                num_col = df['num']
+                # print(true_col)
+                threads = []
+                lock = threading.Lock()
+                data_queue = queue.Queue()
+
+                # 解析JSONL文件内容
+
+                for row_num, row in enumerate(processed_row_nums):
+
+                        data_queue.put((row))
+                print("data_queue length ", data_queue.qsize(), excel_file)
+                print("original length ", len(true_col), excel_file)
+
+                # 排除掉data_queue中已经存在的"row_num"值
+                if not data_queue.empty():
+
+                    for i in range(6):
+                        t = threading.Thread(target=one_process_ques, args=(
+                            data_queue, overview_column, title_column, num_col, folder, excel_file, lock, i))
+                        t.start()
+                        threads.append(t)
+
+                    for t in threads:
+                        t.join()
+one_more_ques()
                     # json_result,each_token=change_statement(overview_column[row_num],'',"fine-tune")
                     # totoal_token+=each_token
                     # specific_num=num_col[row_num]

@@ -1,0 +1,12 @@
+1__________________________________________________
+{
+"Is_relevant": false,
+"Specific_information": null
+}
+2__________________________________________________
+{
+"Is_relevant": false,
+"Specific_information": null
+}
+3__________________________________________________
+Is_relevant": false

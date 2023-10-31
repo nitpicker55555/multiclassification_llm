@@ -1,12 +1,53 @@
-import os,json
+import os,json,re
 
 # 获取当前工作目录
+from collections import defaultdict
+
 current_dir = os.getcwd()
 
 # 初始化一个字典来存储每个文件夹中'Is_relevant=True'的数量
 folder_count = {}
+def change_one_key():
+    pattern = r"\\([^\\]+)\\[^\\]+$"
+    sum_dict={}
+    with open("sensitive privacy breach.jsonl", 'r') as file:
+        content = file.readlines()
+    for line in content:
+        data=json.loads(line)
 
-def get_num_step_classification_analyse(name):
+
+        match = re.search(pattern, data["file"])
+        match.group(1)
+        print(match.group(1))
+        sum_dict["folder"]=match.group(1)
+        sum_dict.update(data)
+        filename=data["file"].replace('.xlsx',"step_classification_result_json.jsonl")
+        try:
+            with open(filename, 'r') as file_:
+                lines_ = file_.readlines()
+
+            # 遍历和修改行
+            modified_lines = []
+            for line_ in lines_:
+                replace_data = json.loads(line_)
+                if "sensitive privacy breach" in replace_data and "row_num" in replace_data:
+                    print("123")
+                    if str(replace_data['row_num']) == str(data['row_num']):
+                        print("替换")
+                        replace_data['sensitive privacy breach']=data['sensitive privacy breach']
+                modified_lines.append(json.dumps(replace_data))
+
+            # 将修改后的数据写回文件
+            with open(filename, 'w') as file:
+                for line in modified_lines:
+                    file.write(line + '\n')
+        except Exception as e:
+            print(e)
+
+
+# change_one_key()
+
+def get_num_step_classification_analyse(name,folder="false"):
     import os
     sum_dict={}
     folder_sum=[]
@@ -25,12 +66,29 @@ def get_num_step_classification_analyse(name):
                         file_path = os.path.join(dirpath, filename)
                         line_count = count_valid_lines_in_jsonl(file_path)
                         return line_count
+    def main_folder(directory,folder):
+        line_count=0
+        for dirpath, dirnames, filenames in os.walk(directory):
+            # Check if the directory starts with "content"
+            if os.path.basename(dirpath).startswith("content_"+folder):
+                sum_dict[os.path.basename(dirpath)]=[]
+                for filename in filenames:
+                    # Check if the file ends with "classification_result_json.jsonl"
+                    if filename.endswith(name+"step_classification_result_json.jsonl"):
+                        print("line_count", filename,line_count)
+                        file_path = os.path.join(dirpath, filename)
+                        line_count += count_valid_lines_in_jsonl(file_path)
 
-    start_directory = "."
+        return line_count
 
-    return     main(start_directory)
+    start_directory = r"C:\Users\Morning\Desktop\hiwi\heart\paper"
+    if folder!="false":
+        print("folder++++++++++=",folder)
+        return     main_folder(start_directory,folder)
+    else:
+        return main(start_directory)
 
-print(get_num_step_classification_analyse("autonomous_driving_accidents"))
+# print(get_num_step_classification_analyse("autonomous_driving_accidents"))
 # 遍历当前目录下的每个以"content"开头的文件夹
 def step_classification_analyse():
     import os
@@ -59,7 +117,7 @@ def step_classification_analyse():
     start_directory = "."
     main(start_directory)
     print(sum(folder_sum))
-step_classification_analyse()
+# step_classification_analyse()
 # 遍历当前目录下的每个以"content"开头的文件夹
 def relevant_count():
     import pandas as pd
@@ -220,6 +278,36 @@ def get_number(name):
 
 # print(folder, "---------------", num_cases - count)
 # folder_count[folder] = num_cases - count
+def generate_excel(name):
+    import json
+
+    # Read the jsonl file
+    with open(name+".jsonl", "r") as file:
+        lines = file.readlines()
+
+    # Convert each line (string) to a dictionary
+    data = [json.loads(line) for line in lines]
+
+    # Let's check the first few entries to understand the structure
+    all_keys = set()
+    for entry in data:
+        all_keys.update(entry.keys())
+
+    # Ensure every dictionary has all the keys
+    for entry in data:
+        for key in all_keys:
+            if key not in entry:
+                entry[key] = 0
+    import pandas as pd
+
+    # Convert the list of dictionaries to a DataFrame
+    df = pd.DataFrame(data)
+
+    # Save the DataFrame to an xlsx file
+    output_path = name+".xlsx"
+    df = df.drop(columns=['individual','global','local population'])
+    df.to_excel(output_path, index=False)
+
 def annotion_analyse():
     with open("step_attribute_num_json_procent.jsonl", 'w') as file:
         pass
@@ -232,7 +320,9 @@ def annotion_analyse():
             attribute_dict['cases_num']=get_num_step_classification_analyse(name)
             # attribute_dict['cases_num']=get_number(name)
         else:
-            attribute_dict['cases_num'] =0
+            print("SUM____________",name,name.replace("SUM_content_",""))
+            attribute_dict['cases_num'] =get_num_step_classification_analyse("",name.replace("SUM_content_",""))
+            print(attribute_dict['cases_num'],"attribute_dict['cases_num']",get_num_step_classification_analyse(name,name.replace("SUM_content_","")))
         scope_impact_count = {}
         for key, values in counter.items():
             print(f"Key: {key}")
@@ -267,7 +357,7 @@ def annotion_analyse():
 
             # attribute_dict["scope of impact_"+scope_impact]=scope_impact_count[scope_impact]
             attribute_dict["scope of impact_"+scope_impact]=round(scope_impact_count[scope_impact]/sum(scope_impact_count.values()),4)
-            del attribute_dict[scope_impact]
+
         return attribute_dict
     exception_list = ["excel_num", "row_num", "each_token", "Finish_json_file", "Specific_information"]
     content_folder_list = []
@@ -311,9 +401,10 @@ def annotion_analyse():
             content_folder_list.append(dirpath[2:])
             attribute_dict=iteration( "SUM_" + dirpath[2:],counter)
 
-            with open('step_attribute_num_json_procent.jsonl', 'a') as json_file:
+            with open('SUM_step_attribute_num_json_procent.jsonl', 'a') as json_file:
                 json_str = json.dumps(attribute_dict)
                 json_file.write(json_str + '\n')
+            generate_excel("SUM_step_attribute_num_json_procent")
     attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
                       'privacy violations severity', 'instances with injustice to rights', 'Severity of injustice',
                       'instances involving vulnerable groups', 'emotional and psychological harm',
@@ -344,38 +435,87 @@ def annotion_analyse():
 
     print(content_folder_list)
     # draw_plotify(content_folder_list,4,num_value_list)
-annotion_analyse()
+
+# annotion_analyse()
+def draw_pie():
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    df = pd.read_excel("SUM_step_attribute_num_json_procent.xlsx")
+    # Sort columns by name
+    sorted_columns = sorted(df.columns[1:])
+
+    # Create directory to save plots
+    output_directory = r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\image"
+
+
+    # Iterate through the sorted columns and plot pie charts
+    chart_groups = defaultdict(list)
+
+    # Parse columns and group by chart type
+    def custom_autopct(pct):
+        """Custom function to display percentage only if it's >= 1%"""
+        return ('%1.1f%%' % pct) if pct >= 1 else ''
+
+    saved_files_grouped_by_row_custom_legend = []
+    individual_columns = [col for col in sorted_columns if "_" not in col]
+    # Create pie charts for each group and each row using custom legends
+    for index, row in df.iterrows():
+        for chart_type, columns in chart_groups.items():
+            if chart_type!="cases":
+                sizes = [row[column] for column in columns]
+                labels = [f"{col} ({size * 100:.1f}%)" for col, size in zip(columns, sizes) if
+                          size > 0]  # Exclude labels with zero size
+                sizes = [size for size in sizes if size > 0]  # Exclude zero sizes
+
+                plt.figure(figsize=(15, 10))
+                plt.pie(sizes, labels=None, autopct=custom_autopct, startangle=90)
+                plt.legend(labels, title=chart_type, loc="best")
+
+                # Format the title
+                formatted_title = f"{row['Query'].replace('SUM_content_','')} - {chart_type.title()}"
+                plt.title(formatted_title, fontweight='bold')
+
+                file_name = output_directory + f"\\{row['Query'].replace('SUM_content_','')}_{chart_type}.png".replace(" ", "_").replace(
+                    "/", "-")
+                plt.savefig(file_name)
+                saved_files_grouped_by_row_custom_legend.append(file_name)
+                plt.close()
+
+    individual_columns = [col for col in df.columns if "_" not in col and col != "Query" and col !='cases_num']
+
+    # Create pie charts for the identified columns with "True" and "False" legends
+    for index, row in df.iterrows():
+        for column in individual_columns:
+            if column!="cases":
+                sizes = [row[column], 1 - row[column]]
+                labels = [f"True ({sizes[0]:.2f})", f"False ({sizes[1]:.2f})"] if sizes[0] > 0 else [
+                    f"False ({sizes[1]:.2f})", f"True ({sizes[0]:.2f})"]
+                if sizes[0] == 0:  # If value is 0, skip the chart
+                    continue
+
+                plt.figure(figsize=(10, 7))
+                plt.pie(sizes, labels=None, autopct='%1.1f%%', startangle=90)
+                plt.legend(labels, loc="best")
+
+                # Format the title
+                formatted_title = f"{row['Query'].replace('SUM_content_','')} - {column.title()}"
+                plt.title(formatted_title, fontweight='bold')
+
+                file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
+                plt.savefig(file_name)
+                plt.close()
+
+    # Displaying the paths of the first 5 saved plots for reference
+    # saved_files_individual_true_false_legend[:5]
+
+
+draw_pie()
+
 # normal_analyse()
 # get_number("autonomous_driving_accidents")
-def generate_excel():
-    import json
 
-    # Read the jsonl file
-    with open("step_attribute_num_json_procent.jsonl", "r") as file:
-        lines = file.readlines()
 
-    # Convert each line (string) to a dictionary
-    data = [json.loads(line) for line in lines]
-
-    # Let's check the first few entries to understand the structure
-    all_keys = set()
-    for entry in data:
-        all_keys.update(entry.keys())
-
-    # Ensure every dictionary has all the keys
-    for entry in data:
-        for key in all_keys:
-            if key not in entry:
-                entry[key] = 0
-    import pandas as pd
-
-    # Convert the list of dictionaries to a DataFrame
-    df = pd.DataFrame(data)
-
-    # Save the DataFrame to an xlsx file
-    output_path = "step_attribute_num_json_procent.xlsx"
-    df.to_excel(output_path, index=False)
-generate_excel()
+# print(get_num_step_classification_analyse("", "mapping_error"))
 
 # with open('attribute_num_json.jsonl', 'w') as file:
 #     pass

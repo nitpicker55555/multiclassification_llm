@@ -1,0 +1,14 @@
+0__________________________________________________
+The provided news does not appear to be related to problems about privacy leakage or location information leakage. Therefore, the JSON-formatted response is as follows:
+json
+Copy code
+{
+  "Is_relevant": false,
+  "Specific_information": null
+}
+1__________________________________________________
+'Is_relevant'=False
+2__________________________________________________
+'Is_relevant'=False
+3__________________________________________________
+'Is_relevant'=False
