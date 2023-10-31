@@ -450,7 +450,10 @@ def draw_pie():
 
     # Iterate through the sorted columns and plot pie charts
     chart_groups = defaultdict(list)
-
+    for column in sorted_columns:
+        if "_" in column:
+            chart_type = column.split("_")[0]
+            chart_groups[chart_type].append(column)
     # Parse columns and group by chart type
     def custom_autopct(pct):
         """Custom function to display percentage only if it's >= 1%"""
@@ -477,6 +480,7 @@ def draw_pie():
 
                 file_name = output_directory + f"\\{row['Query'].replace('SUM_content_','')}_{chart_type}.png".replace(" ", "_").replace(
                     "/", "-")
+                print(file_name)
                 plt.savefig(file_name)
                 saved_files_grouped_by_row_custom_legend.append(file_name)
                 plt.close()
@@ -488,8 +492,8 @@ def draw_pie():
         for column in individual_columns:
             if column!="cases":
                 sizes = [row[column], 1 - row[column]]
-                labels = [f"True ({sizes[0]:.2f})", f"False ({sizes[1]:.2f})"] if sizes[0] > 0 else [
-                    f"False ({sizes[1]:.2f})", f"True ({sizes[0]:.2f})"]
+                labels = [f"True ({sizes[0]* 100:.1f}%)", f"False ({sizes[1]* 100:.1f}%)"] if sizes[0] > 0 else [
+                    f"False ({sizes[1]* 100:.1f}%)", f"True ({sizes[0]* 100:.1f}%)"]
                 if sizes[0] == 0:  # If value is 0, skip the chart
                     continue
 
