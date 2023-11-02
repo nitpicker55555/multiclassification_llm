@@ -10,7 +10,7 @@ folder_count = {}
 def change_one_key():
     pattern = r"\\([^\\]+)\\[^\\]+$"
     sum_dict={}
-    with open("sensitive privacy breach.jsonl", 'r') as file:
+    with open("is vulnerable group .jsonl", 'r') as file:
         content = file.readlines()
     for line in content:
         data=json.loads(line)
@@ -30,11 +30,12 @@ def change_one_key():
             modified_lines = []
             for line_ in lines_:
                 replace_data = json.loads(line_)
-                if "sensitive privacy breach" in replace_data and "row_num" in replace_data:
-                    print("123")
+                if  "row_num" in replace_data:
+                # if "sensitive privacy breach" in replace_data and "row_num" in replace_data:
+                    print("row_num in replace_data")
                     if str(replace_data['row_num']) == str(data['row_num']):
                         print("替换")
-                        replace_data['sensitive privacy breach']=data['sensitive privacy breach']
+                        replace_data['vulnerable group']=data['is vulnerable group']
                 modified_lines.append(json.dumps(replace_data))
 
             # 将修改后的数据写回文件
@@ -45,7 +46,7 @@ def change_one_key():
             print(e)
 
 
-# change_one_key()
+change_one_key()
 
 def get_num_step_classification_analyse(name,folder="false"):
     import os
@@ -136,11 +137,11 @@ def relevant_count():
             df = pd.read_excel(file_path, engine='openpyxl')
 
             # 过滤满足条件的行
-            filtered_df = df[(df['Relevant'] == True) & (~df['Url'].isin(url_set))]
+            filtered_df = df[(df['Relevant'] == True)]
 
             # 更新已遍历的URL集合和计数器
             unique_urls = filtered_df['Url'].unique()
-            count += len(unique_urls)
+            count += len(filtered_df)
             url_set.update(unique_urls)
 
         return count
@@ -153,7 +154,7 @@ def relevant_count():
             result = count_unique_urls_in_folder(folder)
             print(f"满足条件的URL数量为：{result}")
 
-
+# relevant_count()
 # relevant_count()
 def normal_analyse():
     sum_list=[]
@@ -309,7 +310,8 @@ def generate_excel(name):
     df.to_excel(output_path, index=False)
 
 def annotion_analyse():
-    with open("step_attribute_num_json_procent.jsonl", 'w') as file:
+    name="step_attribute_num_json_procent"
+    with open(name+".jsonl", 'w') as file:
         pass
     def iteration(name,counter):
         attribute_dict = {}
@@ -332,7 +334,7 @@ def annotion_analyse():
             false_value = 0
             print(values, "============")
             for value, count in values.items():
-                if key in ['individual','global','local people']:
+                if key in ['individual','global','local population']:
                     scope_impact_count[key]=count
 
                 if value == True:
@@ -391,7 +393,7 @@ def annotion_analyse():
 
                         print(counter, "counter===")
                     attribute_dict = iteration(filename.replace("step_classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
-                    with open('step_attribute_num_json_procent.jsonl', 'a') as json_file:
+                    with open(name+'.jsonl', 'a') as json_file:
                         json_str = json.dumps(attribute_dict)
                         json_file.write(json_str + '\n')
 
@@ -401,7 +403,7 @@ def annotion_analyse():
             content_folder_list.append(dirpath[2:])
             attribute_dict=iteration( "SUM_" + dirpath[2:],counter)
 
-            with open('SUM_step_attribute_num_json_procent.jsonl', 'a') as json_file:
+            with open(name+'.jsonl', 'a') as json_file:
                 json_str = json.dumps(attribute_dict)
                 json_file.write(json_str + '\n')
             generate_excel("SUM_step_attribute_num_json_procent")
@@ -508,12 +510,79 @@ def draw_pie():
                 file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
                 plt.savefig(file_name)
                 plt.close()
-
+# draw_pie()
     # Displaying the paths of the first 5 saved plots for reference
     # saved_files_individual_true_false_legend[:5]
 
+def heatmap():
+    import pandas as pd
 
-draw_pie()
+    # Load the Excel file
+    data = pd.read_excel(r"C:\Users\Morning\Desktop\hiwi\heart\paper\SUM_step_attribute_num_json_procent.xlsx")
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    sum_rows=[-1]
+    sum_rows .extend(data[data.iloc[:, 0].astype(str).str.startswith("SUM")].index.tolist())
+
+    aa=['autopilot cases','mapping error cases','navigation cases','total cases']
+    # Extract the first row (excluding the "Query" column)
+    for i in range(1):
+        first_row = data.iloc[i, 1:]
+        row_name="total"
+        print(row_name)
+        # print(first_row)
+        # Calculate the correlation matrix for the first row
+        # corr_matrix = first_row.to_frame().T.corr()
+
+        # Plot the heatmap
+        # plt.figure(figsize=(15, 15))
+        # sns.heatmap(corr_matrix, cmap='coolwarm', annot=True, vmin=-1, vmax=1)
+        # plt.title("Correlation Matrix Heatmap for First Row")
+        # corr_matrix_all = data.iloc[:, 1:].corr()
+
+        # Plot the heatmap
+        # plt.figure(figsize=(20, 20))
+        # sns.heatmap(corr_matrix_all, cmap='coolwarm', annot=False, vmin=-1, vmax=1)
+        # Exclude the "cases_num" column and calculate the correlation matrix
+        print(data.iloc[sum_rows[i]+1,0])
+        corr_matrix_without_cases_num = data.drop(columns=["cases_num"]).iloc[:4, 1:].corr()
+        mask = (corr_matrix_without_cases_num > 0.50) | (corr_matrix_without_cases_num < -0.50)
+
+        # Plot the heatmap with the mask
+        plt.figure(figsize=(20, 20))
+        sns.heatmap(corr_matrix_without_cases_num * mask, cmap='coolwarm', annot=False, vmin=-1, vmax=1, mask=~mask)
+        plt.title("Correlation Matrix Heatmap of %s(values > 0.50 or < -0.50)"%row_name)
+        # plt.savefig("heatmap_%s.png"%row_name, dpi=300, bbox_inches='tight')
+    plt.show()
+    # for i in range(4):
+    #     first_row = data.iloc[i, 1:]
+    #     row_name=data.iloc[sum_rows[i+1],0].replace("SUM_content_","")
+    #     print(row_name)
+    #     # print(first_row)
+    #     # Calculate the correlation matrix for the first row
+    #     # corr_matrix = first_row.to_frame().T.corr()
+    #
+    #     # Plot the heatmap
+    #     # plt.figure(figsize=(15, 15))
+    #     # sns.heatmap(corr_matrix, cmap='coolwarm', annot=True, vmin=-1, vmax=1)
+    #     # plt.title("Correlation Matrix Heatmap for First Row")
+    #     # corr_matrix_all = data.iloc[:, 1:].corr()
+    #
+    #     # Plot the heatmap
+    #     # plt.figure(figsize=(20, 20))
+    #     # sns.heatmap(corr_matrix_all, cmap='coolwarm', annot=False, vmin=-1, vmax=1)
+    #     # Exclude the "cases_num" column and calculate the correlation matrix
+    #     print(data.iloc[sum_rows[i]+1,0])
+    #     corr_matrix_without_cases_num = data.drop(columns=["cases_num"]).iloc[sum_rows[i]+1:sum_rows[i+1], 1:].corr()
+    #     mask = (corr_matrix_without_cases_num > 0.50) | (corr_matrix_without_cases_num < -0.50)
+    #
+    #     # Plot the heatmap with the mask
+    #     plt.figure(figsize=(20, 20))
+    #     sns.heatmap(corr_matrix_without_cases_num * mask, cmap='coolwarm', annot=False, vmin=-1, vmax=1, mask=~mask)
+    #     plt.title("Correlation Matrix Heatmap of %s(values > 0.50 or < -0.50)"%row_name)
+    #     plt.savefig("heatmap_%s.png"%row_name, dpi=300, bbox_inches='tight')
+# heatmap()
+# draw_pie()
 
 # normal_analyse()
 # get_number("autonomous_driving_accidents")
