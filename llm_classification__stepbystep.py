@@ -196,9 +196,9 @@ mental_harm={1:'''• • • Mildly unpleasant, probably quickly forgotten.
 • Suicidal thoughts or tendencies toward self-harm may occur.
 
 """}
-vulnerable_group={
-    "Elderly", "sick", "disabled","children", "pregnant women", "ethnic minorities"
-}
+vulnerable_group=[
+    "Elderly", "sick", "disabled","children", "pregnant women", "ethnic minorities","marginalized groups in society","poor"]
+
 def extract_dict(text,question,system_text,key_str="boo"):
 
     mistake_num=0
@@ -495,7 +495,7 @@ def one_process_ques(data_queue, overview_column, title_column, num_col, folder,
             # format_json_result['folder']=folder
             format_json_result['file']=excel_file
             format_json_result['row_num']=row_num
-            dict_name="is vulnerable group "
+            dict_name="is vulnerable group"
             system_text = (
                     case_str + ", according to the case above, I want to judge whether this news is related to vulnerable group, Vulnerable groups are defined as：%s. Answer my question with json format like: %s"% (vulnerable_group,{dict_name: ""}))
             question = "If any vulnerable group according to the definantion I gave you is involved in news, set the following json value to True, else set following json value to False  :  %s " % (
@@ -504,7 +504,7 @@ def one_process_ques(data_queue, overview_column, title_column, num_col, folder,
             bold_attribute = extract_dict(boolean_feedback, question, system_text, dict_name)
             format_json_result.update({dict_name: bold_attribute})  # severity:5
             with lock:
-                with open("%s.jsonl"%dict_name,
+                with open("dis_%s.jsonl"%dict_name,
                           'a',
                           encoding='utf-8') as f:
                     json_str = json.dumps(format_json_result)
@@ -514,7 +514,7 @@ def one_process_ques(data_queue, overview_column, title_column, num_col, folder,
 def one_more_ques():
     for folder in glob.glob(os.path.join(start_directory, 'content_*')):
         one_ques="mental harm"
-        one_ques2 = "physical harm"
+        one_ques2 = "discrimination"
         if os.path.isdir(folder):
             print(folder)
             # 在每个 'content_' 文件夹中，查找所有以 'updated_file' 开头的 .xlsx 文件
@@ -532,8 +532,8 @@ def one_more_ques():
                     # else:
                     for line in content.splitlines():
                         data = json.loads(line)
-                        if one_ques in data or one_ques2 in data:
-                            if data[one_ques]==True or data[one_ques2]==True:
+                        if one_ques2 in data:
+                            if data[one_ques2]==True:
                                 if "row_num" in data:
                                     processed_row_nums.append(int(data["row_num"]))
                 print(excel_file,"processed ",len(processed_row_nums))

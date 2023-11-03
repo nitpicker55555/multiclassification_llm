@@ -10,7 +10,7 @@ folder_count = {}
 def change_one_key():
     pattern = r"\\([^\\]+)\\[^\\]+$"
     sum_dict={}
-    with open("is vulnerable group .jsonl", 'r') as file:
+    with open("dis_is vulnerable group.jsonl", 'r') as file:
         content = file.readlines()
     for line in content:
         data=json.loads(line)
@@ -30,6 +30,10 @@ def change_one_key():
             modified_lines = []
             for line_ in lines_:
                 replace_data = json.loads(line_)
+                # if "vulnerable group" in replace_data: del replace_data['vulnerable group']
+                # if "is vulnerable group " in replace_data:del replace_data['is vulnerable group ']
+                # if "physical harm_vulnerable_group" in replace_data: del replace_data['physical harm_vulnerable_group']
+                # if "mental harm_vulnerable_group" in replace_data: del replace_data['mental harm_vulnerable_group']
                 if  "row_num" in replace_data:
                 # if "sensitive privacy breach" in replace_data and "row_num" in replace_data:
                     print("row_num in replace_data")
@@ -46,7 +50,7 @@ def change_one_key():
             print(e)
 
 
-change_one_key()
+# change_one_key()
 
 def get_num_step_classification_analyse(name,folder="false"):
     import os
@@ -306,11 +310,23 @@ def generate_excel(name):
 
     # Save the DataFrame to an xlsx file
     output_path = name+".xlsx"
-    df = df.drop(columns=['individual','global','local population'])
+    df = df.drop(columns=['individual','global','local population','user did not update data in time'])
     df.to_excel(output_path, index=False)
 
 def annotion_analyse():
-    name="step_attribute_num_json_procent"
+    def one_attribute_(dict_,data,name):
+        if name+"_vulnerable_group" not in dict_:
+            dict_[ name+"_vulnerable_group"]= {True:0,False:0}
+
+        if name in data and "vulnerable group" in data:
+            print( "vulnerable group in  ",name)
+            if data[name] == True and data['vulnerable group'] == True:
+                print(dict_[name+"_vulnerable_group"])
+                dict_[name+"_vulnerable_group"][True] += 1
+            elif data[name] == True and data['vulnerable group'] == False:
+                dict_[name+"_vulnerable_group"][False] += 1
+        return dict_
+    name="SUM_step_attribute_num_json_procent"
     with open(name+".jsonl", 'w') as file:
         pass
     def iteration(name,counter):
@@ -320,80 +336,91 @@ def annotion_analyse():
 
         if not name.startswith("SUM"):
             attribute_dict['cases_num']=get_num_step_classification_analyse(name)
-            # attribute_dict['cases_num']=get_number(name)
         else:
             print("SUM____________",name,name.replace("SUM_content_",""))
             attribute_dict['cases_num'] =get_num_step_classification_analyse("",name.replace("SUM_content_",""))
             print(attribute_dict['cases_num'],"attribute_dict['cases_num']",get_num_step_classification_analyse(name,name.replace("SUM_content_","")))
         scope_impact_count = {}
+        attribute_num_dict={}
         for key, values in counter.items():
             print(f"Key: {key}")
+
             # print(sum(counter[key].values()))
             true_num = 0
 
             false_value = 0
             print(values, "============")
             for value, count in values.items():
-                if key in ['individual','global','local population']:
-                    scope_impact_count[key]=count
+
 
                 if value == True:
+                    attribute_num_dict[key] = count
+                    if key in ['individual', 'global', 'local population']:
+                        scope_impact_count[key] = count
+
                     true_num = int(count)
                 elif value == False:
                     false_value = count
                 else:
-                    attribute_dict[key + "_" + value] = round(count / sum(values.values()), 4)
-                    # attribute_dict[key + "_" + value] = count
+
+                    attribute_dict[key + "_" + value] = round(count / sum(values.values()), 4)#######################
+                    # attribute_dict[key + "_" + value] = count #######################
                     print(f"    Value: {value}, Count: {count}")
             print(scope_impact_count,"scope_impact_count.values()",sum(scope_impact_count.values()))
 
             if (true_num, false_value) != (0, 0):
 
                 num_value_list.append((true_num / (true_num + false_value)) * 100)
-                # attribute_dict[key] = true_num
-                attribute_dict[key] = round(true_num / (true_num + false_value), 4)
+                # attribute_dict[key] = true_num #######################
+                attribute_dict[key] = round(true_num / (true_num + false_value), 4) #######################
                 # print((true_num / (true_num + false_value)) * 100)
             else:
                 num_value_list.append(1)
         for scope_impact in scope_impact_count:
 
-            # attribute_dict["scope of impact_"+scope_impact]=scope_impact_count[scope_impact]
-            attribute_dict["scope of impact_"+scope_impact]=round(scope_impact_count[scope_impact]/sum(scope_impact_count.values()),4)
-
+            # attribute_dict["scope of impact_"+scope_impact]=scope_impact_count[scope_impact]#######################
+            attribute_dict["scope of impact_"+scope_impact]=round(scope_impact_count[scope_impact]/sum(scope_impact_count.values()),4) #######################
+        print("attribute_num_dict",attribute_num_dict)
         return attribute_dict
     exception_list = ["excel_num", "row_num", "each_token", "Finish_json_file", "Specific_information"]
     content_folder_list = []
     num_value_list = []
     for dirpath, dirnames, filenames in os.walk('.'):
         if dirpath.split(os.sep)[-1].startswith('content'):
-            counter = {}
+            counter = {}# for SUM of one topic
 
             for filename in filenames:
                 if filename.endswith('step_classification_result_json.jsonl'):
                     filepath = os.path.join(dirpath, filename)
-                    query_attribute = {}
+                    query_attribute = {} # for each file
                     # query_attribute["Query"]=filename.replace("classification_result_json.jsonl","").replace("updated_file_","")
                     with open(filepath, 'r', encoding='utf-8') as f:
                         for line in f:
                             data = json.loads(line)
                             for key, value in data.items():
+
                                 if key not in counter and key not in exception_list:
                                     counter[key] = {}
                                 if key not in query_attribute and key not in exception_list:
                                     query_attribute[key]  = {}
+
                                 try:
                                     if value not in counter[key]:
                                         counter[key][value] = 0
                                     if value not in query_attribute[key]:
                                         query_attribute[key][value]  = 0
+
                                     counter[key][value] += 1
                                     query_attribute[key][value]  += 1
                                 except Exception as e:
                                     pass
-
+                            query_attribute=one_attribute_(query_attribute,data,"mental harm")
+                            query_attribute = one_attribute_(query_attribute, data, "discrimination")
+                            counter=one_attribute_(counter,data,"mental harm")
+                            counter = one_attribute_(counter, data,  "discrimination")
                         print(counter, "counter===")
                     attribute_dict = iteration(filename.replace("step_classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
-                    with open(name+'.jsonl', 'a') as json_file:
+                    with open(name.replace("SUM_","")+'.jsonl', 'a') as json_file:
                         json_str = json.dumps(attribute_dict)
                         json_file.write(json_str + '\n')
 
@@ -402,11 +429,14 @@ def annotion_analyse():
 
             content_folder_list.append(dirpath[2:])
             attribute_dict=iteration( "SUM_" + dirpath[2:],counter)
-
+            with open(name.replace("SUM_","")+'.jsonl', 'a') as json_file:
+                json_str = json.dumps(attribute_dict)
+                json_file.write(json_str + '\n')
             with open(name+'.jsonl', 'a') as json_file:
                 json_str = json.dumps(attribute_dict)
                 json_file.write(json_str + '\n')
-            generate_excel("SUM_step_attribute_num_json_procent")
+            generate_excel(name.replace("SUM_",""))
+            generate_excel(name)
     attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
                       'privacy violations severity', 'instances with injustice to rights', 'Severity of injustice',
                       'instances involving vulnerable groups', 'emotional and psychological harm',
@@ -453,7 +483,7 @@ def draw_pie():
     # Iterate through the sorted columns and plot pie charts
     chart_groups = defaultdict(list)
     for column in sorted_columns:
-        if "_" in column:
+        if "_" in column and "vulnerable" not in column:
             chart_type = column.split("_")[0]
             chart_groups[chart_type].append(column)
     # Parse columns and group by chart type
@@ -466,6 +496,7 @@ def draw_pie():
     # Create pie charts for each group and each row using custom legends
     for index, row in df.iterrows():
         for chart_type, columns in chart_groups.items():
+            print(chart_type)
             if chart_type!="cases":
                 sizes = [row[column] for column in columns]
                 labels = [f"{col} ({size * 100:.1f}%)" for col, size in zip(columns, sizes) if
@@ -487,11 +518,12 @@ def draw_pie():
                 saved_files_grouped_by_row_custom_legend.append(file_name)
                 plt.close()
 
-    individual_columns = [col for col in df.columns if "_" not in col and col != "Query" and col !='cases_num']
+    individual_columns = [col for col in df.columns if "_" not in col and col != "Query" and col !='cases_num' or "vulnerable" in col]
 
     # Create pie charts for the identified columns with "True" and "False" legends
     for index, row in df.iterrows():
         for column in individual_columns:
+            print(column)
             if column!="cases":
                 sizes = [row[column], 1 - row[column]]
                 labels = [f"True ({sizes[0]* 100:.1f}%)", f"False ({sizes[1]* 100:.1f}%)"] if sizes[0] > 0 else [
@@ -510,7 +542,7 @@ def draw_pie():
                 file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
                 plt.savefig(file_name)
                 plt.close()
-# draw_pie()
+draw_pie()
     # Displaying the paths of the first 5 saved plots for reference
     # saved_files_individual_true_false_legend[:5]
 
