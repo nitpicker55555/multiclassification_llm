@@ -285,4 +285,4 @@ plt.text(-200.5, -0.5, "Total labels: 43\nLabels in first level:11\nLabels in se
 
 plt.savefig('tree.png')
 
-# plt.show()
+plt.show()

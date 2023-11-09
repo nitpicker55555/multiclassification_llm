@@ -542,7 +542,7 @@ def draw_pie():
                 file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
                 plt.savefig(file_name)
                 plt.close()
-draw_pie()
+# draw_pie()
     # Displaying the paths of the first 5 saved plots for reference
     # saved_files_individual_true_false_legend[:5]
 
@@ -757,6 +757,48 @@ def change_boolean2number():
     # Save the modified DataFrame back to an xlsx file
     output_path = r"C:\Users\Morning\Desktop\hiwi\heart\paper\file_folder\test_folder\output_final_dict_modified.xlsx"
     df.to_excel(output_path, index=False)
+def combine_all_xlsx():
+    import os
+    from openpyxl import load_workbook, Workbook
+
+    # 获取当前文件夹路径
+    current_dir = os.getcwd()
+
+    # 创建一个新的Workbook对象
+    sum_all_wb = Workbook()
+    sum_all_ws = sum_all_wb.active
+    file_num=-1
+    # 遍历当前文件夹下的所有文件
+    for dirpath, dirnames, filenames in os.walk("."):
+        # Check if the directory starts with "content"
+        if os.path.basename(dirpath).startswith("edu_content"):
+            # sum_dict[os.path.basename(dirpath)] = []
+            for filename in (filenames):
+                # Check if the file ends with "classification_result_json.jsonl"
+                # if filename.endswith(name + "step_classification_result_json.jsonl"):
+                if filename.endswith(".xlsx"):
+                    file_num+=1
+                    file_path = os.path.join(dirpath, filename)
+                    # 加载Excel文件
+                    wb = load_workbook(file_path)
+                    ws = wb.active
+
+                    # 遍历每一行
+                    for i, row in enumerate(ws.iter_rows(values_only=True)):
+
+                        if i == 0 and file_num==0:
+                            sum_all_ws.append(row + ("query_name",))
+                        # 获取"Relevant"列的值
+                        relevant = row[4]  # 第五列
+                        print(relevant)
+
+                        # 如果"Relevant"列的值为True，则将整行数据写入sum_all.xlsx
+                        if relevant == True:
+                            sum_all_ws.append(row + (filename,))
+
+    # 保存sum_all.xlsx文件
+    sum_all_wb.save("sum_all.xlsx")
+combine_all_xlsx()
 # normal_analyse()
 # data_m()
 # adjust_difference()
