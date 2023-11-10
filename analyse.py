@@ -771,7 +771,7 @@ def combine_all_xlsx():
     # 遍历当前文件夹下的所有文件
     for dirpath, dirnames, filenames in os.walk("."):
         # Check if the directory starts with "content"
-        if os.path.basename(dirpath).startswith("content_na"):
+        if os.path.basename(dirpath).startswith("content_map"):
             # sum_dict[os.path.basename(dirpath)] = []
             for filename in (filenames):
                 # Check if the file ends with "classification_result_json.jsonl"
@@ -797,7 +797,7 @@ def combine_all_xlsx():
                             sum_all_ws.append(row + (filename,))
 
     # 保存sum_all.xlsx文件
-    sum_all_wb.save("sum_all.xlsx")
+    sum_all_wb.save("sum_all_navigation.xlsx")
 combine_all_xlsx()
 # normal_analyse()
 # data_m()

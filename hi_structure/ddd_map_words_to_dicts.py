@@ -73,7 +73,7 @@ json_structure={
     }
   }
 }
-def map_words_2_dicts(json_structure):
+def map_words_2_dicts(json_structure,file_path):
   def merge_dictionaries(dict_list):
     """
 
@@ -105,12 +105,12 @@ def map_words_2_dicts(json_structure):
               for item in dict_[category][subcategory]:
                   new_dict[item] = []
       return new_dict
-  all_list=get_clean_word('output_labels_list.jsonl')
+  all_list=get_clean_word(file_path)
   bottom_keys=get_bottom_keys(json_structure)
   system_content="Please assign the following words to the corresponding categories. Add each keyword to the key-value list of its category and return it in JSON format. The following is optional categories and the list of keywords to be classified: "+"optional_categories="+str(bottom_keys)
   final_dict_list=[]
   for i in range(0, len(all_list), 50):
-    if i <500:
+    if i <600:
       print(i)
       split_all_list= all_list[i:i + 50]
       print(system_content)

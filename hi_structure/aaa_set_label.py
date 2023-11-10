@@ -100,6 +100,6 @@ def main(file_name):
 
         for t in threads:
             t.join()
-main(r"sum_all.xlsx")
+# main(r"sum_all.xlsx")
 # tss()
 # print(dict_extract())

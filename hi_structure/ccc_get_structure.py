@@ -6,7 +6,7 @@ def get_structure(file_name):
     # sorted_sum_lemmatized_list=get_clean_word(r'C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels.jsonl')
     print(len(sorted_sum_lemmatized_list))
     system_content='I have a list of words and I need you to Abstract a hierarchical tag structure from this word list. Please return the structure in JSON format'
-    user_content=sorted_sum_lemmatized_list[:300]
+    user_content=sorted_sum_lemmatized_list[:500]
     result_structure=change_statement(system_content,user_content,"4")
     print(isinstance(result_structure,dict))
     print(result_structure)
