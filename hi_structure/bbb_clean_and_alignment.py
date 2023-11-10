@@ -17,13 +17,18 @@ def get_clean_word(file_path,top_words=None):
 
 
     # Initialize the WordNet lemmatizer
-
+    sum_set=set()
     sum_list=[]
+
     for entry in data:
         word_list = entry['label_list']
+        for word in word_list:
+            sum_set.add(word)
         sum_list.extend(word_list)
         # Update the word frequencies
         word_freq.update(word_list)
+    print("original length:",len(sum_list))
+    print("original no repeat length:", len(sum_set))
     # all_word_list_before_clean_num = sum(1 for word, freq in word_freq.items() if freq == 1)
     # print(all_word_list_before_clean_num)
     from nltk.stem import WordNetLemmatizer
@@ -67,7 +72,7 @@ def get_clean_word(file_path,top_words=None):
     word_counts = Counter(sum_lemmatized_words)
     lemmatized_list = list(no_repeat_lemmatized_words)
     sorted_words = word_counts.most_common()
-
+    print("sorted_words:",sorted_words)
     sorted_sum_lemmatized_list = [word for word, count in sorted_words]
     print(sorted_sum_lemmatized_list)
     return sorted_sum_lemmatized_list

@@ -71,7 +71,7 @@ data_structure={
     }
   }
 }
-def calculate_and_draw_func(data_structure,merged_dict):
+def calculate_and_draw_func(data_structure,merged_dict,file_path):
     def convert_bottom_key_to_0(input_dict):
       for key, value in input_dict.items():
         if isinstance(value, set):
@@ -267,4 +267,20 @@ def calculate_and_draw_func(data_structure,merged_dict):
 
     # read_jsonl()
     # dict_analyse()
-    label_list_2_mapped_list("output_labels_list")
+    label_list_2_mapped_list(file_path.replace(".jsonl",""))
+def convert_lists_to_sets(d):
+    """
+    Recursively convert all lists in a nested dictionary to sets.
+    """
+    for key, value in d.items():
+        if isinstance(value, list):
+            d[key] = set(value)
+        elif isinstance(value, dict):
+            convert_lists_to_sets(value)
+
+from ddd_map_words_to_dicts import map_words_2_dicts
+from ccc_get_structure import get_structure
+file_name=r'sum_all_labels.jsonl'
+json_structure=get_structure(file_name)
+convert_lists_to_sets(json_structure)
+calculate_and_draw_func(json_structure,map_words_2_dicts(json_structure),file_name)

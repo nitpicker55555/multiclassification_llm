@@ -12,24 +12,26 @@ def tss():
     file_name = r'C:\Users\Morning\Desktop\hiwi\gpt_score\twitter_spider\2016-1-1_2016-12-31_without_profile.jsonl'
     file_name = str(file_name).split("\\")[-1].replace(".jsonl", "")
     print(file_name)
+# aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
 def one_process(data_queue,lock,file_name,thread_num):
     while True:
 
         try:
             content,num = data_queue.get(timeout=3)
-            system_content="I will give you a news introduction, I want you to give a label list of this news as detailed as possible in json format:{'label_list':[]}"
+            system_content="Please analyze the text provided below and generate labels for it. The labels should be brief, general, do not exceed two words and consist only of nouns, excluding any adjectives or adverbs or attributive. For consistency across different texts, ensure that similar themes are aligned with similar labels. For example, if the text discusses a new technology in smartphone design, suitable labels might be 'technology', 'smartphones', 'innovation'. If it's about a historical event, labels like 'history', 'politics', 'conflict' might be appropriate. Remember, the labels should be as concise, universal ,and aligned as possible, focusing strictly on nouns. Response in json format:{'label_list':[]}"
             user_content=content
             try:
                 result_dict=asyncio.run (change_statement(user_content,system_content))
                 print(result_dict)
+                if isinstance(result_dict, str):
+                    result_dict = json.loads(result_dict)
+                result_dict['num'] = num
             except Exception as e:
                 print("error and put again, restart ",e)
                 data_queue.put(content,num)
                 continue
             # result_dict=dict_extract(result_str)
-            if isinstance(result_dict,str):
-                result_dict=json.loads(result_dict)
-            result_dict['num']=num
+
             file_name=str(file_name).split("\\")[-1].replace(".jsonl","")
             with lock:
                 with open("%s_labels.jsonl"%file_name,

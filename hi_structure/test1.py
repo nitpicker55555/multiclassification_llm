@@ -1,50 +1,27 @@
-from nltk.stem import WordNetLemmatizer
-from collections import Counter
-# 初始化词形还原器
-lemmatizer = WordNetLemmatizer()
+import re
 
-import nltk
-from nltk.corpus import wordnet
-from nltk.tag import pos_tag
+text = "{'label_list': ['GPS privacy breach', 'concerd'ns', 'senior' GPs', 'patients', 'personal data', 'NHS Digital', 'doctors' surgeries', 'Tower Hamlets', 'east London', 'patient data', 'collection', 'refusal', 'Health and Social Care Act 2012', 'privacy campaigners', 'plans', 'medical histories', 'database', 'private sector', 'researchers', 'NHS Digital', 'data', 'pseudonymization', 'critics', 'patients', 'medical records', 'breach', 'collection', 'sharing', 'personal medical data', 'patient awareness', 'consent']}"
 
-# 确保已下载所需的 NLTK 资源
-nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('omw-1.4')
+# 正则表达式
+pattern = r"('[^',]*')([^',]*')([^',]*')"
+def convert_lists_to_sets(d):
+    """
+    Recursively convert all lists in a nested dictionary to sets.
+    """
+    for key, value in d.items():
+        if isinstance(value, list):
+            d[key] = set(value)
+        elif isinstance(value, dict):
+            convert_lists_to_sets(value)
 
-# 重新定义词汇列表
-words = ['apples', 'cccc','apple', 'binaries', 'binary','running','apple']
+# 替换函数
+def replace(match):
+    return match.group(1) + match.group(2).replace("'", "", 1) + match.group(3)
 
-# 首先，进行词性标注
-tagged_words = pos_tag(words)
+# 执行替换
+result = re.sub(pattern, replace, text)
 
-# 定义一个函数，用于从 NLTK 的标签转换为 WordNet 的标签
-def get_wordnet_pos(treebank_tag):
-    if treebank_tag.startswith('J'):
-        return wordnet.ADJ
-    elif treebank_tag.startswith('V'):
-        return wordnet.VERB
-    elif treebank_tag.startswith('N'):
-        return wordnet.NOUN
-    elif treebank_tag.startswith('R'):
-        return wordnet.ADV
-    else:
-        return wordnet.NOUN  # 默认为名词
-
-# 对每个词进行词形还原
-lemmatized_words = set()
-sum_list=[]
-for word, tag in tagged_words:
-    wordnet_tag = get_wordnet_pos(tag)
-    lemmatized_word = lemmatizer.lemmatize(word, wordnet_tag)
-    lemmatized_words.add(lemmatized_word)
-    sum_list.append(lemmatized_word)
-word_counts = Counter(sum_list)
-sorted_words = word_counts.most_common()
-# 将集合转换为列表
-lemmatized_list = list(lemmatized_words)
-print(lemmatized_list)
-print(sum_list)
-print(sorted_words)
-sorted_word_list = [word for word, count in sorted_words]
-print(sorted_word_list)
+print(result)
+aa={'Privacy': {'Data': {'data breach', 'data leak', 'data security', 'data protection', 'data exposure', 'data collection', 'data sharing'}, 'Personal Information': ['personal data', 'sensitive information', 'email addresses', 'phone numbers', 'home addresses', 'passport numbers', 'medical records', 'Social Security numbers'], 'Incidents': ['GPS privacy breach', 'privacy breach', 'privacy concerns', 'privacy issues', 'privacy breaches'], 'Laws & Regulations': ['General Data Protection Regulation', 'data protection laws', 'privacy policy', 'privacy rights']}, 'Security': {'Breaches': ['security breach', 'security lapse', 'security concerns', 'security flaw'], 'Cybersecurity': ['cyber-attack', 'hacker', 'attack', 'vulnerability', 'encryption', 'spyware'], 'Incidents': ['incident', 'unauthorized access', 'identity theft', 'fraud', 'theft']}, 'Technology': {'Navigation': ['GPS', 'Navigation system', 'navigation system errors', 'navigation systems', 'satellite navigation systems', 'satellite navigation system'], 'Devices': ['tracking devices', 'smartphones', 'Bluetooth technology'], 'Software & Apps': ['app', 'apps', 'software', 'dating app', 'fitness tracking app'], 'Systems': ['technology', 'system', 'database', 'server', 'backup systems', 'communication systems']}, 'Incidents & Issues': {'Failures': ['system failure', 'Navigation system failure', 'GPS malfunction', 'malfunction'], 'Errors': ['error', 'human error', 'navigation errors', 'inaccuracy'], 'Breaches': ['data breaches', 'privacy breaches', 'security breaches'], 'Exposures': ['Location data exposure', 'data exposure', 'exposure']}, 'Legal & Compliance': {'Actions': ['investigation', 'lawsuit', 'settlement', 'fine', 'penalty'], 'Regulations': ['law', 'regulation', 'General Data Protection Regulation', 'data protection laws']}, 'Organizations & Entities': {'Companies': ['Google', 'Facebook', 'Uber', 'Apple', 'Meta', 'TikTok'], 'Government': ['government', 'UK', 'Russia', 'China', 'India', 'US', 'European Union', 'Pentagon', 'U.S.', 'United States', 'European Commission'], 'Groups': ['NSO Group', 'Norwegian Consumer Council', 'military', 'law enforcement', 'healthcare system']}, 'People & Roles': {'Individuals': ['user', 'customer', 'patient', 'driver', 'employee', 'passenger', 'doctor', 'police officers', 'crew', 'CEO', 'citizen', 'member'], 'Personal Roles': ['victim', 'investigator', 'security researcher', 'expert', 'lawyer', 'client']}, 'Events & Consequences': {'Accidents': ['vehicle accidents', 'GPS malfunction accidents', 'accident', 'collision'], 'Disruptions': ['disruption', 'delay', 'issue', 'challenge', 'impact'], 'Responses': ['response', 'warning', 'warn', 'recall']}, 'Miscellaneous': {'Information': ['news', 'information', 'record', 'report', 'document', 'dataset', 'news article'], 'Concerns': ['concern', 'safety concerns', 'security concerns', 'privacy concerns'], 'Misc': ['risk', 'problem', 'mistake', 'violation', 'abuse', 'use', 'interest', 'effort', 'plan', 'method', 'topic', 'case', 'ability', 'service', 'adoption', 'dependence', 'market', 'target', 'worldwide', 'space']}}
+convert_lists_to_sets(aa)
+print(aa)

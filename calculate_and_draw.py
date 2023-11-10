@@ -71,7 +71,7 @@ data_structure={
     }
   }
 }
-def calculate_and_draw_func(data_structure,merged_dict):
+def calculate_and_draw_func(data_structure,merged_dict,file_path):
     def convert_bottom_key_to_0(input_dict):
       for key, value in input_dict.items():
         if isinstance(value, set):
@@ -169,9 +169,9 @@ def calculate_and_draw_func(data_structure,merged_dict):
           json_obj = json.loads(line)
 
           # 检查'content'键是否在JSON对象中
-          if 'word_list' in json_obj:
+          if 'label_list' in json_obj:
             # 将content键的值附加到列表中
-            mapped_labels=map_label(json_obj['word_list'],merged_dict)
+            mapped_labels=map_label(json_obj['label_list'],merged_dict)
             json_obj['mapped_labels']=mapped_labels
 
 
@@ -267,4 +267,4 @@ def calculate_and_draw_func(data_structure,merged_dict):
 
     # read_jsonl()
     # dict_analyse()
-    label_list_2_mapped_list("output_labels_list")
+    label_list_2_mapped_list(file_path.replace(".jsonl",""))
