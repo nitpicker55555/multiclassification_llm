@@ -771,7 +771,7 @@ def combine_all_xlsx():
     # 遍历当前文件夹下的所有文件
     for dirpath, dirnames, filenames in os.walk("."):
         # Check if the directory starts with "content"
-        if os.path.basename(dirpath).startswith("edu_content"):
+        if os.path.basename(dirpath).startswith("content_na"):
             # sum_dict[os.path.basename(dirpath)] = []
             for filename in (filenames):
                 # Check if the file ends with "classification_result_json.jsonl"
