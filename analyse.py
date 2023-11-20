@@ -334,12 +334,16 @@ def annotion_analyse():
         # attribute_dict['Query'] = "SUM_" + dirpath[2:]
         attribute_dict['Query'] = name
 
-        if not name.startswith("SUM"):
-            attribute_dict['cases_num']=get_num_step_classification_analyse(name)
-        else:
+        if name.startswith("SUM"):
             print("SUM____________",name,name.replace("SUM_content_",""))
             attribute_dict['cases_num'] =get_num_step_classification_analyse("",name.replace("SUM_content_",""))
             print(attribute_dict['cases_num'],"attribute_dict['cases_num']",get_num_step_classification_analyse(name,name.replace("SUM_content_","")))
+
+        elif name=="Total":
+            attribute_dict['cases_num'] =1222
+        else:
+            attribute_dict['cases_num'] = get_num_step_classification_analyse(name)
+
         scope_impact_count = {}
         attribute_num_dict={}
         for key, values in counter.items():
@@ -385,6 +389,7 @@ def annotion_analyse():
     exception_list = ["excel_num", "row_num", "each_token", "Finish_json_file", "Specific_information"]
     content_folder_list = []
     num_value_list = []
+    sum_counter={}# for SUM of all topic
     for dirpath, dirnames, filenames in os.walk('.'):
         if dirpath.split(os.sep)[-1].startswith('content'):
             counter = {}# for SUM of one topic
@@ -398,18 +403,21 @@ def annotion_analyse():
                         for line in f:
                             data = json.loads(line)
                             for key, value in data.items():
-
+                                if key not in sum_counter and key not in exception_list:
+                                    sum_counter[key] = {}
                                 if key not in counter and key not in exception_list:
                                     counter[key] = {}
                                 if key not in query_attribute and key not in exception_list:
                                     query_attribute[key]  = {}
 
                                 try:
+                                    if value not in sum_counter[key]:
+                                        sum_counter[key][value] = 0
                                     if value not in counter[key]:
                                         counter[key][value] = 0
                                     if value not in query_attribute[key]:
                                         query_attribute[key][value]  = 0
-
+                                    sum_counter[key][value]+=1
                                     counter[key][value] += 1
                                     query_attribute[key][value]  += 1
                                 except Exception as e:
@@ -418,6 +426,8 @@ def annotion_analyse():
                             query_attribute = one_attribute_(query_attribute, data, "discrimination")
                             counter=one_attribute_(counter,data,"mental harm")
                             counter = one_attribute_(counter, data,  "discrimination")
+                            sum_counter=one_attribute_(sum_counter,data,"mental harm")
+                            sum_counter = one_attribute_(sum_counter, data,  "discrimination")
                         print(counter, "counter===")
                     attribute_dict = iteration(filename.replace("step_classification_result_json.jsonl","").replace("updated_file_",""),query_attribute)
                     with open(name.replace("SUM_","")+'.jsonl', 'a') as json_file:
@@ -437,30 +447,36 @@ def annotion_analyse():
                 json_file.write(json_str + '\n')
             generate_excel(name.replace("SUM_",""))
             generate_excel(name)
-    attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
-                      'privacy violations severity', 'instances with injustice to rights', 'Severity of injustice',
-                      'instances involving vulnerable groups', 'emotional and psychological harm',
-                      'vulnerable groups affected', 'cases where harm is reversible',
-                      'affected by challenges to self-identity and values',
-                      'Severity of emotional and psychological harm', 'instances where the harm persists',
-                      'Physical harm', 'Severity of Physical harm ', 'instances where the physical harm persists',
-                      'cases where the physical harm is reversible', 'instances where the harm is easily detectable',
-                      'Economic loss', 'instances where economic losses persist', 'the severity of economic impact',
-                      'extent of impact is fixed', 'affected individuals', 'affected local population',
-                      'global implications', 'Whether humans can be replaced', 'Whether there is a law to regulate',
-                      'AI-based specificity', 'cases affected by untimely data training and maintenance',
-                      'cases affected by opaque and recurring weak capacities',
-                      'cases affected due to limitations of traditional supervisory methods',
-                      'lifecycle time period-planning and design',
-                      'lifecycle time period-collection and processing data',
-                      'lifecycle time period-building usage model',
-                      'lifecycle time period-verification and verification', 'lifecycle time period-deployment ',
-                      'lifecycle time period-Operation and Monitoring', 'lifecycle time period-End User Use and Impact',
-                      'Geographical Attributes-Timeliness', 'Geographical Attributes-Accuracy',
-                      'Data Production Process -Acquisition', 'Data Production Process-Preprocessing',
-                      'Data Production Process-Integration', 'Data Production Process-Storage and Management',
-                      'Data Production Process-Analysis and Processing',
-                      'Data Production Process-Application Communication']
+    attribute_dict = iteration("Total", sum_counter)
+    with open('total.jsonl', 'a') as json_file:
+        json_str = json.dumps(attribute_dict)
+        json_file.write(json_str + '\n')
+    generate_excel("total")
+
+    # attribute_list = ['Risk to Human Rights', 'instances with privacy violations', 'privacy sensitivity',
+    #                   'privacy violations severity', 'instances with injustice to rights', 'Severity of injustice',
+    #                   'instances involving vulnerable groups', 'emotional and psychological harm',
+    #                   'vulnerable groups affected', 'cases where harm is reversible',
+    #                   'affected by challenges to self-identity and values',
+    #                   'Severity of emotional and psychological harm', 'instances where the harm persists',
+    #                   'Physical harm', 'Severity of Physical harm ', 'instances where the physical harm persists',
+    #                   'cases where the physical harm is reversible', 'instances where the harm is easily detectable',
+    #                   'Economic loss', 'instances where economic losses persist', 'the severity of economic impact',
+    #                   'extent of impact is fixed', 'affected individuals', 'affected local population',
+    #                   'global implications', 'Whether humans can be replaced', 'Whether there is a law to regulate',
+    #                   'AI-based specificity', 'cases affected by untimely data training and maintenance',
+    #                   'cases affected by opaque and recurring weak capacities',
+    #                   'cases affected due to limitations of traditional supervisory methods',
+    #                   'lifecycle time period-planning and design',
+    #                   'lifecycle time period-collection and processing data',
+    #                   'lifecycle time period-building usage model',
+    #                   'lifecycle time period-verification and verification', 'lifecycle time period-deployment ',
+    #                   'lifecycle time period-Operation and Monitoring', 'lifecycle time period-End User Use and Impact',
+    #                   'Geographical Attributes-Timeliness', 'Geographical Attributes-Accuracy',
+    #                   'Data Production Process -Acquisition', 'Data Production Process-Preprocessing',
+    #                   'Data Production Process-Integration', 'Data Production Process-Storage and Management',
+    #                   'Data Production Process-Analysis and Processing',
+    #                   'Data Production Process-Application Communication']
 
     # content_folder_list=(content_folder_list+attribute_list)
     # print(len(content_folder_list))
@@ -468,7 +484,8 @@ def annotion_analyse():
     print(content_folder_list)
     # draw_plotify(content_folder_list,4,num_value_list)
 
-# annotion_analyse()
+
+annotion_analyse()
 def draw_pie():
     import pandas as pd
     import matplotlib.pyplot as plt
@@ -771,7 +788,7 @@ def combine_all_xlsx():
     # 遍历当前文件夹下的所有文件
     for dirpath, dirnames, filenames in os.walk("."):
         # Check if the directory starts with "content"
-        if os.path.basename(dirpath).startswith("content_map"):
+        if os.path.basename(dirpath).startswith("content_auto"):
             # sum_dict[os.path.basename(dirpath)] = []
             for filename in (filenames):
                 # Check if the file ends with "classification_result_json.jsonl"
@@ -797,8 +814,8 @@ def combine_all_xlsx():
                             sum_all_ws.append(row + (filename,))
 
     # 保存sum_all.xlsx文件
-    sum_all_wb.save("sum_all_navigation.xlsx")
-combine_all_xlsx()
+    sum_all_wb.save("sum_all.xlsx")
+# combine_all_xlsx()
 # normal_analyse()
 # data_m()
 # adjust_difference()

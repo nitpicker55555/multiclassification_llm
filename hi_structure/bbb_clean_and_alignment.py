@@ -76,6 +76,47 @@ def get_clean_word(file_path,top_words=None):
     sorted_sum_lemmatized_list = [word for word, count in sorted_words]
     print(sorted_sum_lemmatized_list)
     return sorted_sum_lemmatized_list
+def get_cluster(file_path,top_words=None):
+    cleaned_words=get_clean_word(file_path,top_words=None)
+    import openai
+    from sklearn.cluster import DBSCAN
+    import numpy as np
+    # 设置您的 OpenAI API 密钥
+    openai.api_key = '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'
+
+    def text_to_vector(text):
+        response = openai.Embedding.create(
+            input=text,
+            engine="text-similarity-babbage-001"  # 您可以根据需要选择不同的模型
+        )
+        return response['data'][0]['embedding']
+
+    # 示例文本标签列表
+    # text_labels = ["cat", "dog", "animal", "computer", "laptop", "pet"]
+
+    # 向量化所有标签
+    # vectors = [text_to_vector(label) for label in text_labels]
+    # 示例文本标签列表
+    text_labels = ['gpt3.5', 'openai', 'microsoft', 'England', 'woman', 'sex', 'traffic accident', 'murder',
+                   'Apple company', 'man', 'life', 'discrimination', 'sexual abuse']
+    # text_labels = ["cat", "dog", "animal", "computer", "laptop", "pet","gpt","gpt-4","gpt3.5","openai","microsoft","usa","USA","china","England","india","woman","sex","traffic accident","murder","Apple company","man","life","discrimination","sexual abuse"]
+    vectors = [text_to_vector(label) for label in cleaned_words]
+    # 向量化所有标签
+    dbscan = DBSCAN(eps=0.5, min_samples=2).fit(np.array(vectors))
+
+    # 获取每个样本的聚类标签
+    labels = dbscan.labels_
+
+    # 创建一个字典，以聚类索引作为键，相应的文本标签列表作为值
+    clusters = {}
+    for label, text_label in zip(labels, cleaned_words):
+        if label not in clusters:
+            clusters[label] = []
+        clusters[label].append(text_label)
+
+    # 打印每个聚类的结果
+    for cluster, texts in clusters.items():
+        print(f"Cluster {cluster}: {texts}")
     #sorted_sum_lemmatized_list ： 按词频顺序排列的表
 
 # print(get_clean_word(""))

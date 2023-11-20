@@ -114,7 +114,7 @@ def draw_pic_func(data="",num_data=''):
         label = G.nodes[node].get('label', node)
         plt.text(x, y, label, fontsize=8, ha='center', va='center', rotation=45)
 
-    plt.title("Technology and Innovation Hierarchy Tree with Selective Labels", fontsize=15)
-    plt.show()
+    plt.title("Hierarchy Tree with Selective Labels", fontsize=15)
+    # plt.show()
 # draw_pic_func()
-    # plt.savefig("tree.png")
+    plt.savefig("sa.png")
