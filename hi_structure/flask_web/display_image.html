@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>显示图片</title>
+    <script>
+        function showImageAndDownloadLink() {
+            // 等待五秒钟
+            setTimeout(function() {
+                // 显示图片
+                document.getElementById('image').style.display = 'block';
+                // 显示下载链接
+                document.getElementById('download-link').style.display = 'block';
+            }, 5000);  // 5000毫秒 = 5秒
+        }
+    </script>
+</head>
+<body>
+
+<h1>点击按钮查看图片和下载文件</h1>
+
+<!-- 按钮用于触发显示图片和下载链接的功能 -->
+<button onclick="showImageAndDownloadLink()">显示图片和下载链接</button>
+
+<!-- 初始时隐藏的图片 -->
+<img id="image" src="/uploads/sa.png" alt="Image" style="display:none;"/>
+
+<!-- 初始时隐藏的下载链接 -->
+<a id="download-link" href="/uploads/saa.jsonl" download style="display:none;">下载 saa.jsonl</a>
+
+</body>
+</html>

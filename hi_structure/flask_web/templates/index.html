@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传 Excel 文件</title>
+</head>
+<body>
+    <h1>上传 Excel 文件</h1>
+    <button onclick="runScript()">运行 qwe.py</button>
+    <div id="scriptOutput"></div>
+    <img id="plotImage" src="/uploads/sa.png" style="display: none;">
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx">
+        <input type="submit" value="上传">
+    </form>
+    <br>
+    <select id="columnsDropdown" onchange="countTokens()">
+        <option>请上传文件</option>
+    </select>
+    <br>
+    <div id="tokenCount"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                var select = document.getElementById('columnsDropdown');
+                select.innerHTML = '';
+                data.forEach(function(column) {
+                    var option = document.createElement('option');
+                    option.value = option.text = column;
+                    select.add(option);
+                });
+            });
+        });
+
+        function countTokens() {
+            var columnName = document.getElementById('columnsDropdown').value;
+            fetch('/tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({columnName: columnName}),
+            }).then(response => response.json()).then(data => {
+                document.getElementById('tokenCount').innerText =
+                    'Token 数量: ' + data.tokenCount;
+            });
+        }
+        document.getElementById('runScriptButton').addEventListener('click', function() {
+        fetch('/run-script').then(response => response.json()).then(data => {
+            if (data.success) {
+                alert('脚本运行成功！');
+            } else {
+                alert('脚本运行失败：' + data.error);
+            }
+        });
+    });
+function runScript() {
+        // 当脚本运行完毕后显示图像
+        fetch('/run-script')
+            .then(response => response.json())
+            .then(data => {
+                if (data.output) {
+                    document.getElementById('scriptOutput').innerText = data.output;
+                    document.getElementById('plotImage').style.display = 'block';
+                } else {
+                    document.getElementById('scriptOutput').innerText = '错误: ' + data.error;
+                    document.getElementById('plotImage').style.display = 'none';
+                }
+            });
+    }
+    </script>
+</body>
+</html>

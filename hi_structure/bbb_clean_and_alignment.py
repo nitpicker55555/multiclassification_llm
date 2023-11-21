@@ -72,10 +72,19 @@ def get_clean_word(file_path,top_words=None):
     word_counts = Counter(sum_lemmatized_words)
     lemmatized_list = list(no_repeat_lemmatized_words)
     sorted_words = word_counts.most_common()
-    print("sorted_words:",sorted_words)
-    sorted_sum_lemmatized_list = [word for word, count in sorted_words]
-    print(sorted_sum_lemmatized_list)
+    # print("sorted_words:",sorted_words)
+    sorted_sum_lemmatized_list = [word for word, count in sorted_words] #已经去重，排序按照词频
+    # print(sorted_sum_lemmatized_list)
+    print("processed length: ",len(sorted_sum_lemmatized_list))
     return sorted_sum_lemmatized_list
+def calculate_tokens(string):
+    if isinstance(string,list):
+        string=" ".join(string)
+    import tiktoken
+    encoding = tiktoken.get_encoding("cl100k_base")
+    # encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    num_tokens = len(encoding.encode(string))
+    print(num_tokens)
 def get_cluster(file_path,top_words=None):
     cleaned_words=get_clean_word(file_path,top_words=None)
     import openai
@@ -118,5 +127,6 @@ def get_cluster(file_path,top_words=None):
     for cluster, texts in clusters.items():
         print(f"Cluster {cluster}: {texts}")
     #sorted_sum_lemmatized_list ： 按词频顺序排列的表
-
+num_list=get_clean_word(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile_labels.jsonl")
+calculate_tokens(num_list)
 # print(get_clean_word(""))
