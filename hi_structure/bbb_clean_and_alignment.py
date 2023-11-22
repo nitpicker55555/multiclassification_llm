@@ -1,6 +1,11 @@
 from collections import Counter
 import json
-
+from sklearn.cluster import DBSCAN
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.decomposition import PCA
+import json
+from sentence_transformers import SentenceTransformer
 # Load the JSONL file
 def get_clean_word(file_path,top_words=None):
     # file_path = 'output_labels_list.jsonl'
@@ -85,7 +90,7 @@ def calculate_tokens(string):
     # encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
     num_tokens = len(encoding.encode(string))
     print(num_tokens)
-def get_cluster(file_path,top_words=None):
+def get_cluster_from_openai(file_path,top_words=None):
     cleaned_words=get_clean_word(file_path,top_words=None)
     import openai
     from sklearn.cluster import DBSCAN
@@ -127,6 +132,51 @@ def get_cluster(file_path,top_words=None):
     for cluster, texts in clusters.items():
         print(f"Cluster {cluster}: {texts}")
     #sorted_sum_lemmatized_list ： 按词频顺序排列的表
-num_list=get_clean_word(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile_labels.jsonl")
-calculate_tokens(num_list)
+def get_cluster(text_labels):
+
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+
+
+    # text_labels = ["cat", "dog", "animal", "computer", "laptop", "pet", "gpt", "gpt-4", "gpt3.5", "openai",
+    #                "microsoft company", "usa", "USA", "China", "England", "india", "woman", "sex", "traffic accident",
+    #                "murder", "Apple company", "man", "life", "discrimination", "criminal", "sexual abuse"]
+    sentence_embeddings = model.encode(text_labels)
+    vectors = sentence_embeddings.tolist()
+    print(len(vectors))
+
+    pca = PCA(n_components=3)
+    compressed_embedding = pca.fit_transform(np.array(vectors))
+    first_dict = {}
+    # 将压缩后的嵌入转换为列表并保存为JSON文件
+    compressed_embedding_list = compressed_embedding.tolist()
+    for num, i in enumerate(compressed_embedding_list):
+        first_dict[text_labels[num]] = i
+
+    dbscan = DBSCAN(eps=0.7, min_samples=2).fit(np.array(vectors))
+
+    # 获取每个样本的聚类标签
+    labels = dbscan.labels_
+
+    # 创建一个字典，以聚类索引作为键，相应的文本标签列表作为值
+    clusters = {}
+    for label, text_label in zip(labels, text_labels):
+        if label not in clusters:
+            clusters[label] = []
+        clusters[label].append(text_label)
+    result_dict = {}
+    # 打印每个聚类的结果
+    for cluster, labels in clusters.items():
+        result_dict[str(cluster)] = {}
+        for item_ in first_dict:
+            if item_ in labels:
+                result_dict[str(cluster)].update({str(item_): first_dict[item_]})
+        print(f"Cluster {cluster}: {labels}")
+    print(result_dict)
+    with open('compressed_embedding.json', 'w') as f:
+        json.dump(result_dict, f)
+
+
+num_list=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
+# calculate_tokens(num_list)
+get_cluster(num_list)
 # print(get_clean_word(""))

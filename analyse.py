@@ -347,7 +347,7 @@ def annotion_analyse():
         scope_impact_count = {}
         attribute_num_dict={}
         for key, values in counter.items():
-            print(f"Key: {key}")
+            print(f"Key: {key}", name)
 
             # print(sum(counter[key].values()))
             true_num = 0
@@ -485,7 +485,7 @@ def annotion_analyse():
     # draw_plotify(content_folder_list,4,num_value_list)
 
 
-annotion_analyse()
+# annotion_analyse()
 def draw_pie():
     import pandas as pd
     import matplotlib.pyplot as plt
@@ -816,7 +816,7 @@ def combine_all_xlsx():
     # 保存sum_all.xlsx文件
     sum_all_wb.save("sum_all.xlsx")
 # combine_all_xlsx()
-# normal_analyse()
+normal_analyse()
 # data_m()
 # adjust_difference()
 # demodified()
