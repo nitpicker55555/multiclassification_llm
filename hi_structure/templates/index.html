@@ -17,6 +17,7 @@
     </style>
 <body>
 <button id="loadData">Load Data</button>
+<!--<button id="best_eps">best_eps</button>-->
 <input type="range" id="slider_eps" min="0" max="2" step="0.1" value="0.5">slider_eps:
 <label id="slider_eps_label">0.5</label>
 <input type="range" id="slider_min" min="2" max="10" step="1" value="2">slider_min:
@@ -50,15 +51,26 @@
     document.getElementById('slider_eps').addEventListener('input', sendSliderValues);
     document.getElementById('slider_min').addEventListener('input', sendSliderValues);
 
-        document.getElementById('loadData').addEventListener('click', () => {
-            fetch('/get_data')
-                .then(response => response.json())
-                .then(data => {
-                    // 将数据传递给 processData 函数，并处理返回结果
-                    createOrUpdatePlot(data);
+        // document.getElementById('best_eps').addEventListener('click', () => {
+        //
+        //     fetch(`/find_optimal_eps?slider_min=${ document.getElementById('slider_min').value}`, { method: 'POST' })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // 将数据传递给 processData 函数，并处理返回结果
+        //
+        //             document.getElementById('slider_eps').value=data.message
+        //             sendSliderValues();
+        //         });
+        // });
+    document.getElementById('loadData').addEventListener('click', () => {
+        fetch('/get_data')
+            .then(response => response.json())
+            .then(data => {
+                // 将数据传递给 processData 函数，并处理返回结果
+                createOrUpdatePlot(data);
 
-                });
-        });
+            });
+    });
     function createOrUpdatePlot(jsonData) {
         // var data = processData(jsonData);
         console.log(typeof jsonData)

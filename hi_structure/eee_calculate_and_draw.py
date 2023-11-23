@@ -282,7 +282,9 @@ from ddd_map_words_to_dicts import map_words_2_dicts
 from ccc_get_structure import get_structure
 from aaa_set_label import main
 main(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile.jsonl",'content')
+
 file_name=r'sum_all_labels.jsonl'
+
 # json_structure=get_structure(file_name)
 #
 # convert_lists_to_sets(json_structure)

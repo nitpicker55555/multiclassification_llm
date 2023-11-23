@@ -1,5 +1,5 @@
 from gpt_api_singel import change_statement
-from bbb_clean_and_alignment import get_clean_word
+
 json_structure={
   "Military and Conflict": {
 
@@ -73,7 +73,7 @@ json_structure={
     }
   }
 }
-def map_words_2_dicts(json_structure,file_path):
+def map_words_2_dicts(json_structure,all_list):
   def merge_dictionaries(dict_list):
     """
 
@@ -105,7 +105,7 @@ def map_words_2_dicts(json_structure,file_path):
               for item in dict_[category][subcategory]:
                   new_dict[item] = []
       return new_dict
-  all_list=get_clean_word(file_path)
+  # all_list=get_clean_word(file_path)
   bottom_keys=get_bottom_keys(json_structure)
   system_content="Please assign the following words to the corresponding categories. Add each keyword to the key-value list of its category and return it in JSON format. The following is optional categories and the list of keywords to be classified: "+"optional_categories="+str(bottom_keys)
   final_dict_list=[]

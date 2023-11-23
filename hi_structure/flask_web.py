@@ -4,6 +4,9 @@ from bbb_clean_and_alignment import  get_clean_word
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
 import numpy as np
+from sklearn.neighbors import NearestNeighbors
+# import numpy as np
+
 from flask_session import Session
 import pickle
 app = Flask(__name__)
@@ -41,19 +44,52 @@ def get_data():
     # 创建一个字典作为示例
 
     # sentence_emb,clean_word = get_clean_word(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile_labels.jsonl")
-    sentence_emb,clean_word = get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
+    sentence_emb,clean_word,_ = get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
     session['clean_word']=clean_word
     session['sentence_emb'] = sentence_emb
+    # optimal_eps = find_optimal_eps_func(2)
     result_dict=get_cluster(clean_word,sentence_emb,0.5,2)
     return jsonify(result_dict)
+def find_optimal_eps_func(min_samples):
+    data=session['sentence_emb']
+    # min_samples = request.args.get('slider_min', type=int)
+    k = min_samples - 1
+    neigh = NearestNeighbors(n_neighbors=k)
+    neigh.fit(data)
+    distances, indices = neigh.kneighbors(data)
+
+    # 对距离进行排序
+    sorted_distances = np.sort(distances[:, k-1], axis=0)
+
+    # 计算距离的差分（斜率）
+    diffs = np.diff(sorted_distances)
+
+    # 找到斜率变化最大的点
+    optimal_index = np.argmax(diffs)
+    optimal_eps = sorted_distances[optimal_index]
+
+    print(optimal_eps,"optimal_eps")
+    return optimal_eps
+@app.route('/find_optimal_eps', methods=['POST'])
+def find_optimal_eps():
+    """
+    自动计算最佳eps值。
+
+    :param data: 数据集，形状为 (n_samples, n_features) 的 NumPy 数组。
+    :param min_samples: 用于DBSCAN的min_samples参数。
+    :return: 计算出的最佳eps值。
+    """
+    # 计算每个点到其第k个最近邻的距离
+    # data=session['sentence_emb']
+    min_samples = request.args.get('slider_min', type=int)
+    optimal_eps=find_optimal_eps_func(min_samples)
+    return jsonify({'message': optimal_eps})
+
 @app.route('/set_values', methods=['POST'])
 def set_values():
     slider_eps = request.args.get('slider_eps', type=float)
-    slider_min = int(request.args.get('slider_min', type=int))
-    # 这里可以根据需要处理接收到的值
-    # print("Received value:", value1)
+    slider_min = (request.args.get('slider_min', type=int))
 
-    # 检查用户是否存在
 
     result_dict=get_cluster(session['clean_word'],session['sentence_emb'],slider_eps,slider_min)
     print(len(result_dict),"result_dict")
