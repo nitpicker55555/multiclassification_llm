@@ -4,11 +4,14 @@ from sklearn.cluster import DBSCAN
 import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
-import json
+import json,re
 from sentence_transformers import SentenceTransformer
 # Load the JSONL file
 from scipy.spatial import distance
-
+import nltk
+from nltk.corpus import wordnet
+from nltk.stem import WordNetLemmatizer
+from nltk.tag import pos_tag
 def get_clean_word(file_path,top_words=None):
     # file_path = 'output_labels_list.jsonl'
 
@@ -38,14 +41,12 @@ def get_clean_word(file_path,top_words=None):
     # print("original no repeat length:", len(sum_set))
     # all_word_list_before_clean_num = sum(1 for word, freq in word_freq.items() if freq == 1)
     # print(all_word_list_before_clean_num)
-    from nltk.stem import WordNetLemmatizer
+
 
     # 初始化词形还原器
     lemmatizer = WordNetLemmatizer()
 
-    import nltk
-    from nltk.corpus import wordnet
-    from nltk.tag import pos_tag
+
 
     # 确保已下载所需的 NLTK 资源
     nltk.download('wordnet')
@@ -67,15 +68,21 @@ def get_clean_word(file_path,top_words=None):
             return wordnet.ADV
         else:
             return wordnet.NOUN  # 默认为名词
-
+    def simple_end_s(processed_result):
+        if processed_result.endswith("s"):
+            processed_result=processed_result[:-1]
+        return processed_result
     def remove_s(word):
+        word=re.sub(r'\s*\([^)]*\)', '', word)
+        # word=word.replace("  "," ")
         word=word.replace(".","").lower()
 
         lemmatizer = WordNetLemmatizer()
         words = word.split()  # 分割短语为单独的词
 
         singular_words = [lemmatizer.lemmatize(word) for word in words]  # 对每个词进行词形还原
-        processed_result= ' '.join(singular_words)
+        singular_words_removed_s=[simple_end_s(word) for word in singular_words]
+        processed_result= ' '.join(singular_words_removed_s)
         if processed_result.endswith("s"):
             processed_result=processed_result[:-1]
         return processed_result
@@ -152,7 +159,7 @@ def get_cluster_from_openai(file_path,top_words=None):
     for cluster, texts in clusters.items():
         print(f"Cluster {cluster}: {texts}")
     #sorted_sum_lemmatized_list ： 按词频顺序排列的表
-def get_cluster(no_repeat_label_list,sentence_embeddings,eps,min_samples):
+def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
     # no_repeat_label_list=get_clean_word(file_path)
     # no_repeat_label_list=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
 
@@ -192,24 +199,20 @@ def get_cluster(no_repeat_label_list,sentence_embeddings,eps,min_samples):
     print("central_point_indices",central_point_indices)
     compressed_embedding_list = compressed_embedding.tolist()
     for num, i in enumerate(compressed_embedding_list):
-        label_embedding_pair[no_repeat_label_list[num]] = i
+        label_embedding_pair[sum_WithoutDuplicate[num]] = i
 
 
 
-    # 获取每个样本的聚类标签
-
-
-    # 创建一个字典，以聚类索引作为键，相应的文本标签列表作为值
     clusters = {}
-    for label, text_label in zip(dbscan_labels, no_repeat_label_list):
+    for label, text_label in zip(dbscan_labels, sum_WithoutDuplicate):
         if label not in clusters:
             clusters[label] = []
         clusters[label].append(text_label)
     print("length of cluster: ",len(clusters))
     pca_result_dict = {}
-    # 打印每个聚类的结果
+
     for cluster, labels in clusters.items():
-        cluster_center_label=str(cluster)+"_"+no_repeat_label_list[central_point_indices[(cluster)]]
+        cluster_center_label= str(cluster) +"_" + sum_WithoutDuplicate[central_point_indices[(cluster)]]
         pca_result_dict[cluster_center_label] = {}
         for item_ in label_embedding_pair:
             if item_ in labels:
@@ -221,19 +224,26 @@ def get_cluster(no_repeat_label_list,sentence_embeddings,eps,min_samples):
     # with open('compressed_embedding.json', 'w') as f:
     #     json.dump(pca_result_dict, f)
     return pca_result_dict
-def make_alignment(pca_result_dict,no_repeat_label_list):
+def make_alignment(pca_result_dict,sum_WithDuplicate_words):
     # aa={"1_cluster":{"a":[],"b":[],"c":[]},"2_ccc":{"aa":[],"vv":[],"cc":[]}}
-    raw_list=no_repeat_label_list.copy()
+    raw_list=sum_WithDuplicate_words.copy()
     for cluster_key in pca_result_dict:
         for word in pca_result_dict[cluster_key].keys():
-            raw_list = [cluster_key if item == word else item for item in raw_list]
+            raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
 
     word_counts = Counter(raw_list)
-    sorted_words = sorted(word_counts, key=lambda x: (-word_counts[x], x))
-    return sorted_words,raw_list
+    print(word_counts)
+
+    sorted_sum_list = sorted(word_counts, key=lambda x: (-word_counts[x], x))
+    print(len(sorted_sum_list),"len(sorted_sum_list)")
+    return sorted_sum_list,raw_list
+
+#
+# sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
+# pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,2)
+# sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
 
 
-# num_list=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
 # calculate_tokens(num_list)
 # get_cluster(num_list)
 # print(get_clean_word(""))

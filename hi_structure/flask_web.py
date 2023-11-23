@@ -44,7 +44,7 @@ def get_data():
     # 创建一个字典作为示例
 
     # sentence_emb,clean_word = get_clean_word(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile_labels.jsonl")
-    sentence_emb,clean_word,_ = get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
+    sentence_emb,clean_word,_ = get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases_labels.jsonl")
     session['clean_word']=clean_word
     session['sentence_emb'] = sentence_emb
     # optimal_eps = find_optimal_eps_func(2)
@@ -94,5 +94,14 @@ def set_values():
     result_dict=get_cluster(session['clean_word'],session['sentence_emb'],slider_eps,slider_min)
     print(len(result_dict),"result_dict")
     return jsonify(result_dict)
+@app.route('/new_page_tree')
+def new_page_tree():
+    return render_template('index_tree.html')
+
+@app.route('/get_node_data')
+def get_node_data():
+    nodeValuesText=session['nodeValuesText']
+    nodeStructureText=session['nodeStructureText']
+    return jsonify({'nodeValuesText': nodeValuesText,'nodeStructureText':nodeStructureText})
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

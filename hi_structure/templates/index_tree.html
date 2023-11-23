@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"> <!-- 添加这行代码 -->
+  <title>动态树状图</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+<!--<textarea id="inputDict" rows="10" cols="50"></textarea><br>-->
+<!--<textarea id="nodeValues" rows="5" cols="50"></textarea><br>-->
+
+<button onclick="draw()">Start to draw tree</button>
+
+<div id="network" style="width: 800px; height: 600px; border: 1px solid lightgray;"></div>
+
+<script type="text/javascript">
+  function parseDictionary(dict, nodeId = 1, parentId = null) {
+    let nodes = [], edges = [];
+    let currentId = nodeId;
+
+    for (const key in dict) {
+      nodes.push({id: currentId, label: key});
+
+      if (parentId) {
+        edges.push({from: parentId, to: currentId});
+      }
+
+      if (Array.isArray(dict[key])) { // 检查是否为数组
+        dict[key].forEach((item, index) => {
+          let childId = currentId + 1 + index;
+          nodes.push({id: childId, label: item.toString()});
+          edges.push({from: currentId, to: childId});
+        });
+        currentId += dict[key].length;
+      } else if (typeof dict[key] === 'object' && dict[key] !== null) {
+        const childElements = parseDictionary(dict[key], currentId + 1, currentId);
+        currentId = childElements.nextId;
+        nodes = nodes.concat(childElements.nodes);
+        edges = edges.concat(childElements.edges);
+      }
+
+      currentId++;
+    }
+
+    return { nodes, edges, nextId: currentId };
+  }
+
+  function pythonDictToJson(pythonDictStr) {
+    try {
+      // 替换 Python 集合（set）的表示为数组
+      let jsonLikeStr = pythonDictStr.replace(/{(.*?)}/g, (match, p1) => {
+        // 移除可能的多余的空格并用逗号分隔元素
+        let elements = p1.split(',').map(element => element.trim());
+        return '[' + elements.join(', ') + ']';
+      });
+
+      // 尝试解析转换后的字符串为 JSON 对象
+      let jsonObject = JSON.parse(jsonLikeStr);
+      return JSON.stringify(jsonObject, null, 2); // 美化输出
+    } catch (e) {
+      console.error('解析错误:', e);
+      return null;
+    }
+  }
+
+  function draw() {
+
+    //
+    // var nodeStructureText = document.getElementById('nodeStructure').value;
+    // var nodeValuesText = document.getElementById('nodeValues').value;
+    var nodeStructureText
+    var nodeValuesText
+    fetch('/get_node_data')
+            .then(response => response.json())
+            .then(data => {
+              // 将数据传递给 processData 函数，并处理返回结果
+               nodeStructureText=data.nodeStructureText
+               nodeValuesText=data.nodeValuesText
+
+            });
+    let nodeStructure = pythonDictToJson(nodeStructureText);
+    // let nodeValues=pythonDictToJson(nodeValuesText);
+
+    console.log(nodeStructure)
+    // let nodeStructure;
+    try {
+      nodeStructure = JSON.parse(nodeStructure);
+      nodeValues = JSON.parse(nodeValuesText);
+    } catch (e) {
+      console.log(e)
+      alert('无效的JSON格式！');
+      return;
+    }
+
+    const parsedData = parseDictionary(nodeStructure);
+    parsedData.nodes.forEach(node => {
+      if (nodeValues[node.label] !== undefined) {
+        node.label += ` (${nodeValues[node.label]})`;
+      }
+    });
+
+    const container = document.getElementById('network');
+    const data = {
+      nodes: new vis.DataSet(parsedData.nodes),
+      edges: new vis.DataSet(parsedData.edges)
+    };
+    const options = {
+      layout: {
+        hierarchical: {
+          enabled: true,
+          direction: 'UD',
+          sortMethod: 'directed'
+        }
+      }
+    };
+
+    new vis.Network(container, data, options);
+  }
+</script>
+
+
+
+</body>
+</html>

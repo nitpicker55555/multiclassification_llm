@@ -71,6 +71,7 @@ data_structure={
     }
   }
 }
+import json
 def calculate_and_draw_func(data_structure,merged_dict,file_path):
     def convert_bottom_key_to_0(input_dict):
       for key, value in input_dict.items():
@@ -97,8 +98,6 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
     print(len(extract_dict_key(data_structure)))
     def find_parent_keys(target_key, data_structure, current_path=[]):
         """
-
-
         :param target_key: input a key name, return its all parent nodes in a list
         :param data_structure:
         :param current_path:
@@ -112,140 +111,130 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
                 if path is not None:
                     return path
         return None
-    # print(find_parent_keys("Social Impact",data_structure))
-    def dict_analyse():
 
-      labels_list = []
-      for i in merged_dict:
-        for ii in merged_dict[i]:
-          if ii not in labels_list:
-            labels_list.append(ii)
 
-      print(len(labels_list))
 
     def have_common_elements(list2, list1):
-      lowercase_list = [item.lower() for item in list2]
-      # for ii in list2:
-      for i in list1:
-        if isinstance(i,list):
-          for iii in i:
-            if iii.lower().replace("#", "") in lowercase_list:
-              return True
-        else:
-          if i.lower().replace("#","") in lowercase_list:
-            return True
-      for i in list1:
-        if isinstance(i, list):
-          for iii in i:
-            if iii.lower().replace("#", "").replace(" ","") in lowercase_list:
-              return True
-        else:
-          if i.lower().replace("#", "").replace(" ","") in lowercase_list:
-            return True
-        # return bool(set(list1) & set(list2))
+          lowercase_list = [item.lower() for item in list2]
+          # for ii in list2:
+          for i in list1:
+            if isinstance(i,list):
+              for iii in i:
+                if iii.lower().replace("#", "") in lowercase_list:
+                  return True
+            else:
+              if i.lower().replace("#","") in lowercase_list:
+                return True
+          for i in list1:
+            if isinstance(i, list):
+              for iii in i:
+                if iii.lower().replace("#", "").replace(" ","") in lowercase_list:
+                  return True
+            else:
+              if i.lower().replace("#", "").replace(" ","") in lowercase_list:
+                return True
+            # return bool(set(list1) & set(list2))
     def map_label(ori_label,dict_):
 
-      result_labels=[]
-      for item in dict_:
-        if have_common_elements(dict_[item],ori_label):
-          result_labels.append(item)
-      return result_labels
+          result_labels=[]
+          for item in dict_:
+            if have_common_elements(dict_[item],ori_label):
+              result_labels.append(item)
+          return result_labels
     def label_list_2_mapped_list(file_path):
-      import json
-      content_list=[]
 
-      file_name_str=file_path+".jsonl"
-      # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
+          mapped_label_list=[]
 
-      with open("%s_hierarchy_labels.jsonl" % file_path,
-                'w',
-                encoding='utf-8') as f:
-        pass
-      with open(file_name_str, 'r',
-                encoding='utf-8') as file:
-        # 遍历文件中的每一行
-        for line in file:
-          # 解析每一行的JSON内容
-          json_obj = json.loads(line)
-
-          # 检查'content'键是否在JSON对象中
-          if 'label_list' in json_obj:
-            # 将content键的值附加到列表中
-            mapped_labels=map_label(json_obj['label_list'],merged_dict)
-            json_obj['mapped_labels']=mapped_labels
+          file_name_str=file_path+".jsonl"
+          # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
 
 
-
-            with open("%s_hierarchy_labels.jsonl" % file_path,
-                        'a',
-                        encoding='utf-8') as f:
-                json_str = json.dumps(json_obj)
-                f.write(json_str + '\n')
-          content_list.append(json_obj)
-      print(len(content_list))
-      return_label_analyse(file_path)
-    def count_elements(lst):
-      """
-      This function takes a list as input and returns a dictionary.
-      The dictionary's keys are the unique elements from the list,
-      and the values are the count of occurrences of each element.
-      """
-      count_dict = {}
-      for element in lst:
-        if element in count_dict:
-          count_dict[element] += 1
-        else:
-          count_dict[element] = 1
-      return count_dict
-
-    def return_label_analyse(file_path):
-
-
-      import json
-
-      # merged_dict = merge_dictionaries([hier, hier4, hier3, hier2])
-      content_list=[]
-
-      with open("%s_hierarchy_labels.jsonl" % file_path, 'r', encoding='utf-8') as file:
-        parent_node_sum=[]
-        for line in file:
+          with open(file_name_str, 'r',
+                    encoding='utf-8') as file:
+            # 遍历文件中的每一行
+            for line in file:
               # 解析每一行的JSON内容
-              json_obj = json.loads(line)
-              parent_node_each_line = set()
-              # 检查'content'键是否在JSON对象中
-              if 'mapped_labels' in json_obj:
-                # 将content键的值附加到列表中
+                  json_obj = json.loads(line)
 
-                    content_list.extend((json_obj['mapped_labels']))
-                    for label_ in json_obj['mapped_labels']:
-                        # print(label_)
-                        parent_node_list= find_parent_keys(label_,data_structure)
-                        # print(parent_node_list)
-                        if parent_node_list!=None:
-                            for parent_ in parent_node_list:
-                                    parent_node_each_line.add(parent_)
-                        else:
-                            pass
-                            # print(label_,parent_node_list)
+                  # 检查'content'键是否在JSON对象中
+                  if 'label_list' in json_obj:
+                        # 将content键的值附加到列表中
+                        mapped_labels=map_label(json_obj['label_list'],merged_dict)
+                        json_obj['mapped_labels']=mapped_labels
 
-              parent_node_sum.extend(parent_node_each_line)
 
-      num_dict=count_elements(content_list)#最底层的数据字典
-      higher_level_node_num=count_elements(parent_node_sum)
-      # print(merged_dict)
-      print(len(content_list))
-      all_keys=extract_dict_key(data_structure)
 
-      for i in num_dict:
+                        # with open("%s_hierarchy_labels.jsonl" % file_path,
+                        #             'a',
+                        #             encoding='utf-8') as f:
+                        #     json_str = json.dumps(json_obj)
+                        #     f.write(json_str + '\n')
+                  mapped_label_list.append(json_obj)
+          print(len(mapped_label_list))
+          all_num_keys=return_label_analyse(mapped_label_list)
+          return all_num_keys
+    def count_elements(lst):
+          """
+          This function takes a list as input and returns a dictionary.
+          The dictionary's keys are the unique elements from the list,
+          and the values are the count of occurrences of each element.
+          """
+          count_dict = {}
+          for element in lst:
+            if element in count_dict:
+              count_dict[element] += 1
+            else:
+              count_dict[element] = 1
+          return count_dict
 
-            update_value(all_keys,i,num_dict[i])
-      for i in higher_level_node_num:
-          update_value(all_keys, i, higher_level_node_num[i])
-      print("num_labels_dict: ",all_keys)
-      print(len(all_keys))
+    def return_label_analyse(mapped_label_list):
 
-      from draw_pic import draw_pic_func
-      draw_pic_func(data_structure,all_keys)
+
+
+
+          # merged_dict = merge_dictionaries([hier, hier4, hier3, hier2])
+            content_list=[]
+
+          # with open("%s_hierarchy_labels.jsonl" % file_path, 'r', encoding='utf-8') as file:
+            parent_node_sum=[]
+            for line in mapped_label_list:
+                  # 解析每一行的JSON内容
+                  json_obj = json.loads(line)
+                  parent_node_each_line = set()
+                  # 检查'content'键是否在JSON对象中
+                  if 'mapped_labels' in json_obj:
+                    # 将content键的值附加到列表中
+
+                        content_list.extend((json_obj['mapped_labels']))
+                        for label_ in json_obj['mapped_labels']:
+                            # print(label_)
+                            parent_node_list= find_parent_keys(label_,data_structure)
+                            # print(parent_node_list)
+                            if parent_node_list!=None:
+                                for parent_ in parent_node_list:
+                                        parent_node_each_line.add(parent_)
+                            else:
+                                pass
+                                # print(label_,parent_node_list)
+
+                  parent_node_sum.extend(parent_node_each_line)
+
+            num_dict=count_elements(content_list)#最底层的数据字典
+            higher_level_node_num=count_elements(parent_node_sum)
+            # print(merged_dict)
+            print(len(content_list))
+            all_num_keys=extract_dict_key(data_structure)
+
+            for i in num_dict:
+
+                update_value(all_num_keys,i,num_dict[i])
+            for i in higher_level_node_num:
+              update_value(all_num_keys, i, higher_level_node_num[i])
+            print("num_labels_dict: ",all_num_keys)
+            print(len(all_num_keys))
+            return all_num_keys
+            # from draw_pic import draw_pic_func
+            # draw_pic_func(data_structure,all_num_keys)
     def update_value(dictionary, key_to_update, new_value):
       """
       This function updates the value of a given key in a nested dictionary.
@@ -267,7 +256,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
 
     # read_jsonl()
     # dict_analyse()
-    label_list_2_mapped_list(file_path.replace(".jsonl",""))
+    return  label_list_2_mapped_list(file_path.replace(".jsonl","").replace(".xlsx",""))
 def convert_lists_to_sets(d):
     """
     Recursively convert all lists in a nested dictionary to sets.
@@ -280,10 +269,36 @@ def convert_lists_to_sets(d):
 
 from ddd_map_words_to_dicts import map_words_2_dicts
 from ccc_get_structure import get_structure
+from bbb_clean_and_alignment import get_clean_word
+from bbb_clean_and_alignment import get_cluster
+from bbb_clean_and_alignment import make_alignment
 from aaa_set_label import main
-main(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile.jsonl",'content')
+file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
+main(file_name,'content')
+json_file_name=""
+if ".xlsx" in file_name:
+    json_file_name=file_name.replace(".xlsx","_labels.jsonl")
+elif ".jsonl" in file_name:
+    json_file_name=file_name.replace(".jsonl","_labels.jsonl")
+if json_file_name:
 
-file_name=r'sum_all_labels.jsonl'
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
+
+    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
+
+    sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+
+
+    json_structure=get_structure(sorted_sum_list)
+
+    mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list)
+
+    print("json_structure",json_structure)
+    print("mapped_dicts",mapped_dicts)
+
+    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
+
+# file_name=r'sum_all_labels.jsonl'
 
 # json_structure=get_structure(file_name)
 #
