@@ -95,7 +95,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
                     keys.update(extract_dict_key(value))
 
             return keys
-    print(len(extract_dict_key(data_structure)))
+    print(len(extract_dict_key(data_structure)),"len(extract_dict_key(data_structure))")
     def find_parent_keys(target_key, data_structure, current_path=[]):
         """
         :param target_key: input a key name, return its all parent nodes in a list
@@ -144,8 +144,9 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
     def label_list_2_mapped_list(file_path):
 
           mapped_label_list=[]
+          print(file_path,"label_list_2_mapped_list")
 
-          file_name_str=file_path+".jsonl"
+          file_name_str=file_path+"_labels.jsonl"
           # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
 
 
@@ -164,11 +165,11 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
 
 
 
-                        # with open("%s_hierarchy_labels.jsonl" % file_path,
-                        #             'a',
-                        #             encoding='utf-8') as f:
-                        #     json_str = json.dumps(json_obj)
-                        #     f.write(json_str + '\n')
+                        with open("%s_hierarchy_labels.jsonl" % file_path,
+                                    'a',
+                                    encoding='utf-8') as f:
+                            json_str = json.dumps(json_obj)
+                            f.write(json_str + '\n')
                   mapped_label_list.append(json_obj)
           print(len(mapped_label_list))
           all_num_keys=return_label_analyse(mapped_label_list)
@@ -199,7 +200,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
             parent_node_sum=[]
             for line in mapped_label_list:
                   # 解析每一行的JSON内容
-                  json_obj = json.loads(line)
+                  json_obj = line
                   parent_node_each_line = set()
                   # 检查'content'键是否在JSON对象中
                   if 'mapped_labels' in json_obj:
@@ -233,8 +234,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
             print("num_labels_dict: ",all_num_keys)
             print(len(all_num_keys))
             return all_num_keys
-            # from draw_pic import draw_pic_func
-            # draw_pic_func(data_structure,all_num_keys)
+
     def update_value(dictionary, key_to_update, new_value):
       """
       This function updates the value of a given key in a nested dictionary.
@@ -267,36 +267,40 @@ def convert_lists_to_sets(d):
         elif isinstance(value, dict):
             convert_lists_to_sets(value)
 
-from ddd_map_words_to_dicts import map_words_2_dicts
-from ccc_get_structure import get_structure
-from bbb_clean_and_alignment import get_clean_word
-from bbb_clean_and_alignment import get_cluster
-from bbb_clean_and_alignment import make_alignment
-from aaa_set_label import main
-file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
-main(file_name,'content')
-json_file_name=""
-if ".xlsx" in file_name:
-    json_file_name=file_name.replace(".xlsx","_labels.jsonl")
-elif ".jsonl" in file_name:
-    json_file_name=file_name.replace(".jsonl","_labels.jsonl")
-if json_file_name:
-
-    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
-
-    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
-
-    sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
-
-
-    json_structure=get_structure(sorted_sum_list)
-
-    mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list)
-
-    print("json_structure",json_structure)
-    print("mapped_dicts",mapped_dicts)
-
-    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
+# from ddd_map_words_to_dicts import map_words_2_dicts
+# from ccc_get_structure import get_structure
+# from bbb_clean_and_alignment import get_clean_word
+# from bbb_clean_and_alignment import get_cluster
+# from bbb_clean_and_alignment import make_alignment
+# from aaa_set_label import main
+# file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
+# main(file_name,' illustrate')
+# json_file_name=""
+# if ".xlsx" in file_name:
+#     json_file_name=file_name.replace(".xlsx","_labels.jsonl")
+# elif ".jsonl" in file_name:
+#     json_file_name=file_name.replace(".jsonl","_labels.jsonl")
+# if json_file_name:
+#
+#     sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
+#
+#     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
+#
+#     sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+#
+#
+#     json_structure=get_structure(sorted_sum_list)
+#
+#     mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list)
+#
+#
+#     print("json_structure",json_structure)
+#     print("mapped_dicts",mapped_dicts)
+#
+#     all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
+#     from draw_pic import draw_pic_func
+#
+#     draw_pic_func(json_structure, all_num_keys)
 
 # file_name=r'sum_all_labels.jsonl'
 

@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <title>Text analyse</title>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <h1>Text analyse</h1>
+
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+        <select id="keysDropdown">
+        <!-- 键名将被动态添加到这里 -->
+    </select>
+<button onclick="set_labels_model()">start to set labels with keyBart</button>
+<button onclick="set_labels_gpt()">start to set labels with GPT</button>
+    <button id="openNewPage_pca" onclick="openNewPage_pca()" style="display: none;">visualize labels clusters</button>
+<script>
+ $(document).ready(function(){
+        $('#uploadForm').on('submit', function(e){
+            e.preventDefault(); // 阻止表单的默认提交行为
+
+            var formData = new FormData(this);
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: formData,
+                success: function(data){
+                    var select = $('#keysDropdown');
+                    select.empty(); // 清空下拉框
+                    $.each(data, function(key, value){
+                        select.append($('<option></option>').attr('value', value).text(value));
+                    });
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    });
+function openNewPage_pca() {
+            window.open('/new_page_pca', '_blank');
+        }
+        function set_labels_gpt() {
+            var col_name=document.getElementById('keysDropdown').value
+            console.log("col_name",col_name)
+            fetch('/set_labels_gpt', {  // 确保这个URL与Flask中的路由匹配
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({col_name: col_name}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    document.getElementById('openNewPage_pca').style.display='block'
+                    // document.getElementById('se')
+
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+ function set_labels_model() {
+     var col_name=document.getElementById('keysDropdown').value
+     console.log("col_name",col_name)
+     fetch('/set_labels_model', {  // 确保这个URL与Flask中的路由匹配
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({col_name: col_name}),
+     })
+         .then(response => response.json())
+         .then(data => {
+             console.log('Success:', data);
+             document.getElementById('openNewPage_pca').style.display='block'
+
+         })
+         .catch((error) => {
+             console.error('Error:', error);
+         });
+ }
+        </script>
+</body>
+</html>

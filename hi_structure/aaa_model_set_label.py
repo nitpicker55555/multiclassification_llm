@@ -1,14 +1,18 @@
 import json
 import queue
 import threading
-
+import torch
 # from gpt_api import change_statement
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+    print("CUDA is not available. Using CPU...")
+
 tokenizer = AutoTokenizer.from_pretrained("bloomberg/KeyBART")
-model = AutoModelForSeq2SeqLM.from_pretrained("bloomberg/KeyBART")
-
-
+model = AutoModelForSeq2SeqLM.from_pretrained("bloomberg/KeyBART").to(device)
 # aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
 def one_process(data_queue,lock,file_name,thread_num):
     while True:
@@ -50,7 +54,7 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def main(file_name,col_nmae):
+def main_model(file_name,col_nmae):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
@@ -70,6 +74,8 @@ def main(file_name,col_nmae):
             if num in num_list:
                 print(num,"processed")
             # 解析每行为 JSON 对象
+            print(line)
+
             json_obj = json.loads(line)
 
             # 提取 'content' 键的值
@@ -98,12 +104,12 @@ def main(file_name,col_nmae):
             t.join()
 def with_model(text):
 
-    inputs = tokenizer.encode(text, return_tensors="pt", max_length=512, truncation=True)
-    outputs = model.generate(inputs, max_length=500, num_beams=5, early_stopping=True)
+    inputs = tokenizer.encode(text, return_tensors="pt", max_length=512, truncation=True).to(device)
+    outputs = model.generate(inputs, max_length=200, num_beams=10, early_stopping=True)
     result=(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     return result.split(";")[:-1]
-# main(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"," illustrate")
+# main_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")
 # tss()

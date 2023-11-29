@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>sentiment analyse</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- 文本框和按钮 -->
+<input type="text" id="dataInput">
+
+<input type="text" id="dataInput_num" >
+<!--<button id="drawChart">Draw Chart</button>-->
+<button id="drawChart" onclick="updateChart()">sentiment analyse</button>
+<!-- 画布元素 -->
+<div style="width: 100%;">
+    <canvas id="myChart"></canvas>
+</div>
+<div style="width: 80%;">
+    <canvas id="myChart_num"></canvas>
+</div>
+
+<script>
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart;
+
+    function createChart(data) {
+        // 如果图表已存在，则销毁它
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        // 创建新的饼图
+        myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    label: 'Sentiment Analysis',
+                    data: Object.values(data),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    }
+
+    function updateChart() {
+        aa={"negative": 0.4143, "neutral": 0.1357, "positive": 0.45}
+        // console.log(aa.toString())
+        document.getElementById('dataInput').value=JSON.stringify(aa)
+
+        // 从文本框读取数据
+        var inputData = document.getElementById('dataInput').value;
+
+        try {
+            // 尝试解析输入数据
+            // var data = JSON.parse(inputData);
+            var data = JSON.parse(inputData);
+            createChart(data);
+            drawChart();
+        } catch (e) {
+            console.log(e)
+            alert('Invalid JSON data!',e);
+        }
+    }
+    function drawChart() {
+        // aaa={"aa":{"positive":14,"negative":2,"neutral":14},"bb":{"positive":14,"negative":2,"neutral":14},"vv":{"positive":14,"negative":2,"neutral":14}}
+        document.getElementById('dataInput_num').value= '{"AI": {"negative": 39, "neutral": 12, "positive": 55}, "employment": {"negative": 37, "neutral": 7}, "ChatGPT": {"negative": 1, "positive": 29, "neutral": 2}, "technology": {"negative": 14, "positive": 14, "neutral": 2}, "artificial intelligence": {"neutral": 4, "negative": 10, "positive": 6}, "education": {"negative": 3, "neutral": 2, "positive": 10}, "gaming": {"negative": 4, "neutral": 4, "positive": 1}, "social media": {"negative": 3, "positive": 6}, "OpenAI": {"positive": 7}, "tools": {"neutral": 1, "positive": 5}, "Artificial Intelligence": {"negative": 2, "neutral": 1, "positive": 2}, "writing": {"negative": 3, "positive": 1, "neutral": 1}, "innovation": {"negative": 1, "positive": 4}, "future": {"positive": 5}, "strategy": {"negative": 1, "neutral": 2, "positive": 1}, "data": {"negative": 2, "positive": 2}, "companies": {"neutral": 2, "negative": 2}, "development": {"negative": 1, "positive": 3}, "finance": {"neutral": 2, "negative": 1, "positive": 1}, "cryptocurrency": {"positive": 3, "neutral": 1}, "performance": {"negative": 2, "neutral": 1}, "damage": {"negative": 2, "positive": 1}, "debate": {"negative": 2, "positive": 1}, "art": {"negative": 3}, "artists": {"neutral": 1, "negative": 2}, "chatGPT": {"negative": 1, "positive": 2}, "ethics": {"negative": 3}, "productivity": {"neutral": 1, "positive": 2}, "economy": {"negative": 3}, "internet": {"negative": 2, "neutral": 1}, "creativity": {"negative": 1, "positive": 2}, "learning": {"positive": 3}, "teachers": {"positive": 3}, "economics": {"negative": 2}, "race": {"negative": 1, "positive": 1}, "multiplayer": {"neutral": 1, "negative": 1}, "games": {"negative": 2}, "progress": {"negative": 2}, "mental health": {"negative": 2}, "language": {"negative": 1, "positive": 1}, "interaction": {"negative": 1, "positive": 1}, "change": {"negative": 2}, "Employment": {"negative": 1, "neutral": 1}, "apps": {"neutral": 1, "positive": 1}, "industry": {"negative": 2}, "humor": {"negative": 1, "positive": 1}, "engineering": {"negative": 1, "positive": 1}, "corporations": {"negative": 1, "positive": 1}, "trading": {"positive": 1, "neutral": 1}, "software": {"positive": 2}, "entertainment": {"positive": 2}, "knowledge": {"positive": 2}, "research": {"positive": 1, "negative": 1}, "etiquette": {"positive": 1, "neutral": 1}, "ML": {"positive": 2}, "LLMs": {"positive": 1, "neutral": 1}, "students": {"positive": 2}, "interface": {"positive": 2}, "advice": {"positive": 2}, "assessment": {"positive": 2}, "Microsoft": {"positive": 2}, "discussion": {"positive": 2}, "team": {"negative": 1}, "marketplace": {"negative": 1}, "game design": {"negative": 1}, "competition": {"negative": 1}, "players": {"neutral": 1}, "cars": {"positive": 1}, "game": {"positive": 1}, "Covid-19": {"negative": 1}, "risk": {"negative": 1}, "cyclones": {"negative": 1}, "conspiracy theories": {"negative": 1}, "holograms": {"negative": 1}, "lasers": {"negative": 1}, "aliens": {"negative": 1}, "racism": {"negative": 1}, "society": {"negative": 1}, "scale": {"negative": 1}, "diversity": {"negative": 1}, "Robot": {"negative": 1}, "Robotics": {"negative": 1}, "Automation": {"negative": 1}, "Machine Learning": {"negative": 1}, "Deep Learning": {"negative": 1}, "Technology": {"negative": 1}, "5K": {"negative": 1}, "maps": {"negative": 1}, "guide": {"negative": 1}, "perk": {"negative": 1}, "method": {"negative": 1}, "weapon": {"negative": 1}, "armor": {"negative": 1}, "gameplay": {"negative": 1}, "colorization": {"negative": 1}, "perception": {"negative": 1}, "past": {"negative": 1}, "assumptions": {"negative": 1}, "health": {"neutral": 1}, "pets": {"negative": 1}, "update": {"negative": 1}, "cats": {"negative": 1}, "dogs": {"negative": 1}, "graphics": {"negative": 1}, "programming": {"negative": 1}, "recommendations": {"negative": 1}, "respect": {"positive": 1}, "love": {"positive": 1}, "Germans": {"positive": 1}, "beer": {"positive": 1}, "DeFi": {"positive": 1}, "Metaverse": {"positive": 1}, "NFT": {"positive": 1}, "Crypto": {"positive": 1}, "PES": {"negative": 1}, "FIFA": {"negative": 1}, "bias": {"negative": 1}, "marketing": {"negative": 1}, "corporates": {"negative": 1}, "poverty": {"negative": 1}, "wealth": {"negative": 1}, "compensation": {"negative": 1}, "talent": {"negative": 1}, "physical damage": {"negative": 1}, "lifestyle": {"negative": 1}, "longevity": {"negative": 1}, "religion": {"negative": 1}, "philosophy": {"negative": 1}, "v2k": {"negative": 1}, "semantics": {"negative": 1}, "essays": {"neutral": 1}, "beauty": {"neutral": 1}, "tongue": {"neutral": 1}, "conceit": {"neutral": 1}, "workflows": {"neutral": 1}, "developers": {"neutral": 1}, "construction": {"negative": 1}, "robots": {"negative": 1}, "engineers": {"negative": 1}, "job market": {"negative": 1}, "healthcare": {"negative": 1}, "strikes": {"negative": 1}, "content writing": {"negative": 1}, "video editing": {"negative": 1}, "search": {"negative": 1}, "Future": {"negative": 1}, "Prediction": {"negative": 1}, "humans": {"negative": 1}, "redundancy": {"negative": 1}, "designers": {"neutral": 1}, "jobs": {"neutral": 1}, "design": {"neutral": 1}, "cheating": {"negative": 1}, "consequences": {"negative": 1}, "backlash": {"negative": 1}, "plagiarism": {"negative": 1}, "enterprises": {"negative": 1}, "intelligence": {"negative": 1}, "management": {"negative": 1}, "judicial system": {"negative": 1}, "government": {"negative": 1}, "trade": {"negative": 1}, "unemployment": {"negative": 1}, "crime": {"negative": 1}, "investigation": {"negative": 1}, "dopamine": {"neutral": 1}, "addiction": {"neutral": 1}, "programmers": {"negative": 1}, "speakers": {"negative": 1}, "videos": {"negative": 1}, "profits": {"neutral": 1}, "resources": {"neutral": 1}, "UBI": {"neutral": 1}, "legislation": {"negative": 1}, "deepfakes": {"negative": 1}, "fake news": {"negative": 1}, "voice acting": {"negative": 1}, "AI art": {"negative": 1}, "workers": {"negative": 1}, "job loss": {"negative": 1}, "code": {"negative": 1}, "writers": {"negative": 1}, "machines": {"negative": 1}, "websites": {"neutral": 1}, "law firms": {"negative": 1}, "navigation": {"negative": 1}, "valuation": {"negative": 1}, "Web3": {"negative": 1}, "history": {"neutral": 1}, "graphic design": {"negative": 1}, "music": {"negative": 1}, "art industry": {"negative": 1}, "Marketers": {"neutral": 1}, "Content": {"neutral": 1}, "Advertising": {"neutral": 1}, "article": {"negative": 1}, "magazine": {"negative": 1}, "responsibility": {"negative": 1}, "summit": {"positive": 1}, "Github Copilot": {"positive": 1}, "markdown": {"positive": 1}, "indicator": {"positive": 1}, "candle closures": {"positive": 1}, "volume": {"positive": 1}, "children": {"positive": 1}, "Chatbots": {"neutral": 1}, "Education": {"neutral": 1}, "Students": {"neutral": 1}, "Teachers": {"neutral": 1}, "Panel Discussion": {"neutral": 1}, "SEO": {"negative": 1}, "personality": {"negative": 1}, "opportunity": {"positive": 1}, "gratitude": {"positive": 1}, "humanity": {"positive": 1}, "biology": {"positive": 1}, "family": {"positive": 1}, "weekend": {"positive": 1}, "restaurants": {"positive": 1}, "digital": {"positive": 1}, "transformation": {"positive": 1}, "command": {"positive": 1}, "devops": {"positive": 1}, "gift": {"positive": 1}, "Japanese": {"positive": 1}, "birding": {"positive": 1}, "communication": {"positive": 1}, "automation": {"positive": 1}, "Law": {"positive": 1}, "Software": {"positive": 1}, "Accounting": {"positive": 1}, "Billing": {"positive": 1}, "CV": {"positive": 1}, "interviews": {"positive": 1}, "project": {"negative": 1}, "application": {"negative": 1}, "chatbots": {"positive": 1}, "understanding": {"positive": 1}, "collaboration": {"positive": 1}, "teaching": {"positive": 1}, "3D modeling": {"positive": 1}, "documentation": {"neutral": 1}, "coding": {"neutral": 1}, "submissions": {"positive": 1}, "organizations": {"positive": 1}, "issues": {"positive": 1}, "thoughts": {"positive": 1}, "opinions": {"positive": 1}, "instructional methods": {"positive": 1}, "papers": {"neutral": 1}, "news": {"neutral": 1}, "reporting": {"neutral": 1}, "products": {"positive": 1}, "developer": {"positive": 1}, "output": {"positive": 1}, "correctness": {"positive": 1}, "community": {"positive": 1}, "members": {"positive": 1}, "token": {"positive": 1}, "launch": {"positive": 1}, "promotion": {"positive": 1}, "birthday": {"positive": 1}, "brainstorming": {"positive": 1}, "transcription": {"positive": 1}, "appreciation": {"positive": 1}, "webinar": {"positive": 1}, "expert": {"neutral": 1}, "quotes": {"neutral": 1}, "press release": {"neutral": 1}, "investment": {"positive": 1}, "experiment": {"positive": 1}, "wellbeing": {"positive": 1}, "January": {"positive": 1}, "discussions": {"positive": 1}, "user experiences": {"positive": 1}, "applications": {"positive": 1}, "demonstration": {"positive": 1}, "training": {"positive": 1}, "assistants": {"positive": 1}, "virtual reality": {"neutral": 1}, "memes": {"neutral": 1}, "blockchain": {"neutral": 1}, "decentralization": {"neutral": 1}, "extensions": {"positive": 1}, "chatgpt": {"positive": 1}, "video": {"positive": 1}, "tutorials": {"positive": 1}, "radio": {"positive": 1}, "interview": {"positive": 1}, "podcast": {"positive": 1}, "cybersecurity": {"positive": 1}, "cybercrime": {"positive": 1}, "cyberwar": {"positive": 1}, "privacy": {"positive": 1}, "narratives": {"positive": 1}, "Oraichain": {"positive": 1}, "Fetch": {"positive": 1}, "SingularityNET": {"positive": 1}, "Ocean Protocol": {"positive": 1}, "workflow": {"positive": 1}, "3D": {"positive": 1}, "motion capture": {"positive": 1}, "metaverse": {"positive": 1}, "image generators": {"positive": 1}, "Trademark": {"positive": 1}, "Article": {"positive": 1}, "Art": {"positive": 1}, "entrepreneurs": {"positive": 1}, "project management": {"positive": 1}, "business": {"positive": 1}, "critical thinking": {"positive": 1}, "edtech": {"positive": 1}, "coaches": {"positive": 1}, "science": {"positive": 1}, "atoms": {"positive": 1}, "machine learning": {"positive": 1}, "deep learning": {"positive": 1}, "data science": {"positive": 1}, "data analytics": {"positive": 1}, "books": {"positive": 1}, "publishing": {"positive": 1}, "lecture": {"positive": 1}, "MachineLearning": {"positive": 1}, "Transformers": {"positive": 1}, "NLP": {"positive": 1}, "recognition": {"positive": 1}, "reviewer": {"positive": 1}, "syndrome": {"positive": 1}, "ecosystems": {"positive": 1}, "projects": {"positive": 1}, "mentorship": {"positive": 1}, "career": {"positive": 1}, "recording": {"positive": 1}, "poetry": {"positive": 1}, "Runecast": {"positive": 1}}'
+        var inputData = document.getElementById('dataInput_num').value;
+        var dataDict = JSON.parse(inputData);
+
+        var labels = Object.keys(dataDict);
+        var positiveData = labels.map(label => dataDict[label].positive);
+        var negativeData = labels.map(label => dataDict[label].negative);
+        var neutralData = labels.map(label => dataDict[label].neutral);
+
+        var ctx = document.getElementById('myChart_num').getContext('2d');
+        if(window.bar != undefined)
+            window.bar.destroy();
+        window.bar = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Positive',
+                    data: positiveData,
+                    backgroundColor: positiveData.map(value => `rgba(54, 162, 235, 1)`),
+                    borderColor: positiveData.map(value => `rgba(54, 162, 235, 1)`),
+                    // borderWidth:10,
+                    // barThickness:10
+                }, {
+                    label: 'Negative',
+                    data: negativeData,
+                    backgroundColor: negativeData.map(value => `rgba(255, 99, 132, 1)`),
+                    borderColor: negativeData.map(value => `rgba(255, 99, 132, 1)`),
+                    // borderWidth:10,
+                    // barThickness:10
+                }, {
+                    label: 'Neutral',
+                    data: neutralData,
+                    backgroundColor: neutralData.map(value => `rgba(255, 206, 86, 1)`),
+                    borderColor: neutralData.map(value => `rgba(255, 206, 86, 1)`),
+                    // borderWidth:10,
+                    // barThickness:10
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: true,
+                        categoryPercentage: 0.8, // 调整类别宽度的百分比
+                        barPercentage: 0.9      // 调整条形宽度的百分比
+                    },
+                    y: {
+                        stacked: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

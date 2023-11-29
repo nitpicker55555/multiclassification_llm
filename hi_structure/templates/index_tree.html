@@ -6,14 +6,29 @@
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
-<!--<textarea id="inputDict" rows="10" cols="50"></textarea><br>-->
-<!--<textarea id="nodeValues" rows="5" cols="50"></textarea><br>-->
+<textarea id="nodeStructure" rows="10" cols="50"></textarea><br>
+<textarea id="nodeValues" rows="5" cols="50"></textarea><br>
 
-<button onclick="draw()">Start to draw tree</button>
-
-<div id="network" style="width: 800px; height: 600px; border: 1px solid lightgray;"></div>
+<button onclick="draw()">draw tree</button>
+<button onclick="recovery()">recovery</button>
+<button onclick="index_sentiment()">sentiment analyse</button>
+<div id="network" style="width: 1800px; height: 600px; border: 1px solid lightgray;"></div>
 
 <script type="text/javascript">
+  var nodeStructure_value
+  var nodeValue_value
+  window.onload=function (){
+    document.getElementById('nodeStructure').value='{"Technology": {"AI": ["ai", "chatgpt", "openai", "deep learning", "llm", "machine learning", "image generator", "nlp", "transformer"], "Software": ["app", "application", "software", "github copilot", "code", "developer", "devop", "programming", "user experience"], "Internet": ["social medium", "internet", "cybersecurity", "web3", "website"], "Data": ["data", "data analytic", "data science"], "Blockchain": ["cryptocurrency", "blockchain", "nft", "defi", "decentralization"], "Hardware": ["robot", "3d", "3d modeling", "laser"], "Gaming": ["game", "multiplayer", "gameplay", "game design", "fifa"], "Virtual Reality": ["virtual reality", "metaverse", "hologram"]}}'
+    document.getElementById('nodeValues').value='{"ai": 60, "chatgpt": 23, "openai": 24, "deep learning": 46, "llm": 5, "machine learning": 23, "image generator": 11, "nlp": 18, "transformer": 13, "AI_sum": 135, "app": 28, "application": 6, "software": 23, "github copilot": 23, "code": 16, "developer": 14, "devop": 18, "programming": 6, "user experience": 11, "Software_sum": 145, "social medium": 22, "internet": 30, "cybersecurity": 22, "web3": 17, "website": 29, "Internet_sum": 120, "data": 12, "data analytic": 13, "data science": 13, "Data_sum": 38, "cryptocurrency": 2, "blockchain": 26, "nft": 8, "defi": 10, "decentralization": 30, "Blockchain_sum": 76, "robot": 12, "3d": 7, "3d modeling": 3, "laser": 4, "Hardware_sum": 67, "game": 13, "multiplayer": 17, "gameplay": 29, "game design": 15, "fifa": 22, "Gaming_sum": 96, "virtual reality": 21, "metaverse": 25, "hologram": 4, "Virtual Reality_sum": 50,"Technology":140,"AI":67,"Software":44,"Internet":38,"Data":21,"Blockchain":42,"Hardware":17,"Gaming":20,"Virtual Reality":33}'
+  }
+  function index_sentiment() {
+    window.open('/new_page_sentiment', '_blank');
+  }
+  function recovery(){
+    document.getElementById('nodeStructure').value=nodeStructure_value
+    document.getElementById('nodeValues').value=nodeValue_value
+
+  }
   function parseDictionary(dict, nodeId = 1, parentId = null) {
     let nodes = [], edges = [];
     let currentId = nodeId;
@@ -64,21 +79,10 @@
   }
 
   function draw() {
+    const nodeStructureText = document.getElementById('nodeStructure').value;
+    const nodeValuesText = document.getElementById('nodeValues').value;
 
-    //
-    // var nodeStructureText = document.getElementById('nodeStructure').value;
-    // var nodeValuesText = document.getElementById('nodeValues').value;
-    var nodeStructureText
-    var nodeValuesText
-    fetch('/get_node_data')
-            .then(response => response.json())
-            .then(data => {
-              // 将数据传递给 processData 函数，并处理返回结果
-               nodeStructureText=data.nodeStructureText
-               nodeValuesText=data.nodeValuesText
-
-            });
-    let nodeStructure = pythonDictToJson(nodeStructureText);
+    let nodeStructure = (nodeStructureText);
     // let nodeValues=pythonDictToJson(nodeValuesText);
 
     console.log(nodeStructure)

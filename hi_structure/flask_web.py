@@ -1,55 +1,109 @@
 from flask import Flask, render_template, jsonify,session
-from bbb_clean_and_alignment import get_cluster
-from bbb_clean_and_alignment import  get_clean_word
+
 from flask import request
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
-# import numpy as np
-
+import pandas as pd
+import os
+import json
+from werkzeug.utils import secure_filename
 from flask_session import Session
+from fff_sentiment_analyse import sentiment_model
+from eee_calculate_and_draw import calculate_and_draw_func
+from ddd_map_words_to_dicts import map_words_2_dicts
+from ccc_get_structure import get_structure
+from bbb_clean_and_alignment import get_clean_word
+from bbb_clean_and_alignment import get_cluster
+from bbb_clean_and_alignment import make_alignment
+from aaa_gpt_set_label import main
+from aaa_model_set_label import main_model
 import pickle
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'  #
 
-
+app.config['UPLOAD_FOLDER']='uploads'
 app.config["SESSION_TYPE"] = "filesystem"  # 或 "redis", "sqlalchemy"
 Session(app)
-db = SQLAlchemy(app)
+
 # 定义数据库模型
-class DbModel(db.Model):
-    ip = db.Column(db.Integer, primary_key=True)
-    clean_word = db.Column(db.Integer, nullable=False)
-    sentence_emb= db.Column(db.Integer, nullable=False)
-    # speak = db.Column(db.String(120), nullable=False)
 
-    def __repr__(self):
-        return f'<DbModel {self.id}>'
-# 创建数据库表
-with app.app_context():
-    db.create_all()
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    user_ip = request.headers.get('X-Real-IP') or request.headers.get('X-Forwarded-For') or request.remote_addr
+    if request.method == 'POST':
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file'
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
 
-    print(user_ip, "user_ip")
-    session['ip']=user_ip
+            if filename.endswith('.xlsx'):
+                df = pd.read_excel(file_path)
+                jsonl_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.replace(".xlsx",".jsonl"))
+                df.to_json(jsonl_path, orient='records', lines=True)
+                file_path = jsonl_path
 
-    return render_template('index.html')
+                session['filename'] = (file_path.replace(".xlsx",'jsonl'))
+                print(session['filename'])
+            else:
+                session['filename'] = (file_path)
+                print(session['filename'])
+            with open(file_path, 'r') as file:
+                first_line = file.readline()
+                keys = list(json.loads(first_line).keys())
+                return jsonify(keys)
 
+
+
+    return render_template('index_upload.html')
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['xlsx', 'jsonl']
+@app.route('/set_labels_gpt', methods=['POST'])
+def set_labels_gpt():
+    # 创建一个字典作为示例
+    data = request.json
+    col_name = data['col_name']
+    print("col_name:", col_name)
+    main(session['filename'], col_name)
+
+
+
+    return jsonify({'status': 'success'})
+@app.route('/set_labels_model', methods=['POST'])
+def set_labels_model():
+    # 创建一个字典作为示例
+    data = request.json
+    col_name = data['col_name']
+    print("col_name:", col_name)
+    main_model(session['filename'], col_name)
+
+
+
+    return jsonify({'status': 'success'})
 @app.route('/get_data')
 def get_data():
     # 创建一个字典作为示例
 
     # sentence_emb,clean_word = get_clean_word(r"C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-11\Twitter Data\Twitter Data\2021-1-1_2021-12-31_without_profile_labels.jsonl")
-    sentence_emb,clean_word,_ = get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases_labels.jsonl")
-    session['clean_word']=clean_word
-    session['sentence_emb'] = sentence_emb
+    json_labels_name=session['filename'].replace(".jsonl","_labels.jsonl")
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_labels_name)
+
+    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
+
+    sorted_sum_list,_=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+    # sentence_emb,clean_word,_ = get_clean_word(json_labels_name)
+    session['clean_word']=sum_WithoutDuplicate
+    session['sentence_emb'] = sentence_embeddings
+    session['sorted_sum_list'] = sorted_sum_list
     # optimal_eps = find_optimal_eps_func(2)
-    result_dict=get_cluster(clean_word,sentence_emb,0.5,2)
-    return jsonify(result_dict)
+
+    # result_dict=get_cluster(clean_word,sentence_emb,0.5,2)
+    return jsonify(pca_result_dict)
 def find_optimal_eps_func(min_samples):
     data=session['sentence_emb']
     # min_samples = request.args.get('slider_min', type=int)
@@ -91,17 +145,35 @@ def set_values():
     slider_min = (request.args.get('slider_min', type=int))
 
 
-    result_dict=get_cluster(session['clean_word'],session['sentence_emb'],slider_eps,slider_min)
-    print(len(result_dict),"result_dict")
-    return jsonify(result_dict)
+    pca_result_dict=get_cluster(session['clean_word'],session['sentence_emb'],slider_eps,slider_min)
+    print(len(pca_result_dict),"pca_result_dict")
+    session['pca_result_dict']=pca_result_dict
+    return jsonify(pca_result_dict)
 @app.route('/new_page_tree')
 def new_page_tree():
     return render_template('index_tree.html')
-
+@app.route('/new_page_pca')
+def new_page_pca():
+    return render_template('index_pca.html')
+@app.route('/new_page_sentiment')
+def new_page_sentiment():
+    return render_template('index_sentiment.html')
 @app.route('/get_node_data')
 def get_node_data():
-    nodeValuesText=session['nodeValuesText']
-    nodeStructureText=session['nodeStructureText']
+    sorted_sum_list=session['sorted_sum_list']
+    filename=session['filename']
+    json_structure=get_structure(sorted_sum_list,filename.replace(".jsonl",""))
+
+    mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list,filename.replace(".jsonl",""))
+
+
+    print("json_structure",json_structure)
+    print("mapped_dicts",mapped_dicts)
+
+    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,filename)
+    nodeValuesText=all_num_keys
+    nodeStructureText=json_structure
+    print({'nodeValuesText': nodeValuesText,'nodeStructureText':nodeStructureText})
     return jsonify({'nodeValuesText': nodeValuesText,'nodeStructureText':nodeStructureText})
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

@@ -100,6 +100,6 @@ def main(file_name,col_nmae):
 
         for t in threads:
             t.join()
-# main(r"sum_all.xlsx")
+# main(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # tss()
 # print(dict_extract())

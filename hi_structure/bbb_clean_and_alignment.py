@@ -228,8 +228,9 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words):
     # aa={"1_cluster":{"a":[],"b":[],"c":[]},"2_ccc":{"aa":[],"vv":[],"cc":[]}}
     raw_list=sum_WithDuplicate_words.copy()
     for cluster_key in pca_result_dict:
-        for word in pca_result_dict[cluster_key].keys():
-            raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
+        if not str(cluster_key).startswith("-1"):
+            for word in pca_result_dict[cluster_key].keys():
+                raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
 
     word_counts = Counter(raw_list)
     print(word_counts)

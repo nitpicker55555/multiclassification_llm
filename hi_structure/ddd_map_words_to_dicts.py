@@ -1,6 +1,6 @@
 from gpt_api_singel import change_statement
-
-json_structure={
+import json
+json_structure_example={
   "Military and Conflict": {
 
     "War and Deployment": {
@@ -73,7 +73,9 @@ json_structure={
     }
   }
 }
-def map_words_2_dicts(json_structure,all_list):
+
+def map_words_2_dicts(json_structure,all_list,filename):
+
   def merge_dictionaries(dict_list):
     """
 
@@ -105,22 +107,29 @@ def map_words_2_dicts(json_structure,all_list):
               for item in dict_[category][subcategory]:
                   new_dict[item] = []
       return new_dict
-  # all_list=get_clean_word(file_path)
-  bottom_keys=get_bottom_keys(json_structure)
-  system_content="Please assign the following words to the corresponding categories. Add each keyword to the key-value list of its category and return it in JSON format. The following is optional categories and the list of keywords to be classified: "+"optional_categories="+str(bottom_keys)
-  final_dict_list=[]
-  for i in range(0, len(all_list), 50):
-    if i <600:
-      print(i)
-      split_all_list= all_list[i:i + 50]
-      print(system_content)
-      print(split_all_list)
-      print("============================")
-      final_dict=change_statement(system_content, split_all_list)
+  try:
+    with open(filename+'mapped_dicts.json', 'r') as f:
+      mapped_dicts = json.load(f)
+      print("mapped_dicts exist",mapped_dicts)
+  except:
+      # all_list=get_clean_word(file_path)
+      bottom_keys=get_bottom_keys(json_structure)
+      system_content="Please assign the following words to the corresponding categories. Add each keyword to the key-value list of its category and return it in JSON format. The following is optional categories and the list of keywords to be classified: "+"optional_categories="+str(bottom_keys)
+      final_dict_list=[]
+      for i in range(0, len(all_list), 50):
+        if i <600:
+          print(i)
+          split_all_list= all_list[i:i + 50]
+          print(system_content)
+          print(split_all_list)
+          print("============================")
+          final_dict=change_statement(system_content, split_all_list)
 
-      print(final_dict)
-      final_dict_list.append((final_dict))
-      print("============================")
-  print(merge_dictionaries(final_dict_list))
-  return merge_dictionaries(final_dict_list)
-#生成merged映射字典
+          print(final_dict)
+          final_dict_list.append((final_dict))
+          print("============================")
+      print(merge_dictionaries(final_dict_list))
+      mapped_dicts=merge_dictionaries(final_dict_list)
+      with open(filename+'mapped_dicts.json', 'w', encoding='utf-8') as file:
+        json.dump(mapped_dicts, file)
+  return mapped_dicts

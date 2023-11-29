@@ -506,7 +506,7 @@ def draw_pie():
     # Parse columns and group by chart type
     def custom_autopct(pct):
         """Custom function to display percentage only if it's >= 1%"""
-        return ('%1.1f%%' % pct) if pct >= 1 else ''
+        return ('%1.2f%%' % pct) if pct >= 1 else ''
 
     saved_files_grouped_by_row_custom_legend = []
     individual_columns = [col for col in sorted_columns if "_" not in col]
@@ -516,7 +516,7 @@ def draw_pie():
             print(chart_type)
             if chart_type!="cases":
                 sizes = [row[column] for column in columns]
-                labels = [f"{col} ({size * 100:.1f}%)" for col, size in zip(columns, sizes) if
+                labels = [f"{col} ({size * 100:.2f}%)" for col, size in zip(columns, sizes) if
                           size > 0]  # Exclude labels with zero size
                 sizes = [size for size in sizes if size > 0]  # Exclude zero sizes
 
@@ -543,13 +543,13 @@ def draw_pie():
             print(column)
             if column!="cases":
                 sizes = [row[column], 1 - row[column]]
-                labels = [f"True ({sizes[0]* 100:.1f}%)", f"False ({sizes[1]* 100:.1f}%)"] if sizes[0] > 0 else [
-                    f"False ({sizes[1]* 100:.1f}%)", f"True ({sizes[0]* 100:.1f}%)"]
+                labels = [f"True ({sizes[0]* 100:.2f}%)", f"False ({sizes[1]* 100:.2f}%)"] if sizes[0] > 0 else [
+                    f"False ({sizes[1]* 100:.2f}%)", f"True ({sizes[0]* 100:.2f}%)"]
                 if sizes[0] == 0:  # If value is 0, skip the chart
                     continue
 
                 plt.figure(figsize=(10, 7))
-                plt.pie(sizes, labels=None, autopct='%1.1f%%', startangle=90)
+                plt.pie(sizes, labels=None, autopct='%1.2f%%', startangle=90)
                 plt.legend(labels, loc="best")
 
                 # Format the title
@@ -559,7 +559,7 @@ def draw_pie():
                 file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
                 plt.savefig(file_name)
                 plt.close()
-# draw_pie()
+draw_pie()
     # Displaying the paths of the first 5 saved plots for reference
     # saved_files_individual_true_false_legend[:5]
 
