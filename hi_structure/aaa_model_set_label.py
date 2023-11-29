@@ -54,7 +54,7 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def main_model(file_name,col_nmae):
+def main_model(file_name,col_nmae,thread_num):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
@@ -94,7 +94,7 @@ def main_model(file_name,col_nmae):
     lock = threading.Lock()
     if not data_queue.empty():
 
-        for i in range(1):
+        for i in range(thread_num):
             t = threading.Thread(target=one_process, args=(
                 data_queue, lock,file_name, i))
             t.start()
@@ -109,6 +109,17 @@ def with_model(text):
     result=(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     return result.split(";")[:-1]
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
+
+
+    parser.add_argument('--file_path', type=str, help='file_path')
+    parser.add_argument('--col_name', type=str, help='col_name')
+    parser.add_argument('--thread_num', type=int, help='thread_num')
+    args = parser.parse_args()
+    main_model(args.file_path,args.col_name,args.thread_num)
 # main_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")
