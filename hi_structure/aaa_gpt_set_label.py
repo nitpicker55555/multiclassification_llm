@@ -8,10 +8,10 @@ from gpt_api import change_statement
 # 假设 'your_jsonl_file.jsonl' 是你的 JSONL 文件名
 
 
-def tss():
-    file_name = r'C:\Users\Morning\Desktop\hiwi\gpt_score\twitter_spider\2016-1-1_2016-12-31_without_profile.jsonl'
-    file_name = str(file_name).split("\\")[-1].replace(".jsonl", "")
-    print(file_name)
+# def tss():
+#     file_name = r'C:\Users\Morning\Desktop\hiwi\gpt_score\twitter_spider\2016-1-1_2016-12-31_without_profile.jsonl'
+#     file_name = str(file_name).split("\\")[-1].replace(".jsonl", "")
+#     print(file_name)
 # aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
 def one_process(data_queue,lock,file_name,thread_num):
     while True:

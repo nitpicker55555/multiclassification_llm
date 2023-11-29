@@ -14,7 +14,7 @@ else:
 tokenizer = AutoTokenizer.from_pretrained("bloomberg/KeyBART")
 model = AutoModelForSeq2SeqLM.from_pretrained("bloomberg/KeyBART").to(device)
 # aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
-def one_process(data_queue,lock,file_name,thread_num):
+def one_process(data_queue,lock,file_name,thread_num,max_length,num_beams):
     while True:
 
         try:
@@ -23,11 +23,11 @@ def one_process(data_queue,lock,file_name,thread_num):
             # user_content=content
 
             result_dict={}
-            print(result_dict)
+
 
             result_dict['num'] = num
-            result_dict['label_list']=with_model(content)
-
+            result_dict['label_list']=with_model(content,max_length,num_beams)
+            print(result_dict)
 
             # result_dict=dict_extract(result_str)
 
@@ -54,7 +54,7 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def main_model(file_name,col_nmae,thread_num):
+def main_model(file_name,col_nmae,thread_num,max_length,num_beams):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
@@ -74,13 +74,13 @@ def main_model(file_name,col_nmae,thread_num):
             if num in num_list:
                 print(num,"processed")
             # 解析每行为 JSON 对象
-            print(line)
+            # print(line)
 
             json_obj = json.loads(line)
 
             # 提取 'content' 键的值
             content = json_obj[col_nmae]
-            print(content)
+            # print(content)
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
             # 打印或处理 'content' 的值
@@ -96,16 +96,16 @@ def main_model(file_name,col_nmae,thread_num):
 
         for i in range(thread_num):
             t = threading.Thread(target=one_process, args=(
-                data_queue, lock,file_name, i))
+                data_queue, lock,file_name, i,max_length,num_beams))
             t.start()
             threads.append(t)
 
         for t in threads:
             t.join()
-def with_model(text):
+def with_model(text,max_length,num_beams):
 
     inputs = tokenizer.encode(text, return_tensors="pt", max_length=512, truncation=True).to(device)
-    outputs = model.generate(inputs, max_length=200, num_beams=10, early_stopping=True)
+    outputs = model.generate(inputs, max_length=max_length, num_beams=num_beams, early_stopping=True)
     result=(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     return result.split(";")[:-1]
@@ -118,8 +118,14 @@ if __name__ == '__main__':
     parser.add_argument('--file_path', type=str, help='file_path')
     parser.add_argument('--col_name', type=str, help='col_name')
     parser.add_argument('--thread_num', type=int, help='thread_num')
+    parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
+    parser.add_argument('--num_beams', type=int, help='num_beams')
     args = parser.parse_args()
-    main_model(args.file_path,args.col_name,args.thread_num)
+    if args.max_out_put_length==None:
+        args.max_out_put_length=100
+    if args.num_beams==None:
+        args.num_beams=10
+    main_model(args.file_path,args.col_name,args.thread_num,args.max_out_put_length,args.num_beams)
 # main_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")
