@@ -1,3 +1,4 @@
+import os
 from collections import Counter
 import json
 from sklearn.cluster import DBSCAN
@@ -76,7 +77,10 @@ def get_clean_word(file_path,top_words=None):
         word=re.sub(r'\s*\([^)]*\)', '', word)
         # word=word.replace("  "," ")
         word=word.replace(".","").lower()
-
+        word=word.replace("@","").lower()
+        pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        # 替换网址为空字符串
+        word=re.sub(pattern, '', word)
         lemmatizer = WordNetLemmatizer()
         words = word.split()  # 分割短语为单独的词
 
@@ -166,9 +170,35 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
 
     # vectors = sentence_embeddings.tolist()
     # print(len(vectors))
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(sentence_embeddings)
-    dbscan_labels = dbscan.labels_
-    print(len(dbscan_labels))
+    minPts = min_samples
+
+    # 初始化 epsilon 值
+    epsilon = 0.4  # 这个值需要根据你的数据集特性来调整
+
+    # 设置 epsilon 的调整步长
+    step_size = 0.1  # 这个值也需要根据你的数据集特性来调整
+
+    # 最大迭代次数
+    max_iterations = 100
+
+    for i in range(max_iterations):
+        # 应用 DBSCAN 算法
+        db = DBSCAN(eps=epsilon, min_samples=minPts).fit(sentence_embeddings)
+        dbscan_labels = db.labels_
+
+        # 计算噪声点的比例
+        noise_ratio = np.sum(dbscan_labels == -1) / len(dbscan_labels)
+
+        # 检查噪声点比例是否满足条件
+        print(i," times: ",noise_ratio,np.sum(dbscan_labels == -1),len(dbscan_labels),len(set(dbscan_labels)) - (1 if -1 in dbscan_labels else 0))
+        if noise_ratio <= 0.7:
+            break
+
+        # 增加 epsilon 值
+        epsilon += step_size
+    # dbscan = DBSCAN(eps=eps, min_samples=min_samples).fit(sentence_embeddings)
+    # dbscan_labels = dbscan.labels_
+    # print(len(dbscan_labels))
 
     pca = PCA(n_components=3)
     compressed_embedding = pca.fit_transform(sentence_embeddings)
@@ -196,7 +226,7 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
         central_point_index = member_indices[np.argmin(distances)]
         central_point_indices[label] = central_point_index
 
-    print("central_point_indices",central_point_indices)
+    # print("central_point_indices",central_point_indices)
     compressed_embedding_list = compressed_embedding.tolist()
     for num, i in enumerate(compressed_embedding_list):
         label_embedding_pair[sum_WithoutDuplicate[num]] = i
@@ -233,21 +263,45 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words):
                 raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
 
     word_counts = Counter(raw_list)
-    print(word_counts)
+    # print(word_counts)
 
     sorted_sum_list = sorted(word_counts, key=lambda x: (-word_counts[x], x))
     print(len(sorted_sum_list),"len(sorted_sum_list)")
+
     return sorted_sum_list,raw_list
 
 """
 sorted_sum_list: 按照词频排序的经过处理对齐，去重后的词汇
 raw_list: 没有去重的对齐词汇
 """
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
 
 
-sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
-pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,2)
-sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+    parser.add_argument('--file_path', type=str, help='file_path')
+    parser.add_argument('--min_samples', type=int, help='min_samples')
+    # parser.add_argument('--thread_num', type=int, help='thread_num')
+    # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
+    # parser.add_argument('--num_beams', type=int, help='num_beams')
+    args = parser.parse_args()
+    if args.min_samples==None:
+        args.min_samples=3
+    # if args.num_beams==None:
+    #     args.num_beams=10
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(args.file_path)
+    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
+    sorted_sum_list, raw_list = make_alignment(pca_result_dict, sum_WithDuplicate_words)
+    file_name = os.path.basename(args.file_path)
+    with open("tem_file/example_list_%s"%file_name, "w") as file:
+        json.dump(sorted_sum_list, file)
+
+    # with open("tem_file/example_list_%s"%file_name, "r") as file:
+    #     loaded_list = json.load(file)
+# sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(r"twitter_files\2019-1-1_2019-12-31_without_profile_labels.jsonl")
+# pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,3)
+# sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
 
 
 # calculate_tokens(num_list)
