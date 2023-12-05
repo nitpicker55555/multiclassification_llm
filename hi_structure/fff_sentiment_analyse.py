@@ -2,12 +2,23 @@ import json
 import queue
 import threading
 from transformers import AutoModelForSequenceClassification
-from transformers import TFAutoModelForSequenceClassification
+from transformers import BertTokenizer
 from transformers import AutoTokenizer, AutoConfig
 import numpy as np
 from scipy.special import softmax
 # from gpt_api import change_statement
+import logging
+# from transformers import RobertaForSequenceClassification
+import torch
+# 设置警告级别来忽略不需要的警告
+logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("CUDA is available. Using GPU...")
+else:
+    device = torch.device("cpu")
+    print("CUDA is not available. Using CPU...")
 
 
 # aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
@@ -22,7 +33,7 @@ def one_process(data_queue,lock,file_name,thread_num):
             result_dict={}
 
             result_dict['num'] = num
-            result_dict['sentiment']=with_model(content)
+            result_dict['sentiment']=str(with_model(content))
             print(result_dict)
 
 
@@ -51,7 +62,7 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def sentiment_model(file_name,col_nmae):
+def sentiment_model(file_name,col_nmae,thread_num):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
@@ -71,13 +82,13 @@ def sentiment_model(file_name,col_nmae):
             if num in num_list:
                 print(num,"processed")
             # 解析每行为 JSON 对象
-            print(line)
+            # print(line)
 
             json_obj = json.loads(line)
 
             # 提取 'content' 键的值
             content = json_obj[col_nmae]
-            print(content)
+            # print(content)
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
             # 打印或处理 'content' 的值
@@ -91,7 +102,7 @@ def sentiment_model(file_name,col_nmae):
     lock = threading.Lock()
     if not data_queue.empty():
 
-        for i in range(1):
+        for i in range(thread_num):
             t = threading.Thread(target=one_process, args=(
                 data_queue, lock,file_name, i))
             t.start()
@@ -99,6 +110,7 @@ def sentiment_model(file_name,col_nmae):
 
         for t in threads:
             t.join()
+
 def with_model(text):
     def preprocess(text):
         new_text = []
@@ -108,17 +120,36 @@ def with_model(text):
             new_text.append(t)
         return " ".join(new_text)
 
+    def truncate_to_512_tokens(text):
+        # 检查CUDA是否可用
+        # device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+        # 初始化分词器
+        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        # tokenizer = tokenizer
+
+        # 将文本分词为token ID
+        encoded_input = tokenizer(text, return_tensors='pt', max_length=512, truncation=True)
+        encoded_input = {k: v for k, v in encoded_input.items()}
+
+        # 截取前512个token
+        truncated_token_ids = encoded_input['input_ids'][0]
+
+        # 将截取后的token ID转换回文本
+        truncated_text = tokenizer.decode(truncated_token_ids)
+
+        return truncated_text
     MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)
     # PT
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL).to(device)
     # model.save_pretrained(MODEL)
     # text = "Covid cases are increasing fast!"
-    text = preprocess(text)
-    encoded_input = tokenizer(text, return_tensors='pt')
+    text = truncate_to_512_tokens(preprocess(text))
+    encoded_input = tokenizer(text, return_tensors='pt').to(device)
     output = model(**encoded_input)
-    scores = output[0][0].detach().numpy()
+    scores = output[0][0].detach().cpu().numpy()
     scores = softmax(scores)
 
     ranking = np.argsort(scores)
@@ -127,6 +158,20 @@ def with_model(text):
     s = scores[ranking[0]]
 
     return {l:s}
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
+
+
+    parser.add_argument('--file_path', type=str, help='file_path')
+    parser.add_argument('--col_name', type=str, help='col_name')
+    parser.add_argument('--thread_num', type=int, help='thread_num')
+    # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
+    # parser.add_argument('--num_beams', type=int, help='num_beams')
+    args = parser.parse_args()
+
+    sentiment_model(args.file_path,args.col_name,args.thread_num)
 # sentiment_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")

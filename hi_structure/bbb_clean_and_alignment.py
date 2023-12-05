@@ -239,10 +239,15 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words):
     print(len(sorted_sum_list),"len(sorted_sum_list)")
     return sorted_sum_list,raw_list
 
-#
-# sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
-# pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,2)
-# sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+"""
+sorted_sum_list: 按照词频排序的经过处理对齐，去重后的词汇
+raw_list: 没有去重的对齐词汇
+"""
+
+
+sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\sum_all_labels_hierarchy_labels.jsonl")
+pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,2)
+sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
 
 
 # calculate_tokens(num_list)

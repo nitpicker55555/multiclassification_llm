@@ -267,40 +267,40 @@ def convert_lists_to_sets(d):
         elif isinstance(value, dict):
             convert_lists_to_sets(value)
 
-# from ddd_map_words_to_dicts import map_words_2_dicts
-# from ccc_get_structure import get_structure
-# from bbb_clean_and_alignment import get_clean_word
-# from bbb_clean_and_alignment import get_cluster
-# from bbb_clean_and_alignment import make_alignment
-# from aaa_set_label import main
-# file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
-# main(file_name,' illustrate')
-# json_file_name=""
-# if ".xlsx" in file_name:
-#     json_file_name=file_name.replace(".xlsx","_labels.jsonl")
-# elif ".jsonl" in file_name:
-#     json_file_name=file_name.replace(".jsonl","_labels.jsonl")
-# if json_file_name:
-#
-#     sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
-#
-#     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
-#
-#     sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
-#
-#
-#     json_structure=get_structure(sorted_sum_list)
-#
-#     mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list)
-#
-#
-#     print("json_structure",json_structure)
-#     print("mapped_dicts",mapped_dicts)
-#
-#     all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
-#     from draw_pic import draw_pic_func
-#
-#     draw_pic_func(json_structure, all_num_keys)
+from ddd_map_words_to_dicts import map_words_2_dicts
+from ccc_get_structure import get_structure
+from bbb_clean_and_alignment import get_clean_word
+from bbb_clean_and_alignment import get_cluster
+from bbb_clean_and_alignment import make_alignment
+from aaa_model_set_label import main_model
+file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
+# main_model(file_name,' illustrate')
+json_file_name=""
+if ".xlsx" in file_name:
+    json_file_name=file_name.replace(".xlsx","_labels.jsonl")
+elif ".jsonl" in file_name:
+    json_file_name=file_name.replace(".jsonl","_labels.jsonl")
+if json_file_name:
+
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
+
+    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
+
+    sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+
+
+    json_structure=get_structure(sorted_sum_list,json_file_name)
+
+    mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list,json_file_name)
+
+
+    print("json_structure",json_structure)
+    print("mapped_dicts",mapped_dicts)
+
+    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
+    from draw_pic import draw_pic_func
+
+    draw_pic_func(json_structure, all_num_keys)
 
 # file_name=r'sum_all_labels.jsonl'
 
