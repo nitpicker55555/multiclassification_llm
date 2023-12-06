@@ -559,7 +559,7 @@ def draw_pie():
                 file_name = output_directory+f"\\{row['Query'].replace('SUM_content_','')}_{column}.png".replace(" ", "_").replace("/", "-")
                 plt.savefig(file_name)
                 plt.close()
-draw_pie()
+# draw_pie()
     # Displaying the paths of the first 5 saved plots for reference
     # saved_files_individual_true_false_legend[:5]
 
@@ -815,8 +815,147 @@ def combine_all_xlsx():
 
     # 保存sum_all.xlsx文件
     sum_all_wb.save("sum_all.xlsx")
+def combine_labels_jsonl():
+
+        # 设置当前目录
+        current_dir = os.getcwd()
+
+        # 新jsonl文件的名称
+        merged_file_name = 'a_merged_classification_result.jsonl'
+
+        # 打开新文件以写入合并的内容
+        with open(merged_file_name, 'w') as merged_file:
+            # 遍历当前目录
+            for item in os.listdir(current_dir):
+                # 检查是否为以'content'开头的目录
+                if os.path.isdir(item) and item.startswith('content'):
+                    folder_path = os.path.join(current_dir, item)
+                    # 遍历文件夹中的文件
+                    for file in os.listdir(folder_path):
+                        # 检查是否为以'content'开头的jsonl文件
+                        if file.endswith('step_classification_result_json.jsonl'):
+                            file_path = os.path.join(folder_path, file)
+                            # 读取并合并文件内容
+                            with open(file_path, 'r') as f:
+                                for line in f:
+                                    json_obj = json.loads(line)
+                                    if "Finish_json_file" not in json_obj:
+                                        # 添加新的键值对
+
+                                        json_obj["Topic"] = item.split("content_")[1]
+                                        if json_obj['privacy violation']==True or json_obj['discrimination']==True:
+                                            json_obj['human rights violation']=True
+                                        else:
+                                            json_obj['human rights violation'] = False
+                                        # 将每行写入合并后的文件
+                                        merged_file.write(json.dumps(json_obj) + '\n')
+def change_num_jsonl_2_procent():
+    import json
+
+    # 读取.jsonl文件并修改数值
+    def modify_jsonl_values(file_path):
+        modified_data = []
+
+        with open(file_path, 'r') as file:
+            for line in file:
+                json_line = json.loads(line)
+                # 遍历键值对，对数值型的值除以2
+                for key in json_line:
+                    if isinstance(json_line[key], (int, float)) and key!='cases_num':
+                        json_line[key] /= json_line['cases_num']
+                modified_data.append(json_line)
+
+        return modified_data
+
+    # 写入新的.jsonl文件
+    def write_jsonl(file_path, data):
+        with open(file_path, 'w') as file:
+            for item in data:
+                file.write(json.dumps(item) + '\n')
+
+    # 要处理的文件路径
+    input_file_path = r'C:\Users\Morning\Desktop\hiwi\heart\paper\SUM_step_attribute_num_json.jsonl'
+    output_file_path = r'C:\Users\Morning\Desktop\hiwi\heart\paper\SUM_step_attribute_procent_json.jsonl'
+
+    # 修改数据
+    modified_data = modify_jsonl_values(input_file_path)
+
+    # 写入新文件
+    write_jsonl(output_file_path, modified_data)
+
+
+def read_properties_from_jsonl():
+    topic={}
+    aa=0
+    bb=0
+    with open(r'C:\Users\Morning\Desktop\hiwi\heart\paper\a_merged_classification_result.jsonl', 'r') as file:
+        for line in file:
+            json_line = json.loads(line)
+            if json_line['geographic information data source integration issues']==True:
+                aa+=1
+                if json_line['geographical information application issues']==True:
+                    bb+=1
+    print("geographical information application issues",bb)
+    print('geographic information data source integration issues',aa)
+    print(bb/aa)
+
+def create_heat_map_based_on_merged_jsonl():
+    # psychological_harm=['vulnerable group','whether mental harm is reversible','whether it affects self-identity and values']
+    import pandas as pd
+    import json
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    # 要计算相关度的键
+    # keys_of_interest = ["mental harm", 'physical harm', 'economic loss','Human Rights Violation','geographic information data is inaccurate','Outdated geographic information','sensor information preprocessing error','sensor information acquisition error','geographic information data source integration issues','data storage management issues','information processing problems','geographical information application issues']
+    # print(len(keys_of_interest))
+    # replace_dict={'mental harm':'Psychological harm','physical harm':'Physical Harm','economic loss':'Economic Loss','geographic information data is inaccurate':'GIS Data Accuracy','Outdated geographic information':'GIS Data Timeliness','sensor information preprocessing error':'GIS Data Preprocessing','sensor information acquisition error':'GIS Data Acquisition','geographic information data source integration issues':'GIS Data Integration','data storage management issues':'GIS Data Storage and Management','information processing problems':'GIS Data Analysis and Processing','geographical information application issues':'GIS Data Application and Dissemination'}
+    # 从.jsonl文件读取数据
+    data = []
+    with open(r'C:\Users\Morning\Desktop\hiwi\heart\paper\a_merged_classification_result.jsonl', 'r') as file:
+        for line in file:
+            json_line = json.loads(line)
+
+            true_count = sum(1 for key in keys_of_interest if json_line.get(key, False))
+            print(true_count)
+            if json_line['Topic']!='geo_education' :
+
+
+            # 只保留感兴趣的键
+                reduced_line = {key: json_line[key] for key in keys_of_interest if key in json_line}
+                data.append(reduced_line)
+
+    # 创建DataFrame
+    df = pd.DataFrame(data)
+
+    # 初始化一个空的相关性矩阵
+    prob_matrix = pd.DataFrame(index=df.columns, columns=df.columns)
+    for col1 in df.columns:
+        for col2 in df.columns:
+            if col1 == col2:
+                # 同一个键的概率不计算
+                prob_matrix.loc[col1, col2] = float('nan')
+            else:
+                # 计算条件概率
+                both_true = ((df[col1] == True) & (df[col2] == True)).sum()
+                col1_true = (df[col1] == True).sum()
+                prob_matrix.loc[col1, col2] = both_true / col1_true if col1_true != 0 else 0
+    # 计算相关度矩阵
+    # correlation_matrix = df.corr()
+    prob_matrix.rename(columns=replace_dict, index=replace_dict, inplace=True)
+    # filtered_matrix = correlation_matrix.applymap(lambda x: x if x > 0.8 or x < -0.8 else None)
+    # prob_matrix = prob_matrix.round(4)
+    prob_matrix = prob_matrix.astype(float)
+
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(prob_matrix, annot=True, fmt=".4f",cmap='Reds')
+    plt.title('Conditional Probability Matrix')
+    plt.show()
+    print(prob_matrix)
+
+create_heat_map_based_on_merged_jsonl()
+
 # combine_all_xlsx()
-normal_analyse()
+# normal_analyse()
 # data_m()
 # adjust_difference()
 # demodified()
