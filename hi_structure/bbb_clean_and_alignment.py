@@ -1,10 +1,10 @@
 import os
 from collections import Counter
 import json
-from sklearn.cluster import DBSCAN
+import torch
 import numpy as np
 from sklearn.cluster import DBSCAN
-from sklearn.decomposition import PCA
+from tqdm import tqdm
 import json,re
 from sentence_transformers import SentenceTransformer
 # Load the JSONL file
@@ -13,6 +13,12 @@ import nltk
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+    print("CUDA is not available. Using CPU...")
+
 def get_clean_word(file_path,top_words=None):
     # file_path = 'output_labels_list.jsonl'
 
@@ -105,7 +111,7 @@ def get_clean_word(file_path,top_words=None):
     sum_WithoutDuplicate = list(set(sum_WithDuplicate_words)) #已经去重，排序按照词频
 
     print("processed length: ",len(sum_WithoutDuplicate))
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = SentenceTransformer('all-MiniLM-L6-v2').to(device)
 
 
     # text_labels = ["cat", "dog", "animal", "computer", "laptop", "pet", "gpt", "gpt-4", "gpt3.5", "openai",
@@ -200,8 +206,8 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
     # dbscan_labels = dbscan.labels_
     # print(len(dbscan_labels))
 
-    pca = PCA(n_components=3)
-    compressed_embedding = pca.fit_transform(sentence_embeddings)
+    # pca = PCA(n_components=3)
+    compressed_embedding = sentence_embeddings
     label_embedding_pair = {}
     # 将压缩后的嵌入转换为列表并保存为JSON文件
 
@@ -257,7 +263,8 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
 def make_alignment(pca_result_dict,sum_WithDuplicate_words):
     # aa={"1_cluster":{"a":[],"b":[],"c":[]},"2_ccc":{"aa":[],"vv":[],"cc":[]}}
     raw_list=sum_WithDuplicate_words.copy()
-    for cluster_key in pca_result_dict:
+    for cluster_key in tqdm(pca_result_dict, desc="make_alignment"):
+    # for cluster_key in pca_result_dict:
         if not str(cluster_key).startswith("-1"):
             for word in pca_result_dict[cluster_key].keys():
                 raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
@@ -290,11 +297,12 @@ if __name__ == '__main__':
         args.min_samples=3
     # if args.num_beams==None:
     #     args.num_beams=10
+    file_name = os.path.basename(args.file_path)
     sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(args.file_path)
     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
     sorted_sum_list, raw_list = make_alignment(pca_result_dict, sum_WithDuplicate_words)
-    file_name = os.path.basename(args.file_path)
-    with open("tem_file/example_list_%s"%file_name, "w") as file:
+
+    with open("tem_file/sorted_word_list_%s"%file_name, "w") as file:
         json.dump(sorted_sum_list, file)
 
     # with open("tem_file/example_list_%s"%file_name, "r") as file:
