@@ -2,7 +2,7 @@ import os,json,re
 
 # 获取当前工作目录
 from collections import defaultdict
-
+import matplotlib as mpl
 current_dir = os.getcwd()
 
 # 初始化一个字典来存储每个文件夹中'Is_relevant=True'的数量
@@ -906,9 +906,9 @@ def create_heat_map_based_on_merged_jsonl():
     import seaborn as sns
     import matplotlib.pyplot as plt
     # 要计算相关度的键
-    # keys_of_interest = ["mental harm", 'physical harm', 'economic loss','Human Rights Violation','geographic information data is inaccurate','Outdated geographic information','sensor information preprocessing error','sensor information acquisition error','geographic information data source integration issues','data storage management issues','information processing problems','geographical information application issues']
-    # print(len(keys_of_interest))
-    # replace_dict={'mental harm':'Psychological harm','physical harm':'Physical Harm','economic loss':'Economic Loss','geographic information data is inaccurate':'GIS Data Accuracy','Outdated geographic information':'GIS Data Timeliness','sensor information preprocessing error':'GIS Data Preprocessing','sensor information acquisition error':'GIS Data Acquisition','geographic information data source integration issues':'GIS Data Integration','data storage management issues':'GIS Data Storage and Management','information processing problems':'GIS Data Analysis and Processing','geographical information application issues':'GIS Data Application and Dissemination'}
+    keys_of_interest = ['privacy violation','discrimination',"mental harm", 'physical harm', 'economic loss','Human Rights Violation','geographic information data is inaccurate','Outdated geographic information','sensor information preprocessing error','sensor information acquisition error','geographic information data source integration issues','data storage management issues','information processing problems','geographical information application issues']
+    print(len(keys_of_interest))
+    replace_dict={'privacy violation':' Privacy Violations','discrimination':'Equal Rights Violations','mental harm':'Psychological harm','physical harm':'Physical Harm','economic loss':'Economic Loss','geographic information data is inaccurate':'GIS Data Accuracy','Outdated geographic information':'GIS Data Timeliness','sensor information preprocessing error':'GIS Data Preprocessing','sensor information acquisition error':'GIS Data Acquisition','geographic information data source integration issues':'GIS Data Integration','data storage management issues':'GIS Data Storage and Management','information processing problems':'GIS Data Analysis and Processing','geographical information application issues':'GIS Data Application and Dissemination'}
     # 从.jsonl文件读取数据
     data = []
     with open(r'C:\Users\Morning\Desktop\hiwi\heart\paper\a_merged_classification_result.jsonl', 'r') as file:
@@ -946,10 +946,21 @@ def create_heat_map_based_on_merged_jsonl():
     # prob_matrix = prob_matrix.round(4)
     prob_matrix = prob_matrix.astype(float)
 
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(prob_matrix, annot=True, fmt=".4f",cmap='Reds')
-    plt.title('Conditional Probability Matrix')
-    plt.show()
+    plt.figure(figsize=(14, 12))
+    mpl.rcParams['font.family'] = 'Times New Roman'
+    sns.set(font_scale=1.3)
+    sns.heatmap(prob_matrix, annot=True, fmt=".3f",cmap='Reds')
+    # plt.title('Conditional Probability Matrix')
+    # plt.xticks(rotation=45, ha='left')
+    plt.xticks(rotation=45, ha='left', fontname='Times New Roman')
+    plt.yticks(fontname='Times New Roman')
+    plt.gca().xaxis.tick_top()  # Keeping the x-axis on the top
+    plt.xticks(rotation=45, ha='left', fontname='Times New Roman')
+    plt.yticks(fontname='Times New Roman')
+    # plt.gca().xaxis.set_label_position('top')
+    plt.tight_layout()
+
+    plt.savefig(r"C:\Users\Morning\Desktop\Figure_1.png",dpi=300)
     print(prob_matrix)
 
 create_heat_map_based_on_merged_jsonl()
