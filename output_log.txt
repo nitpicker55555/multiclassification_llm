@@ -1,0 +1,64 @@
+++++++++++++++++++++++++++
+result_tem0top0_2.txt not binary labels score:
+privacy sensitivity 81 93.10344827586206
+privacy violations severity 81 93.10344827586206
+Severity of injustice 79 90.80459770114942
+Severity of emotional and psychological harm 73 83.9080459770115
+Severity of Physical harm  53 60.91954022988506
+the severity of economic impact 56 64.36781609195403
+
+
+result_tem0top0_2.txt not binary score average 81.03448275862068
+
+
+result_tem0top0_2.txt binary labels score:
+Risk to Human Rights score: 95.40229885057471
+instances with privacy violations score: 94.25287356321839
+instances with injustice to rights score: 97.70114942528735
+instances involving vulnerable groups score: 96.55172413793103
+emotional and psychological harm score: 88.50574712643679
+vulnerable groups affected score: 96.55172413793103
+cases where harm is reversible score: 90.80459770114942
+affected by challenges to self-identity and values score: 94.25287356321839
+instances where the harm persists score: 87.35632183908046
+Physical harm score: 89.65517241379311
+instances where the physical harm persists score: 73.5632183908046
+cases where the physical harm is reversible score: 67.81609195402298
+instances where the harm is easily detectable score: 85.0574712643678
+Economic loss score: 89.65517241379311
+instances where economic losses persist score: 74.71264367816092
+extent of impact is fixed score: 96.55172413793103
+affected individuals score: 90.80459770114942
+affected local population score: 87.35632183908046
+global implications score: 96.55172413793103
+Whether humans can be replaced score: 65.51724137931035
+Whether there is a law to regulate score: 95.40229885057471
+AI-based specificity score: 93.10344827586206
+cases affected by untimely data training and maintenance score: 72.41379310344827
+cases affected by opaque and recurring weak capacities score: 60.91954022988506
+cases affected due to limitations of traditional supervisory methods score: 59.77011494252874
+lifecycle time period-planning and design score: 72.41379310344827
+lifecycle time period-collection and processing data score: 64.36781609195403
+lifecycle time period-building usage model score: 77.01149425287356
+lifecycle time period-verification and verification score: 82.75862068965517
+lifecycle time period-deployment  score: 63.2183908045977
+lifecycle time period-Operation and Monitoring score: 78.16091954022988
+lifecycle time period-End User Use and Impact score: 72.41379310344827
+Geographical Attributes-Timeliness score: 93.10344827586206
+Geographical Attributes-Accuracy score: 82.75862068965517
+Data Production Process -Acquisition score: 62.06896551724138
+Data Production Process-Preprocessing score: 56.32183908045977
+Data Production Process-Integration score: 54.02298850574713
+Data Production Process-Storage and Management score: 64.36781609195403
+Data Production Process-Analysis and Processing score: 62.06896551724138
+Data Production Process-Application Communication score: 60.91954022988506
+
+
+result_tem0top0_2.txt binary score average 91.81034482758619
+
+
+++++++++++++++++++++++++++
+result_tem_0_top_0.txt not binary labels score:
+privacy sensitivity 81 93.10344827586206
+privacy violations severity 81 93.10344827586206
+Severity of injustice 79 90.80459770114942

@@ -1,0 +1,11 @@
+Sub FillCellWithOne()
+    Dim rng As Range
+    For Each rng In Selection
+        rng.Value = 1
+    Next rng
+End SubSub FillCellWithOne()
+    Dim rng As Range
+    For Each rng In Selection
+        rng.Value = 1
+    Next rng
+End Sub

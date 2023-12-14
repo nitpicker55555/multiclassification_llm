@@ -1,0 +1,280 @@
+{"label_list": ["gaming", "team", "performance", "AI"], "num": 2, "mapped_labels": ["ai", "team"]}
+{"label_list": ["technology", "marketplace", "game design", "economics"], "num": 1, "mapped_labels": ["game", "multiplayer", "gameplay", "game design", "fifa", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["race", "performance", "damage", "technology", "competition", "strategy"], "num": 4, "mapped_labels": ["strategy"]}
+{"label_list": ["gaming", "strategy", "multiplayer", "AI", "players"], "num": 3, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa", "strategy"]}
+{"label_list": ["cars", "race", "game", "strategy", "damage", "AI"], "num": 6, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa", "strategy"]}
+{"label_list": ["Covid-19", "AI", "risk", "debate"], "num": 5, "mapped_labels": ["ai", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["cyclones", "conspiracy theories", "holograms", "lasers", "aliens"], "num": 9, "mapped_labels": []}
+{"label_list": ["technology", "racism", "society", "scale", "damage", "diversity", "AI"], "num": 7, "mapped_labels": ["ai", "diversity", "racism"]}
+{"label_list": ["Robot", "Robotics", "Automation", "Artificial Intelligence", "Machine Learning", "Deep Learning", "Technology", "5K"], "num": 0, "mapped_labels": ["ai", "deep learning", "machine learning", "robot"]}
+{"label_list": ["gaming", "artificial intelligence", "performance"], "num": 11, "mapped_labels": []}
+{"label_list": ["gaming", "maps", "AI"], "num": 15, "mapped_labels": ["ai"]}
+{"label_list": ["guide", "perk", "method", "weapon", "armor", "gameplay"], "num": 12, "mapped_labels": ["game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "colorization", "perception", "data", "past", "assumptions"], "num": 13, "mapped_labels": ["ai", "data", "data analytic", "data science"]}
+{"label_list": ["gaming", "strategy", "health", "artificial intelligence"], "num": 8, "mapped_labels": ["strategy", "mental health", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["pets", "update", "cats", "dogs", "gaming", "AI"], "num": 16, "mapped_labels": ["ai"]}
+{"label_list": ["games", "graphics", "programming", "AI", "multiplayer"], "num": 17, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "social media", "recommendations"], "num": 18, "mapped_labels": ["ai"]}
+{"label_list": ["respect", "love", "Germans", "beer", "DeFi", "AI", "Metaverse", "NFT", "Crypto"], "num": 14, "mapped_labels": ["ai", "cryptocurrency", "nft", "defi", "metaverse", "love", "beer"]}
+{"label_list": ["gaming", "AI", "PES", "FIFA"], "num": 19, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "art", "employment"], "num": 26, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["AI", "bias", "data", "marketing"], "num": 20, "mapped_labels": ["ai", "data", "data analytic", "data science", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["AI", "employment", "writing", "technology"], "num": 24, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "writing", "content writing"]}
+{"label_list": ["corporates", "AI", "employment", "poverty", "wealth"], "num": 27, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "poverty"]}
+{"label_list": ["AI", "progress", "employment", "compensation", "talent"], "num": 25, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["mental health", "physical damage", "lifestyle", "longevity"], "num": 10, "mapped_labels": ["mental health", "lifestyle"]}
+{"label_list": ["religion", "philosophy", "artificial intelligence"], "num": 23, "mapped_labels": ["research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["v2k", "language", "AI", "semantics"], "num": 22, "mapped_labels": ["ai"]}
+{"label_list": ["essays", "beauty", "tongue", "conceit"], "num": 21, "mapped_labels": ["tongue"]}
+{"label_list": ["artists", "AI", "workflows", "employment"], "num": 29, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["developers", "AI", "employment", "tools"], "num": 30, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["technology", "employment", "construction", "debate", "artificial intelligence"], "num": 28, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "robots", "employment", "interaction"], "num": 34, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "employment", "engineers", "job market"], "num": 35, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "healthcare", "strikes", "artificial intelligence"], "num": 32, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "mental health", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["AI", "change", "content writing", "video editing", "search", "employment", "progress"], "num": 31, "mapped_labels": ["ai", "code", "devop", "programming", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "writing", "content writing", "video editing"]}
+{"label_list": ["Artificial Intelligence", "Future", "Employment", "Prediction"], "num": 41, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "future"]}
+{"label_list": ["AI", "social media", "employment", "change", "humans"], "num": 38, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["chatGPT", "technology", "employment", "redundancy", "AI"], "num": 36, "mapped_labels": ["ai", "chatgpt", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "apps", "designers", "jobs", "design"], "num": 33, "mapped_labels": ["ai", "code", "devop", "programming", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["ChatGPT", "education", "employment", "AI", "cheating", "consequences", "social media"], "num": 37, "mapped_labels": ["ai", "chatgpt", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["art", "technology", "employment", "industry", "backlash"], "num": 42, "mapped_labels": ["corporate", "enterprise", "industry", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["employment", "artificial intelligence", "education", "plagiarism"], "num": 39, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["enterprises", "intelligence", "employment", "management", "AI"], "num": 40, "mapped_labels": ["ai", "project management", "management", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "judicial system", "employment", "government", "trade"], "num": 43, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["employment", "AI"], "num": 44, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "AI", "unemployment"], "num": 48, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "ethics", "industry", "artists", "employment", "education"], "num": 46, "mapped_labels": ["ai", "corporate", "enterprise", "industry", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["crime", "investigation", "employment", "technology", "artificial intelligence", "ethics"], "num": 45, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "research"]}
+{"label_list": ["AI", "employment", "productivity", "dopamine", "addiction"], "num": 50, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["programmers", "artists", "speakers", "employment", "games", "videos", "AI", "economy"], "num": 49, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "companies", "profits", "education", "employment", "resources", "UBI"], "num": 47, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["legislation", "technology", "deepfakes", "employment", "fake news"], "num": 51, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["AI", "voice acting", "employment", "AI art"], "num": 52, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["workers", "AI", "employment", "job loss"], "num": 54, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "code", "employment", "development"], "num": 53, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["writers", "employment", "machines", "AI"], "num": 59, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "AI", "innovation"], "num": 58, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "innovation"]}
+{"label_list": ["AI", "employment", "education", "websites", "finance"], "num": 56, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["employment", "artificial intelligence", "humor", "engineering"], "num": 61, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "humor"]}
+{"label_list": ["employment", "technology", "companies", "law firms", "artificial intelligence"], "num": 55, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "corporations", "AI", "navigation", "technology"], "num": 62, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["finance", "artificial intelligence", "employment", "economy", "companies", "valuation", "internet", "Web3"], "num": 60, "mapped_labels": ["internet", "web3", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["artificial intelligence", "employment", "history"], "num": 63, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["employment", "creativity", "artificial intelligence", "economy"], "num": 57, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "creativity"]}
+{"label_list": ["employment", "AI", "graphic design", "music", "art industry"], "num": 64, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["art", "AI", "employment", "economics"], "num": 68, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["Marketers", "Artificial Intelligence", "Employment", "Content", "Advertising"], "num": 66, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["article", "magazine", "AI", "employment", "technology"], "num": 65, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "write", "book", "article", "essay", "poetry", "narrative"]}
+{"label_list": ["responsibility", "ethics", "employment", "technology", "artificial intelligence"], "num": 67, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "employment", "technology", "mental health"], "num": 69, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "mental health"]}
+{"label_list": ["AI", "ChatGPT", "development"], "num": 70, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "ChatGPT", "education", "summit"], "num": 73, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["AI", "Github Copilot", "ChatGPT", "productivity", "markdown"], "num": 77, "mapped_labels": ["ai", "chatgpt", "github copilot"]}
+{"label_list": ["AI", "trading", "indicator", "candle closures", "volume"], "num": 71, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["education", "children", "AI", "technology"], "num": 78, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "Chatbots", "AI", "Education", "Students", "Teachers", "Panel Discussion"], "num": 79, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["SEO", "AI", "writing", "personality", "internet"], "num": 72, "mapped_labels": ["ai", "internet", "marketing", "marketplace", "seo", "promotion", "writing", "content writing"]}
+{"label_list": ["opportunity", "innovation", "AI", "ChatGPT"], "num": 75, "mapped_labels": ["ai", "chatgpt", "innovation"]}
+{"label_list": ["gratitude", "AI", "software", "humanity", "biology"], "num": 74, "mapped_labels": ["ai", "app", "application", "software", "research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["family", "entertainment", "AI", "social media", "weekend"], "num": 76, "mapped_labels": ["ai", "entertainment", "music", "video", "podcast", "radio", "film", "family"]}
+{"label_list": ["AI", "restaurants", "future", "digital", "transformation"], "num": 80, "mapped_labels": ["ai", "future"]}
+{"label_list": ["command", "knowledge", "devops", "AI", "future", "tools"], "num": 81, "mapped_labels": ["ai", "code", "devop", "programming", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "future"]}
+{"label_list": ["ChatGPT", "OpenAI", "gift", "technology", "AI"], "num": 82, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["AI", "technology", "innovation", "future"], "num": 85, "mapped_labels": ["ai", "future", "innovation"]}
+{"label_list": ["AI", "language", "Japanese"], "num": 89, "mapped_labels": ["ai"]}
+{"label_list": ["ChatGPT", "AI", "social media"], "num": 84, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "birding", "technology"], "num": 87, "mapped_labels": ["ai"]}
+{"label_list": ["OpenAI", "research", "ChatGPT", "AI", "communication", "etiquette"], "num": 83, "mapped_labels": ["ai", "chatgpt", "openai", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "communication"]}
+{"label_list": ["writing", "AI", "technology", "ChatGPT", "automation"], "num": 90, "mapped_labels": ["ai", "chatgpt", "writing", "content writing"]}
+{"label_list": ["Law", "Artificial Intelligence", "Software", "Accounting", "Billing"], "num": 91, "mapped_labels": ["app", "application", "software", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["ChatGPT", "AI", "CV", "interviews"], "num": 94, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["project", "writing", "AI", "research", "application"], "num": 93, "mapped_labels": ["ai", "app", "application", "software", "project management", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "writing", "content writing"]}
+{"label_list": ["AI", "ChatGPT", "OpenAI", "technology", "future", "chatbots", "artificial intelligence"], "num": 95, "mapped_labels": ["ai", "chatgpt", "openai", "future"]}
+{"label_list": ["ChatGPT", "education", "data", "technology"], "num": 97, "mapped_labels": ["ai", "chatgpt", "data", "data analytic", "data science", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["AI", "education", "innovation", "knowledge", "understanding", "creativity", "collaboration", "teaching", "learning"], "num": 88, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "creativity", "innovation"]}
+{"label_list": ["AI", "ML", "3D modeling", "tools", "productivity"], "num": 86, "mapped_labels": ["ai", "machine learning", "3d", "3d modeling"]}
+{"label_list": ["AI", "documentation", "coding", "internet"], "num": 98, "mapped_labels": ["ai", "code", "devop", "programming", "internet"]}
+{"label_list": ["ChatGPT", "OpenAI", "education", "Artificial Intelligence", "AI"], "num": 92, "mapped_labels": ["ai", "chatgpt", "openai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["debate", "ChatGPT", "LLMs", "submissions", "organizations", "issues", "thoughts"], "num": 96, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "education", "teachers", "students", "tools", "opinions", "social media"], "num": 99, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "AI", "interaction"], "num": 102, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "ChatGPT", "learning", "instructional methods"], "num": 103, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["LLMs", "ChatGPT", "writing", "papers", "news", "reporting"], "num": 100, "mapped_labels": ["ai", "chatgpt", "writing", "content writing"]}
+{"label_list": ["AI", "social media", "interface", "corporations", "products"], "num": 106, "mapped_labels": ["ai"]}
+{"label_list": ["advice", "chatGPT", "developer", "output", "correctness", "AI", "ML", "community", "development"], "num": 101, "mapped_labels": ["ai", "chatgpt", "machine learning", "developer"]}
+{"label_list": ["interface", "AI", "chatGPT"], "num": 104, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["future", "artificial intelligence", "ChatGPT"], "num": 109, "mapped_labels": ["ai", "chatgpt", "future"]}
+{"label_list": ["members", "token", "launch", "promotion", "AI", "development", "tools", "cryptocurrency"], "num": 108, "mapped_labels": ["ai", "cryptocurrency", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["entertainment", "artificial intelligence", "social media", "finance", "gaming", "advice"], "num": 107, "mapped_labels": ["finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["AI", "employment", "technology", "companies"], "num": 111, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["education", "assessment", "technology", "AI"], "num": 110, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "birthday", "brainstorming", "artificial intelligence", "OpenAI"], "num": 105, "mapped_labels": ["ai", "chatgpt", "openai", "birthday"]}
+{"label_list": ["AI", "transcription", "technology"], "num": 113, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "appreciation", "ChatGPT", "OpenAI"], "num": 112, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["webinar", "AI", "education", "teachers", "ChatGPT"], "num": 117, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["AI", "expert", "quotes", "press release"], "num": 118, "mapped_labels": ["ai"]}
+{"label_list": ["Microsoft", "AI", "investment", "ChatGPT", "technology"], "num": 120, "mapped_labels": ["ai", "chatgpt", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["ChatGPT", "experiment", "AI", "wellbeing", "January"], "num": 121, "mapped_labels": ["ai", "chatgpt", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["AI", "discussions", "user experiences", "data", "applications"], "num": 122, "mapped_labels": ["ai", "data", "data analytic", "data science"]}
+{"label_list": ["AI", "demonstration", "training", "assistants"], "num": 119, "mapped_labels": ["ai"]}
+{"label_list": ["finance", "cryptocurrency", "technology", "artificial intelligence", "virtual reality", "memes", "blockchain", "trading", "decentralization", "gaming"], "num": 114, "mapped_labels": ["cryptocurrency", "blockchain", "decentralization", "virtual reality", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["extensions", "chatgpt", "video", "education", "AI", "tutorials"], "num": 123, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["radio", "interview", "ChatGPT", "podcast", "artificial intelligence", "technology", "cybersecurity", "cybercrime", "cyberwar", "privacy"], "num": 115, "mapped_labels": ["ai", "chatgpt", "cybersecurity", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["AI", "ChatGPT", "tools", "technology"], "num": 124, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["education", "teachers", "assessment", "artificial intelligence", "discussion"], "num": 116, "mapped_labels": ["education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["AI", "etiquette"], "num": 129, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "cryptocurrency", "narratives", "Oraichain", "Fetch", "SingularityNET", "Ocean Protocol"], "num": 125, "mapped_labels": ["ai", "cryptocurrency", "ocean protocol", "singularitynet"]}
+{"label_list": ["apps", "AI", "workflow", "3D", "motion capture", "metaverse"], "num": 127, "mapped_labels": ["ai", "3d", "3d modeling", "metaverse", "workflow"]}
+{"label_list": ["AI", "image generators", "ChatGPT", "OpenAI"], "num": 133, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["AI", "Trademark", "Article", "Art"], "num": 134, "mapped_labels": ["ai", "art", "artist", "art industry", "design", "graphic design", "write", "book", "article", "essay", "poetry", "narrative"]}
+{"label_list": ["AI", "Microsoft", "ChatGPT", "technology"], "num": 131, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "entrepreneurs", "project management", "ChatGPT", "business"], "num": 126, "mapped_labels": ["ai", "chatgpt", "project management"]}
+{"label_list": ["learning", "discussion", "critical thinking", "ChatGPT", "AI", "edtech", "coaches"], "num": 128, "mapped_labels": ["ai", "chatgpt", "critical thinking"]}
+{"label_list": ["humor", "science", "atoms", "AI", "machine learning", "deep learning", "data science", "data analytics"], "num": 130, "mapped_labels": ["ai", "deep learning", "machine learning", "data", "data analytic", "data science", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "humor"]}
+{"label_list": ["AI", "books", "creativity", "publishing", "social media"], "num": 136, "mapped_labels": ["ai", "creativity"]}
+{"label_list": ["lecture", "students", "technology", "AI", "ChatGPT", "MachineLearning", "Transformers", "NLP"], "num": 132, "mapped_labels": ["ai", "chatgpt", "machine learning", "nlp", "education"]}
+{"label_list": ["recognition", "reviewer", "syndrome", "AI"], "num": 138, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "cryptocurrency", "ecosystems", "projects", "innovation"], "num": 137, "mapped_labels": ["ai", "cryptocurrency", "innovation"]}
+{"label_list": ["mentorship", "career", "software", "AI", "ChatGPT", "engineering", "recording"], "num": 135, "mapped_labels": ["ai", "chatgpt", "app", "application", "software", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "teacher"]}
+{"label_list": ["poetry", "AI", "Runecast"], "num": 139, "mapped_labels": ["ai", "write", "book", "article", "essay", "poetry", "narrative"]}
+{"label_list": ["gaming", "team", "performance", "AI"], "num": 2, "mapped_labels": ["ai", "team"]}
+{"label_list": ["technology", "marketplace", "game design", "economics"], "num": 1, "mapped_labels": ["game", "multiplayer", "gameplay", "game design", "fifa", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["race", "performance", "damage", "technology", "competition", "strategy"], "num": 4, "mapped_labels": ["strategy"]}
+{"label_list": ["gaming", "strategy", "multiplayer", "AI", "players"], "num": 3, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa", "strategy"]}
+{"label_list": ["cars", "race", "game", "strategy", "damage", "AI"], "num": 6, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa", "strategy"]}
+{"label_list": ["Covid-19", "AI", "risk", "debate"], "num": 5, "mapped_labels": ["ai", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["cyclones", "conspiracy theories", "holograms", "lasers", "aliens"], "num": 9, "mapped_labels": []}
+{"label_list": ["technology", "racism", "society", "scale", "damage", "diversity", "AI"], "num": 7, "mapped_labels": ["ai", "diversity", "racism"]}
+{"label_list": ["Robot", "Robotics", "Automation", "Artificial Intelligence", "Machine Learning", "Deep Learning", "Technology", "5K"], "num": 0, "mapped_labels": ["ai", "deep learning", "machine learning", "robot"]}
+{"label_list": ["gaming", "artificial intelligence", "performance"], "num": 11, "mapped_labels": []}
+{"label_list": ["gaming", "maps", "AI"], "num": 15, "mapped_labels": ["ai"]}
+{"label_list": ["guide", "perk", "method", "weapon", "armor", "gameplay"], "num": 12, "mapped_labels": ["game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "colorization", "perception", "data", "past", "assumptions"], "num": 13, "mapped_labels": ["ai", "data", "data analytic", "data science"]}
+{"label_list": ["gaming", "strategy", "health", "artificial intelligence"], "num": 8, "mapped_labels": ["strategy", "mental health", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["pets", "update", "cats", "dogs", "gaming", "AI"], "num": 16, "mapped_labels": ["ai"]}
+{"label_list": ["games", "graphics", "programming", "AI", "multiplayer"], "num": 17, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "social media", "recommendations"], "num": 18, "mapped_labels": ["ai"]}
+{"label_list": ["respect", "love", "Germans", "beer", "DeFi", "AI", "Metaverse", "NFT", "Crypto"], "num": 14, "mapped_labels": ["ai", "cryptocurrency", "nft", "defi", "metaverse", "love", "beer"]}
+{"label_list": ["gaming", "AI", "PES", "FIFA"], "num": 19, "mapped_labels": ["ai", "game", "multiplayer", "gameplay", "game design", "fifa"]}
+{"label_list": ["AI", "art", "employment"], "num": 26, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["AI", "bias", "data", "marketing"], "num": 20, "mapped_labels": ["ai", "data", "data analytic", "data science", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["AI", "employment", "writing", "technology"], "num": 24, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "writing", "content writing"]}
+{"label_list": ["corporates", "AI", "employment", "poverty", "wealth"], "num": 27, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "poverty"]}
+{"label_list": ["AI", "progress", "employment", "compensation", "talent"], "num": 25, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["mental health", "physical damage", "lifestyle", "longevity"], "num": 10, "mapped_labels": ["mental health", "lifestyle"]}
+{"label_list": ["religion", "philosophy", "artificial intelligence"], "num": 23, "mapped_labels": ["research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["v2k", "language", "AI", "semantics"], "num": 22, "mapped_labels": ["ai"]}
+{"label_list": ["essays", "beauty", "tongue", "conceit"], "num": 21, "mapped_labels": ["tongue"]}
+{"label_list": ["artists", "AI", "workflows", "employment"], "num": 29, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["developers", "AI", "employment", "tools"], "num": 30, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["technology", "employment", "construction", "debate", "artificial intelligence"], "num": 28, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "robots", "employment", "interaction"], "num": 34, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "employment", "engineers", "job market"], "num": 35, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "healthcare", "strikes", "artificial intelligence"], "num": 32, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "mental health", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["AI", "change", "content writing", "video editing", "search", "employment", "progress"], "num": 31, "mapped_labels": ["ai", "code", "devop", "programming", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "writing", "content writing", "video editing"]}
+{"label_list": ["Artificial Intelligence", "Future", "Employment", "Prediction"], "num": 41, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "future"]}
+{"label_list": ["AI", "social media", "employment", "change", "humans"], "num": 38, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["chatGPT", "technology", "employment", "redundancy", "AI"], "num": 36, "mapped_labels": ["ai", "chatgpt", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "apps", "designers", "jobs", "design"], "num": 33, "mapped_labels": ["ai", "code", "devop", "programming", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["ChatGPT", "education", "employment", "AI", "cheating", "consequences", "social media"], "num": 37, "mapped_labels": ["ai", "chatgpt", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["art", "technology", "employment", "industry", "backlash"], "num": 42, "mapped_labels": ["corporate", "enterprise", "industry", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["employment", "artificial intelligence", "education", "plagiarism"], "num": 39, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["enterprises", "intelligence", "employment", "management", "AI"], "num": 40, "mapped_labels": ["ai", "project management", "management", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "judicial system", "employment", "government", "trade"], "num": 43, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["employment", "AI"], "num": 44, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "AI", "unemployment"], "num": 48, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "ethics", "industry", "artists", "employment", "education"], "num": 46, "mapped_labels": ["ai", "corporate", "enterprise", "industry", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["crime", "investigation", "employment", "technology", "artificial intelligence", "ethics"], "num": 45, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "research"]}
+{"label_list": ["AI", "employment", "productivity", "dopamine", "addiction"], "num": 50, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["programmers", "artists", "speakers", "employment", "games", "videos", "AI", "economy"], "num": 49, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "companies", "profits", "education", "employment", "resources", "UBI"], "num": 47, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["legislation", "technology", "deepfakes", "employment", "fake news"], "num": 51, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["AI", "voice acting", "employment", "AI art"], "num": 52, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["workers", "AI", "employment", "job loss"], "num": 54, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "code", "employment", "development"], "num": 53, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["writers", "employment", "machines", "AI"], "num": 59, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "AI", "innovation"], "num": 58, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "innovation"]}
+{"label_list": ["AI", "employment", "education", "websites", "finance"], "num": 56, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["employment", "artificial intelligence", "humor", "engineering"], "num": 61, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "humor"]}
+{"label_list": ["employment", "technology", "companies", "law firms", "artificial intelligence"], "num": 55, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["employment", "corporations", "AI", "navigation", "technology"], "num": 62, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["finance", "artificial intelligence", "employment", "economy", "companies", "valuation", "internet", "Web3"], "num": 60, "mapped_labels": ["internet", "web3", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["artificial intelligence", "employment", "history"], "num": 63, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["employment", "creativity", "artificial intelligence", "economy"], "num": 57, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo", "creativity"]}
+{"label_list": ["employment", "AI", "graphic design", "music", "art industry"], "num": 64, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["art", "AI", "employment", "economics"], "num": 68, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "art", "artist", "art industry", "design", "graphic design"]}
+{"label_list": ["Marketers", "Artificial Intelligence", "Employment", "Content", "Advertising"], "num": 66, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["article", "magazine", "AI", "employment", "technology"], "num": 65, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "write", "book", "article", "essay", "poetry", "narrative"]}
+{"label_list": ["responsibility", "ethics", "employment", "technology", "artificial intelligence"], "num": 67, "mapped_labels": ["employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["AI", "employment", "technology", "mental health"], "num": 69, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "mental health"]}
+{"label_list": ["AI", "ChatGPT", "development"], "num": 70, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "ChatGPT", "education", "summit"], "num": 73, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["AI", "Github Copilot", "ChatGPT", "productivity", "markdown"], "num": 77, "mapped_labels": ["ai", "chatgpt", "github copilot"]}
+{"label_list": ["AI", "trading", "indicator", "candle closures", "volume"], "num": 71, "mapped_labels": ["ai", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["education", "children", "AI", "technology"], "num": 78, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "Chatbots", "AI", "Education", "Students", "Teachers", "Panel Discussion"], "num": 79, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["SEO", "AI", "writing", "personality", "internet"], "num": 72, "mapped_labels": ["ai", "internet", "marketing", "marketplace", "seo", "promotion", "writing", "content writing"]}
+{"label_list": ["opportunity", "innovation", "AI", "ChatGPT"], "num": 75, "mapped_labels": ["ai", "chatgpt", "innovation"]}
+{"label_list": ["gratitude", "AI", "software", "humanity", "biology"], "num": 74, "mapped_labels": ["ai", "app", "application", "software", "research", "science", "history", "philosophy", "mathematics", "biology", "academic"]}
+{"label_list": ["family", "entertainment", "AI", "social media", "weekend"], "num": 76, "mapped_labels": ["ai", "entertainment", "music", "video", "podcast", "radio", "film", "family"]}
+{"label_list": ["AI", "restaurants", "future", "digital", "transformation"], "num": 80, "mapped_labels": ["ai", "future"]}
+{"label_list": ["command", "knowledge", "devops", "AI", "future", "tools"], "num": 81, "mapped_labels": ["ai", "code", "devop", "programming", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "future"]}
+{"label_list": ["ChatGPT", "OpenAI", "gift", "technology", "AI"], "num": 82, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["AI", "technology", "innovation", "future"], "num": 85, "mapped_labels": ["ai", "future", "innovation"]}
+{"label_list": ["AI", "language", "Japanese"], "num": 89, "mapped_labels": ["ai"]}
+{"label_list": ["ChatGPT", "AI", "social media"], "num": 84, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "birding", "technology"], "num": 87, "mapped_labels": ["ai"]}
+{"label_list": ["OpenAI", "research", "ChatGPT", "AI", "communication", "etiquette"], "num": 83, "mapped_labels": ["ai", "chatgpt", "openai", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "communication"]}
+{"label_list": ["writing", "AI", "technology", "ChatGPT", "automation"], "num": 90, "mapped_labels": ["ai", "chatgpt", "writing", "content writing"]}
+{"label_list": ["Law", "Artificial Intelligence", "Software", "Accounting", "Billing"], "num": 91, "mapped_labels": ["app", "application", "software", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "law", "legislation", "judicial system", "law firm"]}
+{"label_list": ["ChatGPT", "AI", "CV", "interviews"], "num": 94, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["project", "writing", "AI", "research", "application"], "num": 93, "mapped_labels": ["ai", "app", "application", "software", "project management", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "writing", "content writing"]}
+{"label_list": ["AI", "ChatGPT", "OpenAI", "technology", "future", "chatbots", "artificial intelligence"], "num": 95, "mapped_labels": ["ai", "chatgpt", "openai", "future"]}
+{"label_list": ["ChatGPT", "education", "data", "technology"], "num": 97, "mapped_labels": ["ai", "chatgpt", "data", "data analytic", "data science", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["AI", "education", "innovation", "knowledge", "understanding", "creativity", "collaboration", "teaching", "learning"], "num": 88, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "creativity", "innovation"]}
+{"label_list": ["AI", "ML", "3D modeling", "tools", "productivity"], "num": 86, "mapped_labels": ["ai", "machine learning", "3d", "3d modeling"]}
+{"label_list": ["AI", "documentation", "coding", "internet"], "num": 98, "mapped_labels": ["ai", "code", "devop", "programming", "internet"]}
+{"label_list": ["ChatGPT", "OpenAI", "education", "Artificial Intelligence", "AI"], "num": 92, "mapped_labels": ["ai", "chatgpt", "openai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["debate", "ChatGPT", "LLMs", "submissions", "organizations", "issues", "thoughts"], "num": 96, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "education", "teachers", "students", "tools", "opinions", "social media"], "num": 99, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "AI", "interaction"], "num": 102, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "ChatGPT", "learning", "instructional methods"], "num": 103, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["LLMs", "ChatGPT", "writing", "papers", "news", "reporting"], "num": 100, "mapped_labels": ["ai", "chatgpt", "writing", "content writing"]}
+{"label_list": ["AI", "social media", "interface", "corporations", "products"], "num": 106, "mapped_labels": ["ai"]}
+{"label_list": ["advice", "chatGPT", "developer", "output", "correctness", "AI", "ML", "community", "development"], "num": 101, "mapped_labels": ["ai", "chatgpt", "machine learning", "developer"]}
+{"label_list": ["interface", "AI", "chatGPT"], "num": 104, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["future", "artificial intelligence", "ChatGPT"], "num": 109, "mapped_labels": ["ai", "chatgpt", "future"]}
+{"label_list": ["members", "token", "launch", "promotion", "AI", "development", "tools", "cryptocurrency"], "num": 108, "mapped_labels": ["ai", "cryptocurrency", "marketing", "marketplace", "seo", "promotion"]}
+{"label_list": ["entertainment", "artificial intelligence", "social media", "finance", "gaming", "advice"], "num": 107, "mapped_labels": ["finance", "accounting", "investment", "trade", "trading", "valuation", "wealth", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["AI", "employment", "technology", "companies"], "num": 111, "mapped_labels": ["ai", "employment", "job", "job market", "unemployment", "worker", "career", "job lo"]}
+{"label_list": ["education", "assessment", "technology", "AI"], "num": 110, "mapped_labels": ["ai", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["ChatGPT", "birthday", "brainstorming", "artificial intelligence", "OpenAI"], "num": 105, "mapped_labels": ["ai", "chatgpt", "openai", "birthday"]}
+{"label_list": ["AI", "transcription", "technology"], "num": 113, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "appreciation", "ChatGPT", "OpenAI"], "num": 112, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["webinar", "AI", "education", "teachers", "ChatGPT"], "num": 117, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "conference", "webinar", "summit", "panel discussion"]}
+{"label_list": ["AI", "expert", "quotes", "press release"], "num": 118, "mapped_labels": ["ai"]}
+{"label_list": ["Microsoft", "AI", "investment", "ChatGPT", "technology"], "num": 120, "mapped_labels": ["ai", "chatgpt", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["ChatGPT", "experiment", "AI", "wellbeing", "January"], "num": 121, "mapped_labels": ["ai", "chatgpt", "health", "healthcare", "wellbeing", "addiction", "covid-19"]}
+{"label_list": ["AI", "discussions", "user experiences", "data", "applications"], "num": 122, "mapped_labels": ["ai", "data", "data analytic", "data science"]}
+{"label_list": ["AI", "demonstration", "training", "assistants"], "num": 119, "mapped_labels": ["ai"]}
+{"label_list": ["finance", "cryptocurrency", "technology", "artificial intelligence", "virtual reality", "memes", "blockchain", "trading", "decentralization", "gaming"], "num": 114, "mapped_labels": ["cryptocurrency", "blockchain", "decentralization", "virtual reality", "finance", "accounting", "investment", "trade", "trading", "valuation", "wealth"]}
+{"label_list": ["extensions", "chatgpt", "video", "education", "AI", "tutorials"], "num": 123, "mapped_labels": ["ai", "chatgpt", "education", "learn", "teacher", "student", "teach", "tutorial", "knowledge", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["radio", "interview", "ChatGPT", "podcast", "artificial intelligence", "technology", "cybersecurity", "cybercrime", "cyberwar", "privacy"], "num": 115, "mapped_labels": ["ai", "chatgpt", "cybersecurity", "entertainment", "music", "video", "podcast", "radio", "film"]}
+{"label_list": ["AI", "ChatGPT", "tools", "technology"], "num": 124, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["education", "teachers", "assessment", "artificial intelligence", "discussion"], "num": 116, "mapped_labels": ["education", "learn", "teacher", "student", "teach", "tutorial", "knowledge"]}
+{"label_list": ["AI", "etiquette"], "num": 129, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "cryptocurrency", "narratives", "Oraichain", "Fetch", "SingularityNET", "Ocean Protocol"], "num": 125, "mapped_labels": ["ai", "cryptocurrency", "ocean protocol", "singularitynet"]}
+{"label_list": ["apps", "AI", "workflow", "3D", "motion capture", "metaverse"], "num": 127, "mapped_labels": ["ai", "3d", "3d modeling", "metaverse", "workflow"]}
+{"label_list": ["AI", "image generators", "ChatGPT", "OpenAI"], "num": 133, "mapped_labels": ["ai", "chatgpt", "openai"]}
+{"label_list": ["AI", "Trademark", "Article", "Art"], "num": 134, "mapped_labels": ["ai", "art", "artist", "art industry", "design", "graphic design", "write", "book", "article", "essay", "poetry", "narrative"]}
+{"label_list": ["AI", "Microsoft", "ChatGPT", "technology"], "num": 131, "mapped_labels": ["ai", "chatgpt"]}
+{"label_list": ["AI", "entrepreneurs", "project management", "ChatGPT", "business"], "num": 126, "mapped_labels": ["ai", "chatgpt", "project management"]}
+{"label_list": ["learning", "discussion", "critical thinking", "ChatGPT", "AI", "edtech", "coaches"], "num": 128, "mapped_labels": ["ai", "chatgpt", "critical thinking"]}
+{"label_list": ["humor", "science", "atoms", "AI", "machine learning", "deep learning", "data science", "data analytics"], "num": 130, "mapped_labels": ["ai", "deep learning", "machine learning", "data", "data analytic", "data science", "research", "science", "history", "philosophy", "mathematics", "biology", "academic", "humor"]}
+{"label_list": ["AI", "books", "creativity", "publishing", "social media"], "num": 136, "mapped_labels": ["ai", "creativity"]}
+{"label_list": ["lecture", "students", "technology", "AI", "ChatGPT", "MachineLearning", "Transformers", "NLP"], "num": 132, "mapped_labels": ["ai", "chatgpt", "machine learning", "nlp", "education"]}
+{"label_list": ["recognition", "reviewer", "syndrome", "AI"], "num": 138, "mapped_labels": ["ai"]}
+{"label_list": ["AI", "cryptocurrency", "ecosystems", "projects", "innovation"], "num": 137, "mapped_labels": ["ai", "cryptocurrency", "innovation"]}
+{"label_list": ["mentorship", "career", "software", "AI", "ChatGPT", "engineering", "recording"], "num": 135, "mapped_labels": ["ai", "chatgpt", "app", "application", "software", "employment", "job", "job market", "unemployment", "worker", "career", "job lo", "teacher"]}
+{"label_list": ["poetry", "AI", "Runecast"], "num": 139, "mapped_labels": ["ai", "write", "book", "article", "essay", "poetry", "narrative"]}

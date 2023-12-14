@@ -1,0 +1,5 @@
+{"Personnel category": ["Employee"], "nation": ["United Kingdom"], "News Topics": ["Obituary"], "accident tags": [], "event cause": [], "event Consequence": [], "excel_num": "1", "row_num": "1"}
+{"Personnel category": ["Government Department"], "nation": ["United Kingdom"], "News Topics": ["Education"], "accident tags": [], "event cause": [], "event Consequence": [], "excel_num": "2", "row_num": "2"}
+{"Personnel category": ["Government Department"], "nation": ["United Kingdom"], "News Topics": ["Education"], "accident tags": [], "event cause": ["Quality Assessment"], "event Consequence": ["Negative Evaluation"], "excel_num": "6", "row_num": "6"}
+{"Personnel category": ["Educator", "Corporate Leader", "Student"], "Nation": [], "News Topics": ["Education", "Empathy Technologies", "Diversity"], "accident tags": [], "event cause": [], "event Consequence": [], "excel_num": "7", "row_num": "7"}
+{"Personnel category": ["Educator", "Corporate Employee", "Tech Industry Leader"], "nation": [], "News Topics": ["Empathy Technologies", "Education", "Corporate Leadership"], "accident tags": [], "event cause": [], "event Consequence": [], "excel_num": "9", "row_num": "9"}
