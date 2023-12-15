@@ -594,7 +594,7 @@ def draw_barchart_func():
         'Psychological Harm': 'mental harm',
         'Physical Harm': 'physical harm',
         'Economic Loss': 'economic loss',
-        'Human Rights Violations': 'discrimination',
+        'Human Rights Violations': 'human rights violations',
         'Sensitivity of Privacy Violations': 'sensitive privacy breach',
         'Persistence of Economic Loss': 'is the economic loss persistent',
         'Vulnerable Group Attributes of Equal Rights Violations': 'discrimination_vulnerable_group',
@@ -631,15 +631,22 @@ def draw_barchart_func():
         ],
         [
             # "Plan and Design",
-            'GIS Data Timeliness',
-            'GIS Data Accuracy',
-            'GIS Data Acquisition',
-            'GIS Data Preprocessing',
-            'GIS Data Integration',
-            "GIS Data Storage and Management",
+
+
+
+
+
+            "GIS Data Application and Dissemination",
             "GIS Data Analysis and Processing",
-            "GIS Data Application and Dissemination"
+            "GIS Data Storage and Management",
+            'GIS Data Integration',
+            'GIS Data Preprocessing',
+            'GIS Data Acquisition',
+
         ],
+        [
+            'GIS Data Accuracy',
+        'GIS Data Timeliness',],
         [
             "Psychological Harm",
             "Physical Harm",
@@ -671,7 +678,8 @@ def draw_barchart_func():
 
                 if name_str not in severity_dict:
                     severity_dict[name_str]={}
-                severity_dict[name_str]["Level "+num_level]=round(total_dict[i]*100,2)
+
+                severity_dict[name_str]["Level "+num_level.replace("1","2")]=round(total_dict[i]*100,2)
             elif "scope" in i:
                 if "scope" not in severity_dict:
                     severity_dict["scope"]={}
@@ -1151,15 +1159,15 @@ def read_properties_from_jsonl():
     bb=0
     with open(r'C:\Users\Morning\Desktop\hiwi\heart\paper\a_merged_classification_result.jsonl', 'r') as file:
         for line in file:
+            bb+=1
             json_line = json.loads(line)
-            if json_line['geographic information data source integration issues']==True:
+            if json_line['discrimination']==True or json_line['privacy violation']==True:
                 aa+=1
-                if json_line['geographical information application issues']==True:
-                    bb+=1
+
     print("geographical information application issues",bb)
     print('geographic information data source integration issues',aa)
-    print(bb/aa)
-
+    print(aa/bb)
+# read_properties_from_jsonl()
 def create_heat_map_based_on_merged_jsonl():
     # psychological_harm=['vulnerable group','whether mental harm is reversible','whether it affects self-identity and values']
     import pandas as pd
