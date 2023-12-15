@@ -676,11 +676,12 @@ def draw_barchart_func():
                 if "scope" not in severity_dict:
                     severity_dict["scope"]={}
                 severity_dict["scope"][reverse_dict(mapping)[i]] = round(total_dict[i]*100,2)
-    for num,i in enumerate(severity_dict):
-        dict(sorted(severity_dict[i].items()))
+    def draw_pie_chart():
+        for num,i in enumerate(severity_dict):
+            dict(sorted(severity_dict[i].items()))
 
-        draw_pie_basic(list(        dict(sorted(severity_dict[i].items())).values()),list(        dict(sorted(severity_dict[i].items())).keys()),i)
-    def draw_barchart():
+            draw_pie_basic(list(        dict(sorted(severity_dict[i].items())).values()),list(        dict(sorted(severity_dict[i].items())).keys()),i)
+    def draw_bar_chart():
         for num,i in enumerate(comibed_graph):
             if isinstance(i,list):
                 transfered_list=[]
@@ -693,7 +694,8 @@ def draw_barchart_func():
     # draw_pie_basic([20,40,40],['level sample1',"level sample2","level sample3"])
 
     print(all_word)
-    # draw_barchart()
+    draw_pie_chart()
+    # draw_bar_chart()
     # for i in all_word:
     #     if mapping[i] not in b_word:
     #         print
@@ -702,27 +704,27 @@ def draw_pie_basic(percentages,labels,num=""):
         import matplotlib.pyplot as plt
         import matplotlib as mpl
         mpl.rcParams['font.family'] = 'Times New Roman'
-        mpl.rcParams['font.size'] = 12
+        mpl.rcParams['font.size'] = 16
 
         print(percentages)
         # if sum(percentages) != 100:
         #     raise ValueError("The percentages must sum up to 100.")
         def autopct_format(pct):
-            return ('%.1f%%' % pct) if pct > 2 else ''
+            return ('%.1f%%' % pct) if pct > 3 else ''
         # Red color tones for the pie slices
         red_colors = ['#F95738', '#F47742', '#F1B555',  '#BFC1AF']
 
         # Create the pie chart
-        fig, ax = plt.subplots(figsize=(10, 8))
+        fig, ax = plt.subplots(figsize=(10,10))
         wedges, texts,autotexts  = ax.pie(percentages, colors=red_colors, labels=labels, autopct=autopct_format, startangle=90, counterclock=False)
 
         # Add a legend with percentages
         legend_labels = [f'{label}: {p}%' for label, p in zip(labels, percentages)]
-        ax.legend(wedges, legend_labels, title="Percentages", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+        ax.legend(wedges, legend_labels, title="Percentages", loc='lower right')
 
         # Equal aspect ratio ensures that pie is drawn as a circle
         ax.axis('equal')
-        plt.setp(autotexts, size=8)
+        plt.setp(autotexts, size=16)
         plt.tight_layout()
         # Display the pie chart
         # plt.show()
@@ -747,7 +749,10 @@ def draw_barchart_basic(categories,existence,num):
         return formatted_text
 
     # Adjusting the colors to light blue and pink as per the request
-    fig, ax = plt.subplots(figsize=(10, 8))
+    if len(categories)==1:
+        fig, ax = plt.subplots(figsize=(10, 2))
+    else:
+        fig, ax = plt.subplots(figsize=(10, 4))
     mpl.rcParams['font.family'] = 'Times New Roman'
     mpl.rcParams['font.size'] = 16
     # Using light blue and pink colors for the bars
@@ -769,13 +774,18 @@ def draw_barchart_basic(categories,existence,num):
     ax.barh(ind, non_existence, left=existence, color=light_blue, edgecolor='black', height=0.4, label='Non-existence')
 
     # Adding the labels again
+    thredhold_num=10
     for i, (ex, non_ex) in enumerate(zip(existence, non_existence)):
-        ax.text(ex / 2, i, f'{ex}%', ha='center', va='center', color='black')
-        ax.text(ex + non_ex / 2, i, f'{non_ex}%', ha='center', va='center', color='black')
+        if ex >= thredhold_num:
+            ax.text(ex / 2, i, f'{ex}%', ha='center', va='center', color='white')
+        if non_ex >= thredhold_num:
+            ax.text(ex + non_ex / 2, i, f'{non_ex}%', ha='center', va='center', color='white')
 
     # Set the y ticks with the category names again
     plt.yticks(ind, categories_short)
-    plt.xlabel('Percentage')
+    from matplotlib.ticker import MaxNLocator
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.set_xticklabels([f'{int(x)}%' for x in ax.get_xticks()])
     # plt.title('Bar Chart of Existence vs Non-existence')
 
     # Adjust the legend to the right side of the bar chart again
