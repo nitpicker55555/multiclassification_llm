@@ -49,7 +49,7 @@ def with_model(key_labels,candidate_labels):
 def map_words_2_dicts(json_structure,all_list,filename):
 
 
-  def get_bottom_keys(dict_):
+  def get_bottom_keys(nested_dict,result_list):
       """
       get all bottom keys return as {key:{}}
 
@@ -58,20 +58,30 @@ def map_words_2_dicts(json_structure,all_list,filename):
       :param dict_:
       :return:
       """
-      new_dict = {}
-      for category in dict_:
-          for subcategory in dict_[category]:
-              for item in dict_[category][subcategory]:
-                  new_dict[item] = []
-      print(new_dict)
-      return new_dict
+
+      def recurse(element):
+          if isinstance(element, dict):
+              # 对于字典中的每个键值对，递归调用
+              for key, value in element.items():
+                  recurse(value)
+          elif isinstance(element, list):
+              # 如果元素是列表，则输出
+              result_list.extend(element)
+              # print(result_list)
+
+      recurse(nested_dict)
+      result_dict = {}
+      for i in set(result_list):
+          result_dict[i] = []
+      return (result_dict)
+
   try:
     with open("tem_file/mapped_dicts_%s"%filename, 'r') as f:
       mapped_dicts = json.load(f)
       print("mapped_dicts exist",mapped_dicts)
   except:
       # all_list=get_clean_word(file_path)
-      bottom_keys=get_bottom_keys(json_structure)
+      bottom_keys=get_bottom_keys(json_structure,[])
 
       mapped_dicts=with_model(all_list[:500],bottom_keys)
       with open("tem_file/mapped_dicts_%s"%filename, 'w', encoding='utf-8') as file:
