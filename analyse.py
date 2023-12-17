@@ -679,7 +679,11 @@ def draw_barchart_func():
                 if name_str not in severity_dict:
                     severity_dict[name_str]={}
 
-                severity_dict[name_str]["Level "+num_level.replace("1","2")]=round(total_dict[i]*100,2)
+                severity_dict[name_str]["Level " + num_level.replace("1", "2")] = round(total_dict[i] * 100, 2)
+
+
+
+
             elif "scope" in i:
                 if "scope" not in severity_dict:
                     severity_dict["scope"]={}
@@ -724,11 +728,18 @@ def draw_pie_basic(percentages,labels,num=""):
 
         # Create the pie chart
         fig, ax = plt.subplots(figsize=(10,10))
+        # explode = (0.5, 0, 0, 0)  # 只有'B'部分稍微分离出来
         wedges, texts,autotexts  = ax.pie(percentages, colors=red_colors, labels=labels, autopct=autopct_format, startangle=90, counterclock=False)
-
+        for text, label in zip(texts, labels):
+            if label == 'Level 2':
+                # 获取当前位置
+                x, y = text.get_position()
+                # 左移5个像素（这里的单位是数据单位，具体的效果可能需要根据图表的尺寸调整）
+                text.set_position((x - 15 / 72, y))
         # Add a legend with percentages
         legend_labels = [f'{label}: {p}%' for label, p in zip(labels, percentages)]
-        ax.legend(wedges, legend_labels, title="Percentages", loc='lower right')
+        ax.legend(wedges, legend_labels, title="Percentages", loc='center left', bbox_to_anchor=(1.2, 0.5))
+
 
         # Equal aspect ratio ensures that pie is drawn as a circle
         ax.axis('equal')
