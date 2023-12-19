@@ -268,9 +268,16 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words,mapping_ori_2_align):
     def replace_list_value(original_list, replacement_value,be_replaced_value):
         return [x if x != be_replaced_value else replacement_value for x in original_list]
 
-    def reverse_dict(input_dict):
-        reversed_dict = {v: k for k, v in input_dict.items()}
-        return reversed_dict
+    def find_key_by_value(dictionary, value):
+        """
+        This function takes a dictionary and a value as input.
+        It returns the key corresponding to the given value.
+        If the value is not found, it returns None.
+        """
+        for key, val in dictionary.items():
+            if val == value:
+                return key
+        return None
 
     """
 
@@ -282,7 +289,7 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words,mapping_ori_2_align):
     Returns:
 
     """
-    reversed_mapping_ori_2_align=reverse_dict(mapping_ori_2_align)
+    # reversed_mapping_ori_2_align=reverse_dict(mapping_ori_2_align)
     final_mapping_dict={}
     raw_list=sum_WithDuplicate_words.copy()
     for cluster_key in tqdm(pca_result_dict, desc="make_alignment"):
@@ -290,13 +297,13 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words,mapping_ori_2_align):
         if not str(cluster_key).startswith("-1"):
             print(cluster_key,"---",pca_result_dict[cluster_key].keys())
             for word in pca_result_dict[cluster_key].keys():
-                original_word=reversed_mapping_ori_2_align[word]
+                original_word=find_key_by_value(mapping_ori_2_align,word)
                 final_mapping_dict[original_word]=cluster_key.split("_")[1]
 
                 raw_list=replace_list_value(raw_list,cluster_key.split("_")[1],word)
         else:
             for word in pca_result_dict[cluster_key].keys():
-                original_word=reversed_mapping_ori_2_align[word]
+                original_word=find_key_by_value(mapping_ori_2_align,word)
                 final_mapping_dict[original_word]=word
 
 
@@ -336,10 +343,15 @@ if __name__ == '__main__':
     sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align=get_clean_word(args.file_path)
     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
     # print(pca_result_dict)
-    sorted_sum_list, raw_list = make_alignment(pca_result_dict, sum_WithDuplicate_words,mapping_ori_2_align)
+    with open("tem_file/pca_result_dict%s"%file_name, "w") as file:
+        json.dump(mapping_ori_2_align, file)
 
-    # with open("tem_file/2sorted_word_list_%s"%file_name, "w") as file:
-    #     json.dump(sorted_sum_list, file)
+    sorted_sum_list, raw_list,final_mapping_dict = make_alignment(pca_result_dict, sum_WithDuplicate_words,mapping_ori_2_align)
+
+    with open("tem_file/sorted_word_list_%s"%file_name, "w") as file:
+        json.dump(sorted_sum_list, file)
+    with open("tem_file/mapping_word_list_%s"%file_name, "w") as file:
+        json.dump(final_mapping_dict, file)
 
     # with open("tem_file/example_list_%s"%file_name, "r") as file:
     #     loaded_list = json.load(file)
