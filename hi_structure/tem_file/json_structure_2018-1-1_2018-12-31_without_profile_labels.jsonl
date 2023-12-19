@@ -1,0 +1,36 @@
+{
+  "Technology": {
+    "Artificial Intelligence": ["neuron neural network", "data mining technique", "machine vision", "neuromorphic neural network", "deepfake fake news", "autonomou aerial vehicle", "blockchain", "quantum computing"],
+    "Computing": ["cloud computing", "open-source software", "cybernetic", "software quality assurance", "virtual reality magic", "computer architecture education", "digital transition"],
+    "Internet": ["internet", "search engine search engine", "google google", "webinar webinar", "social media", "e-learning"],
+    "Data Science": ["bioinformatic", "big data", "data visualization", "text mining", "data quality", "statistic analysis", "predictive analytics"]
+  },
+  "Science and Research": {
+    "Biology": ["cancer biology", "molecular biology", "neurocontroller", "genetic engineering", "human genomics"],
+    "Medicine": ["dental dentistry", "medical genetics", "neurology", "oncology", "public health"],
+    "Physics and Engineering": ["military engineering computing", "neutron neural network", "sensor fusion", "biomedical engineering"]
+  },
+  "Ethics and Society": {
+    "Ethics": ["artificial intelligence ethic", "transhumanist ethic", "ethic in the fourth industrial revolution", "sex robot ethic"],
+    "Law and Governance": ["rule of law", "intellectual property", "data privacy", "cyber law"],
+    "Social Issues": ["suicide prevention", "sustainability", "humanitarian issues", "social justice"]
+  },
+  "Business and Economics": {
+    "Finance": ["fintech fintech", "cryptocurrency", "economic forecasting"],
+    "Management": ["human resource management", "corporate responsibility", "leadership", "entrepreneurship"],
+    "Marketing": ["digital marketing", "market analysis", "consumer behavior"]
+  },
+  "Media and Communication": {
+    "Journalism": ["british journalist", "data journalism", "digital media"],
+    "Publishing": ["science publishing group", "editor-in-chief", "academic publishing"],
+    "Social Media": ["twitter", "podcast podcast", "youtube"]
+  },
+  "Education": {
+    "Teaching Methods": ["computer-aided instruction", "pedagogy", "e-learning"],
+    "Academic Fields": ["physics education", "medical education", "technology education"]
+  },
+  "Miscellaneous": {
+    "Arts and Entertainment": ["sci-fi", "digital art", "music industry"],
+    "General Topics": ["future of work", "global climate change", "urban development"]
+  }
+}

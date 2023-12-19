@@ -97,11 +97,13 @@ def get_clean_word(file_path,top_words=None):
             processed_result=processed_result[:-1]
         return processed_result
     sum_WithDuplicate_words = []
+    mapping_ori_2_align={}
     for word, tag in tagged_words:
         wordnet_tag = get_wordnet_pos(tag)
         lemmatized_word = lemmatizer.lemmatize(word, wordnet_tag)
-
-        sum_WithDuplicate_words.append(remove_s(lemmatized_word))
+        second_processed_word=remove_s(lemmatized_word)
+        mapping_ori_2_align[word]=second_processed_word
+        sum_WithDuplicate_words.append(second_processed_word)
     #sum_WithDuplicate_words is the list of all words after cleaning (without removing duplicate)
     # 将集合转换为列表
     # word_counts = Counter(sum_WithDuplicate_words)
@@ -118,7 +120,7 @@ def get_clean_word(file_path,top_words=None):
     #                "microsoft company", "usa", "USA", "China", "England", "india", "woman", "sex", "traffic accident",
     #                "murder", "Apple company", "man", "life", "discrimination", "criminal", "sexual abuse"]
     sentence_embeddings = model.encode(sum_WithoutDuplicate)
-    return sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words
+    return sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align
 def calculate_tokens(string):
     if isinstance(string,list):
         string=" ".join(string)
@@ -260,14 +262,47 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
     # with open('compressed_embedding.json', 'w') as f:
     #     json.dump(pca_result_dict, f)
     return pca_result_dict
-def make_alignment(pca_result_dict,sum_WithDuplicate_words):
+
+def make_alignment(pca_result_dict,sum_WithDuplicate_words,mapping_ori_2_align):
     # aa={"1_cluster":{"a":[],"b":[],"c":[]},"2_ccc":{"aa":[],"vv":[],"cc":[]}}
+    def replace_list_value(original_list, replacement_value,be_replaced_value):
+        return [x if x != be_replaced_value else replacement_value for x in original_list]
+
+    def reverse_dict(input_dict):
+        reversed_dict = {v: k for k, v in input_dict.items()}
+        return reversed_dict
+
+    """
+
+
+    Args:
+        pca_result_dict:  cluster_key 为 index_中心标签名，pca_result_dict[cluster_key].keys() 为该聚类的子元素，cluster_key.split("_")[1]为聚类中心标签名
+        mapping_ori_2_align: [word]=second_processed_word
+
+    Returns:
+
+    """
+    reversed_mapping_ori_2_align=reverse_dict(mapping_ori_2_align)
+    final_mapping_dict={}
     raw_list=sum_WithDuplicate_words.copy()
     for cluster_key in tqdm(pca_result_dict, desc="make_alignment"):
     # for cluster_key in pca_result_dict:
         if not str(cluster_key).startswith("-1"):
+            print(cluster_key,"---",pca_result_dict[cluster_key].keys())
             for word in pca_result_dict[cluster_key].keys():
-                raw_list = [cluster_key.split("_")[1] if item == word else item for item in raw_list]
+                original_word=reversed_mapping_ori_2_align[word]
+                final_mapping_dict[original_word]=cluster_key.split("_")[1]
+
+                raw_list=replace_list_value(raw_list,cluster_key.split("_")[1],word)
+        else:
+            for word in pca_result_dict[cluster_key].keys():
+                original_word=reversed_mapping_ori_2_align[word]
+                final_mapping_dict[original_word]=word
+
+
+
+
+
 
     word_counts = Counter(raw_list)
     # print(word_counts)
@@ -275,7 +310,7 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words):
     sorted_sum_list = sorted(word_counts, key=lambda x: (-word_counts[x], x))
     print(len(sorted_sum_list),"len(sorted_sum_list)")
 
-    return sorted_sum_list,raw_list
+    return sorted_sum_list,raw_list,final_mapping_dict
 
 """
 sorted_sum_list: 按照词频排序的经过处理对齐，去重后的词汇
@@ -298,12 +333,13 @@ if __name__ == '__main__':
     # if args.num_beams==None:
     #     args.num_beams=10
     file_name = os.path.basename(args.file_path)
-    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(args.file_path)
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align=get_clean_word(args.file_path)
     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
-    sorted_sum_list, raw_list = make_alignment(pca_result_dict, sum_WithDuplicate_words)
+    # print(pca_result_dict)
+    sorted_sum_list, raw_list = make_alignment(pca_result_dict, sum_WithDuplicate_words,mapping_ori_2_align)
 
-    with open("tem_file/sorted_word_list_%s"%file_name, "w") as file:
-        json.dump(sorted_sum_list, file)
+    # with open("tem_file/2sorted_word_list_%s"%file_name, "w") as file:
+    #     json.dump(sorted_sum_list, file)
 
     # with open("tem_file/example_list_%s"%file_name, "r") as file:
     #     loaded_list = json.load(file)

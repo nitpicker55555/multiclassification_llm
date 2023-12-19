@@ -1,76 +1,4 @@
-data_structure={
-  "Military and Conflict": {
-
-    "War and Deployment": {
-      "Medical Center",
-      "Military Deployment",
-      "Wartime Atrocities",
-      "Army",
-      "War"
-    },
-
-  },
-  "Environment and Education": {
-    "School Projects": {
-      "Green Schools",
-      "Student-Led Initiatives",
-      "Environmental Movement"
-    },
-    "Geography Education": {
-      "Sustainable Development",
-      "Geography Curriculum",
-      "Environmental Impact"
-    }
-  },
-  "Humanitarianism and Development": {
-    "International Aid": {
-      "Aid Work",
-      "Western Capital",
-      "Geographic Location"
-    },
-    "Humanitarian Field": {
-      "Neo-Colonialism",
-      "Management and Experience",
-      "Western Organizations"
-    }
-  },
-  "Technology and Innovation": {
-    "Artificial Intelligence": {
-      "large-language model",
-      "Automation and Employment",
-      "machine learning"
-    },
-    "Data and Geographic Information": {
-      "Encryption and Data Protection",
-      "Geographic Information Systems",
-      "Technology Procurement"
-    }
-  },
-  "Politics and Social Issues": {
-    "Tradition and Modern Views": {
-      "Gender Identity",
-      "Religious Education",
-      "Socialization and Independence"
-    },
-    "Policy and Legislation": {
-      "Transgender Rights",
-      "Political Funding",
-      "Public Service"
-    }
-  },
-  "Climate Change and Sustainability": {
-    "Climate Justice": {
-      "Carbon Tax",
-      "Climate Debt",
-      "Renewable Energy"
-    },
-    "Environmental Initiatives": {
-      "Green Technologies",
-      "Sustainable Fashion",
-      "Carbon Footprint"
-    }
-  }
-}
+import os
 import json
 def calculate_and_draw_func(data_structure,merged_dict,file_path):
     def convert_bottom_key_to_0(input_dict):
@@ -267,40 +195,36 @@ def convert_lists_to_sets(d):
         elif isinstance(value, dict):
             convert_lists_to_sets(value)
 
-from ddd_map_words_to_dicts import map_words_2_dicts
-from ccc_get_structure import get_structure
-from bbb_clean_and_alignment import get_clean_word
-from bbb_clean_and_alignment import get_cluster
-from bbb_clean_and_alignment import make_alignment
-from aaa_model_set_label import main_model
-file_name=r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\Geo-AI ethics cases.xlsx"
-# main_model(file_name,' illustrate')
-json_file_name=""
-if ".xlsx" in file_name:
-    json_file_name=file_name.replace(".xlsx","_labels.jsonl")
-elif ".jsonl" in file_name:
-    json_file_name=file_name.replace(".jsonl","_labels.jsonl")
-if json_file_name:
-
-    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words=get_clean_word(json_file_name)
-
-    pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.7,2)
-
-    sorted_sum_list,raw_list=make_alignment(pca_result_dict,sum_WithDuplicate_words)
+# from ddd_map_words_to_dicts import map_words_2_dicts
+# from ccc_get_structure import get_structure
+# from bbb_clean_and_alignment import get_clean_word
+# from bbb_clean_and_alignment import get_cluster
+# from bbb_clean_and_alignment import make_alignment
+# from aaa_model_set_label import main_model
+def convert_lists_to_sets_in_dict(nested_dict):
+    for key, value in nested_dict.items():
+        if isinstance(value, list):
+            nested_dict[key] = set(value)
+        elif isinstance(value, dict):
+            convert_lists_to_sets_in_dict(value)
+    return nested_dict
+num_str="17"
 
 
-    json_structure=get_structure(sorted_sum_list,json_file_name)
-
-    mapped_dicts=map_words_2_dicts(json_structure,sorted_sum_list,json_file_name)
-
-
-    print("json_structure",json_structure)
-    print("mapped_dicts",mapped_dicts)
-
-    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,file_name)
-    from draw_pic import draw_pic_func
-
-    draw_pic_func(json_structure, all_num_keys)
+#C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\tem_file\mapped_dicts_2017-1-1_2017-12-31_without_profile_labels.jsonl
+json_structure_name=r'tem_file\json_structure_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+mapped_dicts_name=r'tem_file\tem_file\mapped_dicts_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+twitter_original_name=r'twitter_files\20%s-1-1_20%s-12-31_without_profile.jsonl'%(num_str,num_str)
+# from simple_jsonl import jsonl_read
+with open(json_structure_name,'r') as file:
+    json_str=file.read()
+json_structure=json.loads(json_str)
+with open(mapped_dicts_name,'r') as file:
+    json_str=file.read()
+mapped_dicts=json.loads(json_str)
+all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name)
+from draw_pic import draw_pic_func
+draw_pic_func(json_structure, all_num_keys)
 
 # file_name=r'sum_all_labels.jsonl'
 

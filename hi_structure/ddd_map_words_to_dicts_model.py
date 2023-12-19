@@ -39,7 +39,8 @@ def with_model(key_labels,candidate_labels):
 
                     results[label].append(label_)
             except:
-                print(label_," ",label)
+                pass
+                # print(label_," ",label)
             # 保存和对比置信度
 
 
@@ -82,6 +83,8 @@ def map_words_2_dicts(json_structure,all_list,filename):
   except:
       # all_list=get_clean_word(file_path)
       bottom_keys=get_bottom_keys(json_structure,[])
+      print("bottom_keys-------:\n",bottom_keys)
+      print("len bottom_keys-------:\n", len(bottom_keys))
 
       mapped_dicts=with_model(all_list[:500],bottom_keys)
       with open("tem_file/mapped_dicts_%s"%filename, 'w', encoding='utf-8') as file:
