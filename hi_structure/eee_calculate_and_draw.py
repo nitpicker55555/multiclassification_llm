@@ -243,6 +243,7 @@ if __name__ == '__main__':
     with open(json_structure_name,'r') as file:
         json_str=file.read()
     json_structure=json.loads(json_str)
+    json_structure=convert_lists_to_sets_in_dict(json_structure)
     with open(mapped_dicts_name,'r') as file:
         json_str=file.read()
     mapped_dicts=json.loads(json_str)
