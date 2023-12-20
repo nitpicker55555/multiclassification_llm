@@ -73,6 +73,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
                   discard_word[0]+=1
               else:
                   discard_word[1] += 1
+                  discard_word[2].append(item)
           # ori_label=[final_mapping_dict[item] for item in processed_labels if item in final_mapping_dict]
           # print(len(ori_label),"ori")
           for item in dict_:
@@ -87,7 +88,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
                 pass
         except:
             pass
-        discard_word=[0,0]
+        discard_word=[0,0,[]]
         mapped_label_list=[]
         print(file_path,"label_list_2_mapped_list")
 
@@ -113,7 +114,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
                         json_str = json.dumps(json_obj)
                         f.write(json_str + '\n')
                 mapped_label_list.append(json_obj)
-        print(len(mapped_label_list))
+        print(len(mapped_label_list),"sum value")
         print(discard_word,"discard_word")
         all_num_keys = return_label_analyse(mapped_label_list)
         return all_num_keys
@@ -251,8 +252,16 @@ if __name__ == '__main__':
         json_str=file.read()
     final_mapping_dict=json.loads(json_str)
     all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name,final_mapping_dict)
-    from draw_pic import draw_pic_func
-    draw_pic_func(json_structure, all_num_keys,num_str)
+    # from draw_pic import draw_pic_func
+    with open(r"tem_file\all_num_keys%s-1-1_20%s-12-31_without_profile_labels.jsonl",
+              'w',
+              encoding='utf-8') as f:
+        json_str = json.dumps(all_num_keys)
+        f.write(json_str + '\n')
+    from draw_pic_sunburst import draw_pic
+
+    draw_pic(json_structure,all_num_keys ,num_str)
+    # draw_pic_func(json_structure, all_num_keys,num_str)
 
 # file_name=r'sum_all_labels.jsonl'
 
