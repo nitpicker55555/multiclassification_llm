@@ -295,7 +295,7 @@ def make_alignment(pca_result_dict,sum_WithDuplicate_words,mapping_ori_2_align):
     for cluster_key in tqdm(pca_result_dict, desc="make_alignment"):
     # for cluster_key in pca_result_dict:
         if not str(cluster_key).startswith("-1"):
-            print(cluster_key,"---",pca_result_dict[cluster_key].keys())
+            # print(cluster_key,"---",pca_result_dict[cluster_key].keys())
             for word in pca_result_dict[cluster_key].keys():
                 original_word=find_key_by_value(mapping_ori_2_align,word)
                 final_mapping_dict[original_word]=cluster_key.split("_")[1]
@@ -343,14 +343,14 @@ if __name__ == '__main__':
     sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align=get_clean_word(args.file_path)
     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
     # print(pca_result_dict)
-    with open("tem_file/pca_result_dict%s"%file_name, "w") as file:
-        json.dump(mapping_ori_2_align, file)
+    # with open("tem_file/mapping_ori_2_align%s"%file_name, "w") as file:
+    #     json.dump(mapping_ori_2_align, file)
 
     sorted_sum_list, raw_list,final_mapping_dict = make_alignment(pca_result_dict, sum_WithDuplicate_words,mapping_ori_2_align)
 
     with open("tem_file/sorted_word_list_%s"%file_name, "w") as file:
         json.dump(sorted_sum_list, file)
-    with open("tem_file/mapping_word_list_%s"%file_name, "w") as file:
+    with open("tem_file/final_mapping_dict%s"%file_name, "w") as file:
         json.dump(final_mapping_dict, file)
 
     # with open("tem_file/example_list_%s"%file_name, "r") as file:

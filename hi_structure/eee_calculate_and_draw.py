@@ -1,6 +1,6 @@
 import os
 import json
-def calculate_and_draw_func(data_structure,merged_dict,file_path):
+def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_dict):
     def convert_bottom_key_to_0(input_dict):
       for key, value in input_dict.items():
         if isinstance(value, set):
@@ -62,46 +62,61 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path):
               if i.lower().replace("#", "").replace(" ","") in lowercase_list:
                 return True
             # return bool(set(list1) & set(list2))
-    def map_label(ori_label,dict_):
+
+    def map_label(processed_labels,dict_,discard_word):
 
           result_labels=[]
+          ori_label=[]
+          for item in processed_labels:
+              if item in final_mapping_dict:
+                  ori_label.append(final_mapping_dict[item] )
+                  discard_word[0]+=1
+              else:
+                  discard_word[1] += 1
+          # ori_label=[final_mapping_dict[item] for item in processed_labels if item in final_mapping_dict]
+          # print(len(ori_label),"ori")
           for item in dict_:
             if have_common_elements(dict_[item],ori_label):
               result_labels.append(item)
-          return result_labels
+          return result_labels,discard_word
     def label_list_2_mapped_list(file_path):
+        try:
+            with open("%s_hierarchy_labels.jsonl" % file_path,
+                      'w',
+                      encoding='utf-8') as f:
+                pass
+        except:
+            pass
+        discard_word=[0,0]
+        mapped_label_list=[]
+        print(file_path,"label_list_2_mapped_list")
 
-          mapped_label_list=[]
-          print(file_path,"label_list_2_mapped_list")
+        file_name_str=file_path+"_labels.jsonl"
+        # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
 
-          file_name_str=file_path+"_labels.jsonl"
-          # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
-
-
-          with open(file_name_str, 'r',
-                    encoding='utf-8') as file:
+        with open(file_name_str, 'r',
+                  encoding='utf-8') as file:
             # 遍历文件中的每一行
             for line in file:
-              # 解析每一行的JSON内容
-                  json_obj = json.loads(line)
+                # 解析每一行的JSON内容
+                json_obj = json.loads(line)
 
-                  # 检查'content'键是否在JSON对象中
-                  if 'label_list' in json_obj:
-                        # 将content键的值附加到列表中
-                        mapped_labels=map_label(json_obj['label_list'],merged_dict)
-                        json_obj['mapped_labels']=mapped_labels
+                # 检查'content'键是否在JSON对象中
+                if 'label_list' in json_obj:
+                    # 将content键的值附加到列表中
+                    mapped_labels,discard_word = map_label(json_obj['label_list'], merged_dict,discard_word)
+                    json_obj['mapped_labels'] = mapped_labels
 
-
-
-                        with open("%s_hierarchy_labels.jsonl" % file_path,
-                                    'a',
-                                    encoding='utf-8') as f:
-                            json_str = json.dumps(json_obj)
-                            f.write(json_str + '\n')
-                  mapped_label_list.append(json_obj)
-          print(len(mapped_label_list))
-          all_num_keys=return_label_analyse(mapped_label_list)
-          return all_num_keys
+                    with open("%s_hierarchy_labels.jsonl" % file_path,
+                              'a',
+                              encoding='utf-8') as f:
+                        json_str = json.dumps(json_obj)
+                        f.write(json_str + '\n')
+                mapped_label_list.append(json_obj)
+        print(len(mapped_label_list))
+        print(discard_word,"discard_word")
+        all_num_keys = return_label_analyse(mapped_label_list)
+        return all_num_keys
     def count_elements(lst):
           """
           This function takes a list as input and returns a dictionary.
@@ -208,23 +223,35 @@ def convert_lists_to_sets_in_dict(nested_dict):
         elif isinstance(value, dict):
             convert_lists_to_sets_in_dict(value)
     return nested_dict
-num_str="17"
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
 
 
-#C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\tem_file\mapped_dicts_2017-1-1_2017-12-31_without_profile_labels.jsonl
-json_structure_name=r'tem_file\json_structure_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
-mapped_dicts_name=r'tem_file\tem_file\mapped_dicts_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
-twitter_original_name=r'twitter_files\20%s-1-1_20%s-12-31_without_profile.jsonl'%(num_str,num_str)
-# from simple_jsonl import jsonl_read
-with open(json_structure_name,'r') as file:
-    json_str=file.read()
-json_structure=json.loads(json_str)
-with open(mapped_dicts_name,'r') as file:
-    json_str=file.read()
-mapped_dicts=json.loads(json_str)
-all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name)
-from draw_pic import draw_pic_func
-draw_pic_func(json_structure, all_num_keys)
+    parser.add_argument('--year_str', type=str, help='year_str')
+    args = parser.parse_args()
+    num_str=args.year_str
+
+
+    #C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\tem_file\mapped_dicts_2017-1-1_2017-12-31_without_profile_labels.jsonl
+    json_structure_name=r'tem_file\json_structure_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+    mapped_dicts_name=r'tem_file\mapped_dicts_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+    twitter_original_name=r'twitter_files\20%s-1-1_20%s-12-31_without_profile.jsonl'%(num_str,num_str)
+    final_mapping_dict=r'tem_file\final_mapping_dict20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+    # from simple_jsonl import jsonl_read
+    with open(json_structure_name,'r') as file:
+        json_str=file.read()
+    json_structure=json.loads(json_str)
+    with open(mapped_dicts_name,'r') as file:
+        json_str=file.read()
+    mapped_dicts=json.loads(json_str)
+    with open(final_mapping_dict,'r') as file:
+        json_str=file.read()
+    final_mapping_dict=json.loads(json_str)
+    all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name,final_mapping_dict)
+    from draw_pic import draw_pic_func
+    draw_pic_func(json_structure, all_num_keys)
 
 # file_name=r'sum_all_labels.jsonl'
 

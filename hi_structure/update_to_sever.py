@@ -21,6 +21,7 @@ scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\update_to_sever.py
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\fff_sentiment_analyse.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\aaa_model_set_label.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\bbb_clean_and_alignment.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
+scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\eee_calculate_and_draw.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\ccc_get_structure.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\anaconda\Lib\site-packages\gpt_api_singel.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
@@ -44,7 +45,7 @@ python bbb_clean_and_alignment.py
 
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\update_to_sever2.py C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\update_to_sever2.py
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\example_list.json C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\example_list.json
-scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\ C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\
+scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\ C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_files C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 D:
 cd puzhen\hi_structure
@@ -64,4 +65,5 @@ start /B python bbb_clean_and_alignment.py --file_path twitter_files\2022-1-1_20
 start /B python ccc_get_structure.py --file_path twitter_files\2015-1-1_2015-12-31_without_profile_labels.jsonl
 start /B python ddd_map_words_to_dicts_model.py --file_path twitter_files\2015-1-1_2015-12-31_without_profile_labels.jsonl
 start /B python ccc_get_structure.py --file_path twitter_files\2017-1-1_2017-12-31_without_profile_labels.jsonl
+start /B python eee_calculate_and_draw.py --year_str 16
 """
