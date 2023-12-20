@@ -252,7 +252,7 @@ if __name__ == '__main__':
     final_mapping_dict=json.loads(json_str)
     all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name,final_mapping_dict)
     from draw_pic import draw_pic_func
-    draw_pic_func(json_structure, all_num_keys)
+    draw_pic_func(json_structure, all_num_keys,num_str)
 
 # file_name=r'sum_all_labels.jsonl'
 

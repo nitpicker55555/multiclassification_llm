@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import networkx as nx
-def draw_pic_func(data="",num_data=''):
+def draw_pic_func(data="",num_data='',name=""):
     # 构建数据结构
     # data = {
     #     "Technology and Innovation": {
@@ -117,4 +117,4 @@ def draw_pic_func(data="",num_data=''):
     plt.title("Hierarchy Tree with Selective Labels", fontsize=15)
     # plt.show()
 # draw_pic_func()
-    plt.savefig("sa.png")
+    plt.savefig(name+"_tree.png")
