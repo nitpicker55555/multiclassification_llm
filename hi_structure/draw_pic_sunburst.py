@@ -80,5 +80,5 @@ def draw_pic(nested_dict,value_dict,name,mode="total"):
         values='value',
         branchvalues=branchvalues
     )
-    fig.show()
-    # pio.write_html(fig, file='tem_file\\%s.html'%name)
+    # fig.show()
+    pio.write_html(fig, file='tem_file\\sunburst_%s.html'%name)

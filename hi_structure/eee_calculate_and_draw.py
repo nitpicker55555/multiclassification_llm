@@ -230,16 +230,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
 
 
-    parser.add_argument('--year_str', type=str, help='year_str')
+    parser.add_argument('--file_path', type=str, help='file_path')
     args = parser.parse_args()
-    num_str=args.year_str
-
-
+    file_path=args.file_path
+    file_name = os.path.basename(args.file_path)
+# twitter_files\2018-1-1_2018-12-31_without_profile_labels.jsonl
     #C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file\tem_file\mapped_dicts_2017-1-1_2017-12-31_without_profile_labels.jsonl
-    json_structure_name=r'tem_file\json_structure_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
-    mapped_dicts_name=r'tem_file\mapped_dicts_20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
-    twitter_original_name=r'twitter_files\20%s-1-1_20%s-12-31_without_profile.jsonl'%(num_str,num_str)
-    final_mapping_dict=r'tem_file\final_mapping_dict20%s-1-1_20%s-12-31_without_profile_labels.jsonl'%(num_str,num_str)
+    json_structure_name=r'tem_file\json_structure_'+file_name
+    mapped_dicts_name=r'tem_file\mapped_dicts_'+file_name
+    twitter_original_name=file_path.replace("_labels.jsonl",".jsonl")
+    final_mapping_dict=r'tem_file\final_mapping_dict'+file_name
     # from simple_jsonl import jsonl_read
     with open(json_structure_name,'r') as file:
         json_str=file.read()
@@ -253,14 +253,14 @@ if __name__ == '__main__':
     final_mapping_dict=json.loads(json_str)
     all_num_keys=calculate_and_draw_func(json_structure,mapped_dicts,twitter_original_name,final_mapping_dict)
     # from draw_pic import draw_pic_func
-    with open(r"tem_file\all_num_keys%s-1-1_20%s-12-31_without_profile_labels.jsonl",
+    with open(r"tem_file\all_num_key"+file_name,
               'w',
               encoding='utf-8') as f:
         json_str = json.dumps(all_num_keys)
         f.write(json_str + '\n')
     from draw_pic_sunburst import draw_pic
 
-    draw_pic(json_structure,all_num_keys ,num_str)
+    draw_pic(json_structure,all_num_keys ,file_name.replace(".jsonl",""))
     # draw_pic_func(json_structure, all_num_keys,num_str)
 
 # file_name=r'sum_all_labels.jsonl'
