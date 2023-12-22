@@ -124,6 +124,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.max_out_put_length==None:
         args.max_out_put_length=100
+    if args.col_name==None:
+        args.col_name="content"
+    if args.thread_num==None:
+        args.thread_num=3
     if args.num_beams==None:
         args.num_beams=10
     main_model(args.file_path,args.col_name,args.thread_num,args.max_out_put_length,args.num_beams)

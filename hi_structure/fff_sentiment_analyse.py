@@ -91,8 +91,9 @@ def sentiment_model(file_name,col_nmae,thread_num):
             # print(content)
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
-            # 打印或处理 'content' 的值
-            if content not in pre_list and num not in num_list and content!="":
+            # 去除content重复
+            # if content not in pre_list and num not in num_list and content!="":
+            if  num not in num_list and content!="":
 
                 pre_list.append(content)
                 data_queue.put((content,num))
@@ -171,6 +172,10 @@ if __name__ == '__main__':
     # parser.add_argument('--num_beams', type=int, help='num_beams')
     args = parser.parse_args()
 
+    if args.col_name==None:
+        args.col_name="content"
+    if args.thread_num==None:
+        args.thread_num=3
     sentiment_model(args.file_path,args.col_name,args.thread_num)
 # sentiment_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")

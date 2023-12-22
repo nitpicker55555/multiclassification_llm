@@ -339,8 +339,8 @@ if __name__ == '__main__':
         args.min_samples=3
     # if args.num_beams==None:
     #     args.num_beams=10
-    file_name = os.path.basename(args.file_path)
-    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align=get_clean_word(args.file_path)
+    file_name = os.path.basename(args.file_path.replace(".jsonl","_labels.jsonl"))
+    sentence_embeddings,sum_WithoutDuplicate,sum_WithDuplicate_words,mapping_ori_2_align=get_clean_word(args.file_path.replace(".jsonl","_labels.jsonl"))
     pca_result_dict=get_cluster(sum_WithoutDuplicate,sentence_embeddings,0.5,args.min_samples)
     # print(pca_result_dict)
     # with open("tem_file/mapping_ori_2_align%s"%file_name, "w") as file:

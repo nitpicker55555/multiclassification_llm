@@ -4,12 +4,15 @@ import os
 
 
 def run_process(py_file,folder_path):
+    # python aaa_model_set_label.py --file_path twitter_files\2019-1-1_2019-12-31_without_profile.jsonl --col_name content --thread_num 10
+    # python bbb_clean_and_alignment.py --file_path twitter_files\2019-1-1_2019-12-31_without_profile.jsonl --min_samples 3
+    # python fff_sentiment_analyse.py --file_path twitter_files\2018-1-1_2018-12-31_without_profile.jsonl --col_name content --thread_num 10
     # folder_path = "twitter_files"
     task_list=[]
     # 使用os.walk遍历文件夹内的文件
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith("_labels.jsonl") and not file.endswith("_hierarchy_labels.jsonl") :
+            if file.endswith("_profile.jsonl")  :
                 file_path = os.path.join(root, file)
                 print(file_path)
                 task_list.append(file_path)
