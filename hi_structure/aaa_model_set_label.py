@@ -85,7 +85,8 @@ def main_model(file_name,col_nmae,thread_num,max_length,num_beams):
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
             # 打印或处理 'content' 的值
-            if content not in pre_list and num not in num_list and content!="":
+            # if content not in pre_list and num not in num_list and content!="":
+            if num not in num_list and content!="":
 
                 pre_list.append(content)
                 data_queue.put((content,num))
