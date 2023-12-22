@@ -1,6 +1,6 @@
 import json
 import queue
-import threading
+import multiprocessing
 from transformers import AutoModelForSequenceClassification
 from transformers import BertTokenizer
 from transformers import AutoTokenizer, AutoConfig
@@ -25,8 +25,11 @@ else:
 def one_process(data_queue,lock,file_name,thread_num):
     while True:
 
-        try:
-            content,num = data_queue.get(timeout=3)
+
+            content,num = data_queue.get()
+            if content == 'DONE':
+                print("empty===========", thread_num)
+                break
             # system_content="Please analyze the text provided below and generate labels for it in json format:{'label_list':[]}. The labels should be brief, general, do not exceed two words and consist only of nouns, excluding any adjectives or adverbs or attributive. For consistency across different texts, ensure that similar themes are aligned with similar labels. For example, if the text discusses a new technology in smartphone design, suitable labels might be 'technology', 'smartphones', 'innovation'. If it's about a historical event, labels like 'history', 'politics', 'conflict' might be appropriate. Remember, the labels should be as concise, universal ,and aligned as possible, focusing strictly on nouns. Response in json format:{'label_list':[]}"
             # user_content=content
 
@@ -40,16 +43,15 @@ def one_process(data_queue,lock,file_name,thread_num):
             # result_dict=dict_extract(result_str)
 
             file_name=str(file_name).replace(".jsonl","")
-            with lock:
+            lock.acquire()  # 获取锁
+            try:
                 with open("%s_sentiment.jsonl"%file_name,
                           'a',
                           encoding='utf-8') as f:
                     json_str = json.dumps(result_dict)
                     f.write(json_str + '\n')
-        except queue.Empty:
-                    print( "empty===========", thread_num)
-
-                    break
+            finally:
+                lock.release()  # 释放锁
 import pandas as pd
 
 def xlsx_to_json(xlsx_file_path, json_file_path):
@@ -66,7 +68,7 @@ def sentiment_model(file_name,col_nmae,thread_num):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
-    data_queue=queue.Queue()
+    data_queue = multiprocessing.Queue()
     num_list=[]
     pre_list=[]
     try:
@@ -100,11 +102,12 @@ def sentiment_model(file_name,col_nmae,thread_num):
 
     print("task length",len(pre_list))
     threads = []
-    lock = threading.Lock()
+    lock = multiprocessing.Lock()
     if not data_queue.empty():
-
         for i in range(thread_num):
-            t = threading.Thread(target=one_process, args=(
+            data_queue.put(('DONE',i))
+        for i in range(thread_num):
+            t =  multiprocessing.Process(target=one_process, args=(
                 data_queue, lock,file_name, i))
             t.start()
             threads.append(t)
@@ -167,16 +170,16 @@ if __name__ == '__main__':
 
     parser.add_argument('--file_path', type=str, help='file_path')
     parser.add_argument('--col_name', type=str, help='col_name')
-    parser.add_argument('--thread_num', type=int, help='thread_num')
+    parser.add_argument('--processes_num', type=int, help='processes_num')
     # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
     # parser.add_argument('--num_beams', type=int, help='num_beams')
     args = parser.parse_args()
 
     if args.col_name==None:
         args.col_name="content"
-    if args.thread_num==None:
-        args.thread_num=3
-    sentiment_model(args.file_path,args.col_name,args.thread_num)
+    if args.processes_num==None:
+        args.processes_num=5
+    sentiment_model(args.file_path,args.col_name,args.processes_num)
 # sentiment_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")

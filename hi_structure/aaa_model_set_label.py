@@ -1,8 +1,8 @@
 import json
 import queue
-import threading
+# import threading
 import torch
-
+import multiprocessing
 # from gpt_api import change_statement
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
@@ -18,8 +18,11 @@ model = AutoModelForSeq2SeqLM.from_pretrained("bloomberg/KeyBART").to(device)
 def one_process(data_queue,lock,file_name,thread_num,max_length,num_beams):
     while True:
 
-        try:
-            content,num = data_queue.get(timeout=3)
+            content,num = data_queue.get()
+
+            if content == 'DONE':
+                print("empty===========", thread_num)
+                break
             # system_content="Please analyze the text provided below and generate labels for it in json format:{'label_list':[]}. The labels should be brief, general, do not exceed two words and consist only of nouns, excluding any adjectives or adverbs or attributive. For consistency across different texts, ensure that similar themes are aligned with similar labels. For example, if the text discusses a new technology in smartphone design, suitable labels might be 'technology', 'smartphones', 'innovation'. If it's about a historical event, labels like 'history', 'politics', 'conflict' might be appropriate. Remember, the labels should be as concise, universal ,and aligned as possible, focusing strictly on nouns. Response in json format:{'label_list':[]}"
             # user_content=content
 
@@ -33,16 +36,16 @@ def one_process(data_queue,lock,file_name,thread_num,max_length,num_beams):
             # result_dict=dict_extract(result_str)
 
             file_name=str(file_name).replace(".jsonl","")
-            with lock:
+            lock.acquire()  # 获取锁
+            try:
                 with open("%s_labels.jsonl"%file_name,
                           'a',
                           encoding='utf-8') as f:
                     json_str = json.dumps(result_dict)
                     f.write(json_str + '\n')
-        except queue.Empty:
-                    print( "empty===========", thread_num)
+            finally:
+                lock.release()  # 释放锁
 
-                    break
 import pandas as pd
 
 def xlsx_to_json(xlsx_file_path, json_file_path):
@@ -59,7 +62,7 @@ def main_model(file_name,col_nmae,thread_num,max_length,num_beams):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
-    data_queue=queue.Queue()
+    data_queue = multiprocessing.Queue()
     num_list=[]
     pre_list=[]
     try:
@@ -93,14 +96,16 @@ def main_model(file_name,col_nmae,thread_num,max_length,num_beams):
 
     print("task length",len(pre_list))
     threads = []
-    lock = threading.Lock()
+    lock = multiprocessing.Lock()
     if not data_queue.empty():
-
         for i in range(thread_num):
-            t = threading.Thread(target=one_process, args=(
+            data_queue.put(('DONE',i))
+        for i in range(thread_num):
+            t = multiprocessing.Process(target=one_process, args=(
                 data_queue, lock,file_name, i,max_length,num_beams))
             t.start()
             threads.append(t)
+
 
         for t in threads:
             t.join()
@@ -119,7 +124,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--file_path', type=str, help='file_path')
     parser.add_argument('--col_name', type=str, help='col_name')
-    parser.add_argument('--thread_num', type=int, help='thread_num')
+    parser.add_argument('--processes_num', type=int, help='processes_num')
     parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
     parser.add_argument('--num_beams', type=int, help='num_beams')
     args = parser.parse_args()
@@ -127,11 +132,11 @@ if __name__ == '__main__':
         args.max_out_put_length=100
     if args.col_name==None:
         args.col_name="content"
-    if args.thread_num==None:
-        args.thread_num=3
+    if args.processes_num==None:
+        args.processes_num=6
     if args.num_beams==None:
         args.num_beams=10
-    main_model(args.file_path,args.col_name,args.thread_num,args.max_out_put_length,args.num_beams)
+    main_model(args.file_path, args.col_name, args.processes_num, args.max_out_put_length, args.num_beams)
 # main_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
 # with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
 # main(r"sum_all.xlsx")
