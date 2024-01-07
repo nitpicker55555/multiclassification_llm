@@ -12,7 +12,8 @@ def run_process(py_file,folder_path):
     # 使用os.walk遍历文件夹内的文件
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith("_profile.jsonl")  :
+            # if file.endswith("_profile.jsonl")  :
+            if file.endswith("_merged_output.jsonl")  :
                 file_path = os.path.join(root, file)
                 print(file_path)
                 task_list.append(file_path)

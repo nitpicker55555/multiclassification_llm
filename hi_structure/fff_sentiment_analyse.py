@@ -94,8 +94,8 @@ def sentiment_model(file_name,col_nmae,thread_num):
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
             # 去除content重复
-            # if content not in pre_list and num not in num_list and content!="":
-            if  num not in num_list and content!="":
+            if content not in pre_list and num not in num_list and content!="":
+            # if  num not in num_list and content!="":
 
                 pre_list.append(content)
                 data_queue.put((content,num))

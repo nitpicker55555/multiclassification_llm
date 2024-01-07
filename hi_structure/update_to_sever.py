@@ -46,6 +46,7 @@ scp -r "C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\
 
 
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\update_to_sever.py C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\update_to_sever2.py
+scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_data2\Ethics of AI_merged_output.jsonl C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 
 python bbb_clean_and_alignment.py
 
@@ -55,7 +56,7 @@ scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\example_list.json C:\
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\ C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_files C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 
-scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_files C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
+scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_data2 C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 
 
 
