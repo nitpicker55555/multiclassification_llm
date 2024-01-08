@@ -257,7 +257,11 @@ def get_cluster(sum_WithoutDuplicate, sentence_embeddings, eps, min_samples):
                 pca_result_dict[cluster_center_label].update({str(item_): label_embedding_pair[item_]})
         # if cluster==-1:
         #     print("len -1 cluster: ",len(labels))
-        print(f"Cluster {cluster}: {len(labels)}")
+
+
+        # print(f"Cluster {cluster}: {len(labels)}")
+
+
     # print(pca_result_dict)
     # with open('compressed_embedding.json', 'w') as f:
     #     json.dump(pca_result_dict, f)
