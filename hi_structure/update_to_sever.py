@@ -57,6 +57,7 @@ scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file\ C:\Users\Morning\Des
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_files C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 
 scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_data2 C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
+scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\tem_file C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\
 
 
 
