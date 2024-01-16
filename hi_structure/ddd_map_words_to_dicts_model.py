@@ -11,6 +11,7 @@ else:
     device = torch.device("cpu")
     print("CUDA is not available. Using CPU...")
 
+
 def with_model(key_labels,candidate_labels):
 
 
@@ -37,6 +38,8 @@ def with_model(key_labels,candidate_labels):
                 if label_score > 0.9:
                     # print(label_,label)
 
+
+
                     results[label].append(label_)
             except:
                 pass
@@ -45,9 +48,11 @@ def with_model(key_labels,candidate_labels):
 
 
     return (results)
-
-
-def map_words_2_dicts(json_structure,all_list,filename):
+def get_four_fifths_of_list(lst):
+    # 计算要截取的元素数量
+    num_elements_to_include = int(len(lst) * 0.4)
+    return lst[:num_elements_to_include]
+def map_words_2_dicts(json_structure,all_list,filename,forget_old):
 
 
   def get_bottom_keys(nested_dict,result_list):
@@ -77,16 +82,22 @@ def map_words_2_dicts(json_structure,all_list,filename):
       return (result_dict)
 
   try:
-    with open("tem_file/mapped_dicts_%s"%filename, 'r') as f:
-      mapped_dicts = json.load(f)
-      print("mapped_dicts exist",mapped_dicts)
+    if forget_old!=True:
+
+        with open("tem_file/mapped_dicts_%s"%filename, 'r') as f:
+          mapped_dicts = json.load(f)
+          print("mapped_dicts exist",mapped_dicts)
+    else:
+
+        raise Exception ("start to overwrite old tem_file")
   except:
+      print("start to analyse...")
       # all_list=get_clean_word(file_path)
       bottom_keys=get_bottom_keys(json_structure,[])
       print("bottom_keys-------:\n",bottom_keys)
       print("len bottom_keys-------:\n", len(bottom_keys))
 
-      mapped_dicts=with_model(all_list[:500],bottom_keys)
+      mapped_dicts=with_model( get_four_fifths_of_list(all_list),bottom_keys)
       with open("tem_file/mapped_dicts_%s"%filename, 'w', encoding='utf-8') as file:
         json.dump(mapped_dicts, file)
   return mapped_dicts
@@ -96,7 +107,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
 
 
-    parser.add_argument('--file_path', type=str, help='file_path')
+    parser.add_argument('--file_path', type=str, help='file_path') #只是获取文件名
+    parser.add_argument('--forget_old', action='store_true', help='file_path') #只是获取文件名
+
+
     # parser.add_argument('--min_samples', type=int, help='min_samples')
     # parser.add_argument('--thread_num', type=int, help='thread_num')
     # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
@@ -107,4 +121,4 @@ if __name__ == '__main__':
         loaded_list = json.load(file)
     with open("tem_file/json_structure_%s"%file_name, "r") as file:
         json_structure = json.load(file)
-    map_words_2_dicts(json_structure,loaded_list,file_name)
+    map_words_2_dicts(json_structure,loaded_list,file_name,args.forget_old)

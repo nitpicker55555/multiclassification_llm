@@ -100,5 +100,9 @@ CUDA kernel errors might be asynchronously reported at some other API call, so t
 For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
 Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
 
+The provided hypothesis_template "This text is about deepfake." was not able to be formatted with the target labels. Make sure the passed template includes formatting syntax such as {} where the label should go.
 
+Error processing batch: The provided hypothesis_template "This text is about social media." was not able to be formatted with the target labels. Make sure the passed template includes formatting syntax such as {} where the label should go.
+Error processing batch: The provided hypothesis_template "This text is about world war ii." was not able to be formatted with the target labels. Make sure the passed template includes formatting syntax such as {} where the label should go.
+Error processing batch: The provided hypothesis_template "This text is about neurocontroller." was not able to be formatted with the target labels. Make sure the passed template includes formatting syntax such as {} where the label should go.
 """

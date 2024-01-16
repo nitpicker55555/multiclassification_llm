@@ -20,6 +20,7 @@ conda activate puzhenenv
 ssh TUM_LfK@10.162.94.1
 
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure TUM_LfK@10.162.94.1:D:\puzhen\
+scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure TUM_LfK@10.162.94.1:D:\puzhen\
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\requirements.txt TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\update_to_sever.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
@@ -76,7 +77,7 @@ start /B python ccc_get_structure.py --file_path twitter_files\2015-1-1_2015-12-
 start /B python ddd_map_words_to_dicts_model.py --file_path twitter_files\2015-1-1_2015-12-31_without_profile_labels.jsonl
 start /B python ccc_get_structure.py --file_path twitter_files\2017-1-1_2017-12-31_without_profile_labels.jsonl
 start /B python eee_calculate_and_draw.py --year_str 16
-
+`
 
 scp  C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\*.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r "C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-12\twitter data2\twitter_data2" TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
