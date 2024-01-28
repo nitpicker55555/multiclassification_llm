@@ -1,5 +1,6 @@
 import os
 import json
+from tqdm import tqdm
 def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_dict):
     def convert_bottom_key_to_0(input_dict):
       for key, value in input_dict.items():
@@ -100,7 +101,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
         with open(file_name_str, 'r',
                   encoding='utf-8') as file:
             # 遍历文件中的每一行
-            for line in file:
+            for line in tqdm(file,desc="map_label"):
                 # 解析每一行的JSON内容
                 json_obj = json.loads(line)
 
