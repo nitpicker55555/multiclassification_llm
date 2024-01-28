@@ -91,8 +91,10 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
         discard_word=[0,0,[]]
         mapped_label_list=[]
         print(file_path,"label_list_2_mapped_list")
-
-        file_name_str=file_path+"_labels.jsonl"
+        if "merged" in file_path:
+            file_name_str = file_path + ".jsonl"
+        else:
+            file_name_str=file_path+"_labels.jsonl"
         # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
 
         with open(file_name_str, 'r',
