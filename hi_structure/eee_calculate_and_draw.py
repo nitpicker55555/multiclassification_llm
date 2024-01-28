@@ -118,7 +118,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
                         f.write(json_str + '\n')
                 mapped_label_list.append(json_obj)
         print(len(mapped_label_list),"sum value")
-        print(discard_word,"discard_word")
+        # print(discard_word,"discard_word")
         all_num_keys = return_label_analyse(mapped_label_list)
         return all_num_keys
     def count_elements(lst):
@@ -178,7 +178,7 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
                 update_value(all_num_keys,i,num_dict[i])
             for i in higher_level_node_num:
               update_value(all_num_keys, i, higher_level_node_num[i])
-            print("num_labels_dict: ",all_num_keys)
+            # print("num_labels_dict: ",all_num_keys)
             print(len(all_num_keys))
             return all_num_keys
 
