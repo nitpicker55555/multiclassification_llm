@@ -23,11 +23,15 @@ def get_clean_word(file_path,top_words=None):
     # file_path = 'output_labels_list.jsonl'
 
     # Read and parse the JSONL file
+    data=[]
     with open(file_path, 'r') as file:
-        # Read the lines in the file
-        lines = file.readlines()
-        # Parse each line as a JSON object
-        data = [json.loads(line) for line in lines]
+        for line_number, line in enumerate(file, 1):
+            try:
+                data.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                print(f"Error parsing JSON on line {line_number}: {e}")
+                # Optionally, print the problematic line
+                print(f"Problematic line: {line}")
 
     # Initialize a Counter object to hold the word frequencies
     # word_freq = Counter()

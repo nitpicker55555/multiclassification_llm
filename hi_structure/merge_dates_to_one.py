@@ -1,40 +1,28 @@
 import json
 
-
-def merge_jsonl_with_path(jsonl_paths, output_file):
+def merge_jsonl_files(file_list, output_file):
     """
-    合并多个 JSONL 文件，并为每个 JSON 对象添加一个 'path' 键，其值为原 JSONL 文件的名称。
-
-    :param jsonl_paths: JSONL 文件的路径列表。
-    :param output_file: 输出文件的路径。
+    Merge multiple JSONL files into a single JSONL file without reading line by line.
+    It assumes each file is correctly formatted as JSONL.
     """
     with open(output_file, 'w') as outfile:
-        for path in jsonl_paths:
-            with open(path, 'r') as infile:
-                for line in infile:
-                    # 将每行字符串转换为 JSON 对象
-                    json_obj = json.loads(line)
-                    # 添加 'path' 键
-                    json_obj['path'] = path
-                    # 将修改后的 JSON 对象写回到新文件
-                    json.dump(json_obj, outfile)
-                    outfile.write('\n')
+        for fname in file_list:
+            with open(fname, 'r') as infile:
+                # Directly write the content of each file to the output file
+                outfile.write(infile.read())
+                # Ensure there's a newline at the end of each file's content
+                outfile.write('\n')
 
 
 # 使用示例
 import os
 
-labels = os.listdir(r'C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-12\Twitter Data\Twitter Data')
+labels = os.listdir(r'C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2')
+# labels = os.listdir(r'C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-12\Twitter Data\Twitter Data')
 # labels=['AI for good2015-1-1_2015-12-31_without_profile.jsonl', 'AI for good2015-1-1_2015-12-31_without_profile_labels.jsonl', 'AI for good2015-1-1_2015-12-31_without_profile_sentiment.jsonl', 'AI for good2016-1-1_2016-12-31_without_profile.jsonl', 'AI for good2016-1-1_2016-12-31_without_profile_labels.jsonl', 'AI for good2016-1-1_2016-12-31_without_profile_sentiment.jsonl', 'AI for good2017-1-1_2017-12-31_without_profile.jsonl', 'AI for good2017-1-1_2017-12-31_without_profile_labels.jsonl', 'AI for good2017-1-1_2017-12-31_without_profile_sentiment.jsonl', 'AI for good2018-1-1_2018-12-31_without_profile.jsonl', 'AI for good2018-1-1_2018-12-31_without_profile_labels.jsonl', 'AI for good2018-1-1_2018-12-31_without_profile_sentiment.jsonl', 'AI for good2019-1-1_2019-12-31_without_profile.jsonl', 'AI for good2019-1-1_2019-12-31_without_profile_labels.jsonl', 'AI for good2019-1-1_2019-12-31_without_profile_sentiment.jsonl', 'AI for good2020-1-1_2020-12-31_without_profile.jsonl', 'AI for good2020-1-1_2020-12-31_without_profile_labels.jsonl', 'AI for good2020-1-1_2020-12-31_without_profile_sentiment.jsonl', 'AI for good2021-1-1_2021-12-31_without_profile.jsonl', 'AI for good2021-1-1_2021-12-31_without_profile_labels.jsonl', 'AI for good2021-1-1_2021-12-31_without_profile_sentiment.jsonl', 'AI for good2022-1-1_2022-12-31_without_profile.jsonl', 'AI for good2022-1-1_2022-12-31_without_profile_labels.jsonl', 'AI for good2022-1-1_2022-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2015-1-1_2015-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2015-1-1_2015-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2015-1-1_2015-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2016-1-1_2016-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2016-1-1_2016-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2016-1-1_2016-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2017-1-1_2017-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2017-1-1_2017-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2017-1-1_2017-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2018-1-1_2018-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2018-1-1_2018-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2018-1-1_2018-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2019-1-1_2019-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2019-1-1_2019-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2019-1-1_2019-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2020-1-1_2020-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2020-1-1_2020-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2020-1-1_2020-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2021-1-1_2021-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2021-1-1_2021-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2021-1-1_2021-12-31_without_profile_sentiment.jsonl', 'Artificial Intelligence ethics2022-1-1_2022-12-31_without_profile.jsonl', 'Artificial Intelligence ethics2022-1-1_2022-12-31_without_profile_labels.jsonl', 'Artificial Intelligence ethics2022-1-1_2022-12-31_without_profile_sentiment.jsonl', 'Ethical AI2015-1-1_2015-12-31_without_profile.jsonl', 'Ethical AI2015-1-1_2015-12-31_without_profile_labels.jsonl', 'Ethical AI2015-1-1_2015-12-31_without_profile_sentiment.jsonl', 'Ethical AI2016-1-1_2016-12-31_without_profile.jsonl', 'Ethical AI2016-1-1_2016-12-31_without_profile_labels.jsonl', 'Ethical AI2016-1-1_2016-12-31_without_profile_sentiment.jsonl', 'Ethical AI2017-1-1_2017-12-31_without_profile.jsonl', 'Ethical AI2017-1-1_2017-12-31_without_profile_labels.jsonl', 'Ethical AI2017-1-1_2017-12-31_without_profile_sentiment.jsonl', 'Ethical AI2018-1-1_2018-12-31_without_profile.jsonl', 'Ethical AI2018-1-1_2018-12-31_without_profile_labels.jsonl', 'Ethical AI2018-1-1_2018-12-31_without_profile_sentiment.jsonl', 'Ethical AI2019-1-1_2019-12-31_without_profile.jsonl', 'Ethical AI2019-1-1_2019-12-31_without_profile_labels.jsonl', 'Ethical AI2019-1-1_2019-12-31_without_profile_sentiment.jsonl', 'Ethical AI2020-1-1_2020-12-31_without_profile.jsonl', 'Ethical AI2020-1-1_2020-12-31_without_profile_labels.jsonl', 'Ethical AI2020-1-1_2020-12-31_without_profile_sentiment.jsonl', 'Ethical AI2021-1-1_2021-12-31_without_profile.jsonl', 'Ethical AI2021-1-1_2021-12-31_without_profile_labels.jsonl', 'Ethical AI2021-1-1_2021-12-31_without_profile_sentiment.jsonl', 'Ethical AI2022-1-1_2022-12-31_without_profile.jsonl', 'Ethical AI2022-1-1_2022-12-31_without_profile_labels.jsonl', 'Ethical AI2022-1-1_2022-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2015-1-1_2015-12-31_without_profile.jsonl', 'Ethics In AI2015-1-1_2015-12-31_without_profile_labels.jsonl', 'Ethics In AI2015-1-1_2015-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2016-1-1_2016-12-31_without_profile.jsonl', 'Ethics In AI2016-1-1_2016-12-31_without_profile_labels.jsonl', 'Ethics In AI2016-1-1_2016-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2017-1-1_2017-12-31_without_profile.jsonl', 'Ethics In AI2017-1-1_2017-12-31_without_profile_labels.jsonl', 'Ethics In AI2017-1-1_2017-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2018-1-1_2018-12-31_without_profile.jsonl', 'Ethics In AI2018-1-1_2018-12-31_without_profile_labels.jsonl', 'Ethics In AI2018-1-1_2018-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2019-1-1_2019-12-31_without_profile.jsonl', 'Ethics In AI2019-1-1_2019-12-31_without_profile_labels.jsonl', 'Ethics In AI2019-1-1_2019-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2020-1-1_2020-12-31_without_profile.jsonl', 'Ethics In AI2020-1-1_2020-12-31_without_profile_labels.jsonl', 'Ethics In AI2020-1-1_2020-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2021-1-1_2021-12-31_without_profile.jsonl', 'Ethics In AI2021-1-1_2021-12-31_without_profile_labels.jsonl', 'Ethics In AI2021-1-1_2021-12-31_without_profile_sentiment.jsonl', 'Ethics In AI2022-1-1_2022-12-31_without_profile.jsonl', 'Ethics In AI2022-1-1_2022-12-31_without_profile_labels.jsonl', 'Ethics In AI2022-1-1_2022-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2015-1-1_2015-12-31_without_profile.jsonl', 'Ethics of AI2015-1-1_2015-12-31_without_profile_labels.jsonl', 'Ethics of AI2015-1-1_2015-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2016-1-1_2016-12-31_without_profile.jsonl', 'Ethics of AI2016-1-1_2016-12-31_without_profile_labels.jsonl', 'Ethics of AI2016-1-1_2016-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2017-1-1_2017-12-31_without_profile.jsonl', 'Ethics of AI2017-1-1_2017-12-31_without_profile_labels.jsonl', 'Ethics of AI2017-1-1_2017-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2018-1-1_2018-12-31_without_profile.jsonl', 'Ethics of AI2018-1-1_2018-12-31_without_profile_labels.jsonl', 'Ethics of AI2018-1-1_2018-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2019-1-1_2019-12-31_without_profile.jsonl', 'Ethics of AI2019-1-1_2019-12-31_without_profile_labels.jsonl', 'Ethics of AI2019-1-1_2019-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2020-1-1_2020-12-31_without_profile.jsonl', 'Ethics of AI2020-1-1_2020-12-31_without_profile_labels.jsonl', 'Ethics of AI2020-1-1_2020-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2021-1-1_2021-12-31_without_profile.jsonl', 'Ethics of AI2021-1-1_2021-12-31_without_profile_labels.jsonl', 'Ethics of AI2021-1-1_2021-12-31_without_profile_sentiment.jsonl', 'Ethics of AI2022-1-1_2022-12-31_without_profile.jsonl', 'Ethics of AI2022-1-1_2022-12-31_without_profile_labels.jsonl', 'Ethics of AI2022-1-1_2022-12-31_without_profile_sentiment.jsonl']
-label_list= {}
+label_list= []
 for i in labels:
-    if i.endswith("with_labels.jsonl"):
-        if i.split("20")[0] not in label_list:
-
-            label_list[(i.split("20")[0])]=[]
-        label_list[(i.split("20")[0])] .append(i)
-for i in label_list:
-
-    print(label_list[i])
-    jsonl_paths=label_list[i]
-    merge_jsonl_with_path(jsonl_paths, i+'_merged_output.jsonl')
+    if i.endswith("merged_output.jsonl"):
+        label_list.append(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2\\"+i)
+print(label_list)
+merge_jsonl_files(label_list,r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2\sum_merged_output.jsonl")

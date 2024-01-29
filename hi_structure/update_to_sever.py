@@ -31,6 +31,7 @@ scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\eee_calculate_and_
 
 
 
+scp -r "C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2\sum_merged_output.jsonl" TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_data2
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\ccc_get_structure.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\anaconda\Lib\site-packages\gpt_api_singel.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\ddd_map_words_to_dicts_model.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
@@ -73,13 +74,15 @@ start /B python bbb_clean_and_alignment.py --file_path twitter_files\2021-1-1_20
 start /B python bbb_clean_and_alignment.py --file_path twitter_files\2022-1-1_2022-12-31_without_profile_labels.jsonl --min_samples 3
 
 start /B python bbb_clean_and_alignment.py --file_path twitter_files\2017-1-1_2017-12-31_without_profile_labels.jsonl --min_samples 3
-start /B python ccc_get_structure.py --file_path twitter_files\2015-1-1_2015-12-31_without_profile_labels.jsonl
+start /B python bbb_clean_and_alignment.py --file_path twitter_data2\sum_merged_output.jsonl --min_samples 1
+start /B python ccc_get_structure.py --file_path twitter_data2\sum_merged_output.jsonl
 start /B python ddd_map_words_to_dicts_model.py --file_path twitter_files\2015-1-1_2015-12-31_without_profile_labels.jsonl
 start /B python ccc_get_structure.py --file_path twitter_files\2017-1-1_2017-12-31_without_profile_labels.jsonl
 start /B python eee_calculate_and_draw.py --year_str 16
 `
 
-scp  C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\*.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
++
+
 scp -r "C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-12\twitter data2\twitter_data2" TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 python ggg_panel.py --py_file bbb_clean_and_alignment.py --folder twitter_files
 python ggg_panel.py --py_file aaa_model_set_label.py --folder twitter_data2
