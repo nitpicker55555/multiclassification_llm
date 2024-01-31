@@ -2,14 +2,16 @@
 import json
 import queue
 import threading
-
+import logging
 import torch
+from tqdm import tqdm
 from transformers import AutoModelForSequenceClassification
 from transformers import TFAutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
 import numpy as np
 from scipy.special import softmax
 # from gpt_api import change_statement
+logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -20,7 +22,7 @@ else:
 
 
 # aa={"label_list": ["GPS privacy breach", "concerns", "senior GPs", "patients", "personal data", "NHS Digital", "doctors" surgeries", "Tower Hamlets", "east London", "patient data", "collection", "refusal", "Health and Social Care Act 2012", "privacy campaigners", "plans", "medical histories", "database", "private sector", "researchers", "NHS Digital", "data", "pseudonymization", "critics", "patients", "medical records", "breach", "collection", "sharing", "personal medical data", "patient awareness", "consent"]}
-def one_process(data_queue,lock,file_name,thread_num):
+def one_process(data_queue,lock,file_name,thread_num,pbar):
     while True:
 
         try:
@@ -32,7 +34,7 @@ def one_process(data_queue,lock,file_name,thread_num):
 
             result_dict['num'] = num
             result_dict['sentiment']=str(with_model(content))
-            print(result_dict)
+            # print(result_dict)
 
 
             # result_dict=dict_extract(result_str)
@@ -44,6 +46,7 @@ def one_process(data_queue,lock,file_name,thread_num):
                           encoding='utf-8') as f:
                     json_str = json.dumps(result_dict)
                     f.write(json_str + '\n')
+                pbar.update(1)
         except queue.Empty:
                     print( "empty===========", thread_num)
 
@@ -77,8 +80,8 @@ def sentiment_model(file_name,col_nmae):
     print("processed_",len(num_list))
     with open(file_name, 'r',encoding='utf-8') as file:
         for num,line in enumerate(file):
-            if num in num_list:
-                print(num,"processed")
+            # if num in num_list:
+            #     print(num,"processed")
             # 解析每行为 JSON 对象
             # print(line)
 
@@ -98,16 +101,23 @@ def sentiment_model(file_name,col_nmae):
     print("task length",len(pre_list))
     threads = []
     lock = threading.Lock()
+    pbar = tqdm(total=data_queue.qsize())
+
+    def thread_target(data_queue, lock, file_name, thread_id, pbar):
+        one_process(data_queue, lock, file_name, thread_id, pbar)
+
+
     if not data_queue.empty():
 
-        for i in range(1):
-            t = threading.Thread(target=one_process, args=(
-                data_queue, lock,file_name, i))
+        for i in range(8):
+            t = threading.Thread(target=thread_target, args=(
+                data_queue, lock,file_name, i, pbar))
             t.start()
             threads.append(t)
 
         for t in threads:
             t.join()
+    pbar.close()  # 关闭进度条
 def with_model(text):
     def preprocess(text):
         new_text = []
@@ -127,13 +137,13 @@ def with_model(text):
     text = preprocess(text)
     encoded_input = tokenizer(text, return_tensors='pt').to(device)
     output = model(**encoded_input)
-    scores = output[0][0].detach().cpu().numpy()
-    scores = softmax(scores)
+    scores = output[0][0].detach()  # 仍然在 GPU 上
+    scores = torch.softmax(scores, dim=0)  # 在 GPU 上执行 softmax
 
-    ranking = np.argsort(scores)
+    ranking = np.argsort(scores.cpu().numpy())
     ranking = ranking[::-1]
     l = config.id2label[ranking[0]]
     s = scores[ranking[0]]
 
     return {l:s}
-sentiment_model(r"new_ethical ai.jsonl","content")
+sentiment_model(r"/content/Ethical AI2019-1-1_2019-5-31_without_profile.jsonl","content")
