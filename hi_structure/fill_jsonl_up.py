@@ -57,22 +57,25 @@ def fill_jsonl_up(folder_path):
     all_content_dict={}
     time_dict = {}
     # 遍历指定文件夹中的所有文件
-    for filename in os.listdir(folder_path):
-        topic_name=filename.split("2")[0]
-        if topic_name not in topic_dict:
-            topic_dict[topic_name]=[]
-        topic_dict[topic_name].append(filename)
-    print(topic_dict)
+    for filename_sum in os.listdir(folder_path):
+        if "2" in filename_sum:
+            topic_name=filename_sum.split("2")[0]
+            if topic_name not in topic_dict:
+                topic_dict[topic_name]=[]
+            topic_dict[topic_name].append(filename_sum)
+    # print(topic_dict)
     for topic in topic_dict:
         all_content_dict.update(time_dict)
         time_dict = {}
 
-        for filename in topic_dict[topic]:
+        for filename_profile in topic_dict[topic]:
             # 检查文件名是否以 "sentiment" 结尾并且是 `.jsonl` 格式
-            if filename.endswith("_profile.jsonl"):
-                time_in_filename = return_time_of_filename(filename)
-                filename_identify = filename.split("_without")[0]
-                file_path = os.path.join(folder_path, filename)
+            if filename_profile.endswith("_profile.jsonl"):
+                if "sentiment" in filename_profile:
+                    print(filename_profile,"========")
+                time_in_filename = return_time_of_filename(filename_profile)
+                filename_identify = filename_profile.split("_without")[0]
+                file_path = os.path.join(folder_path, filename_profile)
                 # 打开并读取文件中的每一行
                 time_dict[time_in_filename]={}
                 with open(file_path, 'r', encoding='utf-8') as file:
@@ -80,6 +83,7 @@ def fill_jsonl_up(folder_path):
                             # 解析 JSON
                             data = json.loads(line)
                             time_dict[time_in_filename][num]=data['content']
+        # print(time_dict)
         for filename in os.listdir(folder_path):
             lost_date = 0
             filled_date = 0
@@ -99,6 +103,8 @@ def fill_jsonl_up(folder_path):
                             data = json.loads(line)
                             # sentiment_dict
                             sentiment_dict[data['num']]=data['sentiment']
+                if time_in_filename not in time_dict:
+                    print(time_dict,topic,filename)
                 for i in tqdm(time_dict[time_in_filename],desc="process"):
                     if i not in sentiment_dict:
                         same_index_list=find_key_by_value(time_dict[time_in_filename], time_dict[time_in_filename][i])

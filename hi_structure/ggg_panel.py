@@ -13,7 +13,7 @@ def run_process(py_file,folder_path,forget_old):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             # if file.endswith("_profile.jsonl")  :
-            if file.endswith("_merged_output.jsonl")  :
+            if file.endswith("_merged_output.jsonl")  and "sum" in file:
                 file_path = os.path.join(root, file)
                 print(file_path)
                 task_list.append(file_path)

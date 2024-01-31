@@ -1,0 +1,32 @@
+{
+  "Technology": {
+     "AI Technology & Research": ["ai-tech", "neuromuscular network", "neurocontroller", "neuromorphic network"],
+    "AI Ethics & Law": ["ethic & #artificial intelligence", "ethical ‘ai'", "intellectual property in AI", "AI legal issues"],
+    "Internet & Digital": ["internet", "data model", "cloud computing", "crypto", "blockchain technology"],
+    "Virtual & Augmented Reality": ["vr virtual reality", "augmented reality", "vr/augmented reality"]
+  },
+  "Health & Safety": {
+    "Prevention & Care": ["suicide prevention", "human-injury-prevention and prevention", "disease prevention", "cancer prevention society"],
+    "Dentistry & Oral Health": ["dental dentistry", "dentistry", "dental", "carie"],
+    "Occupational Safety": ["occupational safety", "work safety", "ergonomic design"]
+  },
+  "Science & Research": {
+    "Biological Sciences": ["bioinformatic", "molecular biology", "cellular biology", "genomic"],
+    "Data & Analytical Studies": ["data visualization", "bibliometric", "indexation", "empirical study"],
+    "Ethics & Legal Studies": ["intellectual property", "legal rule of law", "ethics", "legal counsel"]
+  },
+  "Education & Learning": {
+    "Teaching Methods": ["e learning teleformacion", "learning training", "educational entrepreneurship"],
+    "Research & Development in Education": ["empirical research", "collaborative learning community", "interdisciplinary study"]
+  },
+  "Business & Economics": {
+    "Financial Technologies": ["fintech", "cryptocurrency", "blockchain"],
+    "Market Analysis & Strategy": ["market research", "economic studies", "business analytics"],
+    "Human Resources & Management": ["human resource management", "organisational aspect", "profitability management"]
+  },
+  "Society & Culture": {
+    "Social Issues & Awareness": ["human trafficking", "gender discrimination", "public good society"],
+    "Media & Communication": ["journalism", "public opinion", "social media"],
+    "Cultural Studies": ["cultural heritage preservation", "history", "ethnic studies"]
+  }
+}

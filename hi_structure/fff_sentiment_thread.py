@@ -1,17 +1,15 @@
+
 import json
 import queue
-import multiprocessing
+import threading
+
+import torch
 from transformers import AutoModelForSequenceClassification
-from transformers import BertTokenizer
+from transformers import TFAutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
 import numpy as np
 from scipy.special import softmax
 # from gpt_api import change_statement
-import logging
-# from transformers import RobertaForSequenceClassification
-import torch
-# 设置警告级别来忽略不需要的警告
-logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -25,11 +23,8 @@ else:
 def one_process(data_queue,lock,file_name,thread_num):
     while True:
 
-
-            content,num = data_queue.get()
-            if content == 'DONE':
-                print("empty===========", thread_num)
-                break
+        try:
+            content,num = data_queue.get(timeout=3)
             # system_content="Please analyze the text provided below and generate labels for it in json format:{'label_list':[]}. The labels should be brief, general, do not exceed two words and consist only of nouns, excluding any adjectives or adverbs or attributive. For consistency across different texts, ensure that similar themes are aligned with similar labels. For example, if the text discusses a new technology in smartphone design, suitable labels might be 'technology', 'smartphones', 'innovation'. If it's about a historical event, labels like 'history', 'politics', 'conflict' might be appropriate. Remember, the labels should be as concise, universal ,and aligned as possible, focusing strictly on nouns. Response in json format:{'label_list':[]}"
             # user_content=content
 
@@ -43,15 +38,16 @@ def one_process(data_queue,lock,file_name,thread_num):
             # result_dict=dict_extract(result_str)
 
             file_name=str(file_name).replace(".jsonl","")
-            lock.acquire()  # 获取锁
-            try:
+            with lock:
                 with open("%s_sentiment.jsonl"%file_name,
                           'a',
                           encoding='utf-8') as f:
                     json_str = json.dumps(result_dict)
                     f.write(json_str + '\n')
-            finally:
-                lock.release()  # 释放锁
+        except queue.Empty:
+                    print( "empty===========", thread_num)
+
+                    break
 import pandas as pd
 
 def xlsx_to_json(xlsx_file_path, json_file_path):
@@ -64,11 +60,11 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def sentiment_model(file_name,col_nmae,thread_num):
+def sentiment_model(file_name,col_nmae):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
-    data_queue = multiprocessing.Queue()
+    data_queue=queue.Queue()
     num_list=[]
     pre_list=[]
     try:
@@ -93,31 +89,25 @@ def sentiment_model(file_name,col_nmae,thread_num):
             # print(content)
             # content = json_obj.get('Overview', None).replace('"Is_relevant": true', "").replace("{", "").replace("}", "")
 
-            # 去除content重复
+            # 打印或处理 'content' 的值
             if content not in pre_list and num not in num_list and content!="":
-            # if  num not in num_list and content!="":
 
                 pre_list.append(content)
                 data_queue.put((content,num))
 
     print("task length",len(pre_list))
-    
-
     threads = []
-    lock = multiprocessing.Lock()
-
+    lock = threading.Lock()
     if not data_queue.empty():
-        for i in range(thread_num):
-            data_queue.put(('DONE',i))
-        for i in range(thread_num):
-            t =  multiprocessing.Process(target=one_process, args=(
+
+        for i in range(1):
+            t = threading.Thread(target=one_process, args=(
                 data_queue, lock,file_name, i))
             t.start()
             threads.append(t)
 
         for t in threads:
             t.join()
-
 def with_model(text):
     def preprocess(text):
         new_text = []
@@ -127,25 +117,6 @@ def with_model(text):
             new_text.append(t)
         return " ".join(new_text)
 
-    def truncate_to_512_tokens(text):
-        # 检查CUDA是否可用
-        # device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-        # 初始化分词器
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        # tokenizer = tokenizer
-
-        # 将文本分词为token ID
-        encoded_input = tokenizer(text, return_tensors='pt', max_length=512, truncation=True)
-        encoded_input = {k: v for k, v in encoded_input.items()}
-
-        # 截取前512个token
-        truncated_token_ids = encoded_input['input_ids'][0]
-
-        # 将截取后的token ID转换回文本
-        truncated_text = tokenizer.decode(truncated_token_ids)
-
-        return truncated_text
     MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     config = AutoConfig.from_pretrained(MODEL)
@@ -153,7 +124,7 @@ def with_model(text):
     model = AutoModelForSequenceClassification.from_pretrained(MODEL).to(device)
     # model.save_pretrained(MODEL)
     # text = "Covid cases are increasing fast!"
-    text = truncate_to_512_tokens(preprocess(text))
+    text = preprocess(text)
     encoded_input = tokenizer(text, return_tensors='pt').to(device)
     output = model(**encoded_input)
     scores = output[0][0].detach().cpu().numpy()
@@ -165,26 +136,4 @@ def with_model(text):
     s = scores[ranking[0]]
 
     return {l:s}
-if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
-
-
-    parser.add_argument('--file_path', type=str, help='file_path')
-    parser.add_argument('--col_name', type=str, help='col_name')
-    parser.add_argument('--processes_num', type=int, help='processes_num')
-    # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
-    # parser.add_argument('--num_beams', type=int, help='num_beams')
-    args = parser.parse_args()
-
-    if args.col_name==None:
-        args.col_name="content"
-    if args.processes_num==None:
-        args.processes_num=5
-    sentiment_model(args.file_path,args.col_name,args.processes_num)
-# sentiment_model(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\uploads\example.jsonl","content")
-# with_model("Tesla is recalling all 363,000 US vehicles with its so-called “Full Self Driving” driver assist software due to safety risks. The National Highway Traffic Safety Administration found that Tesla’s FSD feature led to an unreasonable risk to motor vehicle safety, citing issues with the system's behavior at intersections. Tesla plans to address the issue through an over-the-air software update. There have been 18 reports of incidents related to these conditions, but no reported injuries or deaths. The recall affects all four Tesla models. NHTSA has identified at least 273 crashes involving Tesla’s driver assist systems.")
-# main(r"sum_all.xlsx")
-# tss()
-# print(dict_extract())
+sentiment_model(r"new_ethical ai.jsonl","content")

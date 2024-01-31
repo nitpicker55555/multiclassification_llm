@@ -7,11 +7,13 @@ def count_positive_in_jsonl(folder_path):
 
     # 遍历指定文件夹中的所有文件
     for filename in os.listdir(folder_path):
-        if filename.split("20")[0] not in topic_list and "merged" not in filename:
-            topic_list[filename.split("20")[0]]=[]
-        if "merged" not in filename:
-            topic_list[filename.split("20")[0]].append(filename)
+        if "2" in filename:
+            if filename.split("20")[0] not in topic_list and "merged" not in filename:
+                topic_list[filename.split("20")[0]]=[]
+            if "merged" not in filename:
+                topic_list[filename.split("20")[0]].append(filename)
     for topic in topic_list:
+        print(topic)
         positive_counts = {}
         negative_counts = {}
         neutral_counts = {}
@@ -38,22 +40,27 @@ def count_positive_in_jsonl(folder_path):
                         try:
                             # 解析 JSON
                             data = json.loads(line)
-                            time_str=time_dict[filename.split("_without")[0]][data['num']]
-                            if time_str not in positive_counts:
-                                positive_counts[time_str]=0
-                            if time_str not in negative_counts:
-                                negative_counts[time_str]=0
 
-                            if time_str not in neutral_counts:
-                                neutral_counts[time_str]=0
 
-                            # 检查并计数 "positive" 键
-                            if 'positive' in data['sentiment']:
-                                positive_counts[time_str] += 1
-                            elif 'negative' in data['sentiment']:
-                                negative_counts[time_str] += 1
-                            elif 'neutral' in data['sentiment']:
-                                neutral_counts[time_str] += 1
+                            try:
+                                time_str=time_dict[filename.split("_without")[0]][data['num']]
+                                if time_str not in positive_counts:
+                                    positive_counts[time_str]=0
+                                if time_str not in negative_counts:
+                                    negative_counts[time_str]=0
+
+                                if time_str not in neutral_counts:
+                                    neutral_counts[time_str]=0
+
+                                # 检查并计数 "positive" 键
+                                if 'positive' in data['sentiment']:
+                                    positive_counts[time_str] += 1
+                                elif 'negative' in data['sentiment']:
+                                    negative_counts[time_str] += 1
+                                elif 'neutral' in data['sentiment']:
+                                    neutral_counts[time_str] += 1
+                            except KeyError:
+                                print(filename.split("_without")[0],[data['num']])
                         except json.JSONDecodeError:
                             # 如果有行不是有效的 JSON，则忽略
                             pass
