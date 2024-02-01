@@ -12,6 +12,25 @@ def find_key_by_value(dictionary, target_value):
     """
     keys_with_target_value = [key for key, value in dictionary.items() if value == target_value]
     return keys_with_target_value
+def find_missing_elements(list1, list2):
+    """
+    Find elements that are in list1 but not in list2.
+
+    Parameters:
+    list1 (list): The first list.
+    list2 (list): The second list.
+
+    Returns:
+    list: A list of missing elements.
+    """
+    # Convert list1 to a set to improve lookup time, then find missing elements
+    if len(list1)<=len(list2):
+        return []
+
+    set1 = set(list1)
+    missing_elements = [element for element in set1 if element not in list2]
+    return missing_elements
+
 def have_intersection(list1, list2):
     """
     Function to determine if two lists have any common elements (intersection).
@@ -100,7 +119,10 @@ def fill_jsonl_up(folder_path):
                 with open(file_path, 'r', encoding='utf-8') as file:
                     for num,line in enumerate(file):
                             # 解析 JSON
-                            data = json.loads(line)
+                            try:
+                                data = json.loads(line)
+                            except:
+                                print(line)
                             # sentiment_dict
                             sentiment_dict[data['num']]=data['sentiment']
                 if time_in_filename not in time_dict:
@@ -110,7 +132,7 @@ def fill_jsonl_up(folder_path):
                         same_index_list=find_key_by_value(time_dict[time_in_filename], time_dict[time_in_filename][i])
                         if have_intersection(same_index_list,list(sentiment_dict.keys())):
                             index_shared=find_intersection(same_index_list,list(sentiment_dict.keys()))[0]
-                            sentiment_dict[i]=sentiment_dict[index_shared]
+                            sentiment_dict[index_shared]=sentiment_dict[index_shared]
                             filled_date+=1
                         else:
                             lost_date += 1
@@ -122,4 +144,57 @@ def fill_jsonl_up(folder_path):
                     for s in tqdm(sentiment_dict,desc='write'):
                         file.write(json.dumps({'num':s,'sentiment':sentiment_dict[s]})+"\n")
                 print(filename,lost_date,filled_date)
-fill_jsonl_up(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2")
+def fill_sentiment_up(path):
+    #遍历profile
+    profile_dcit={}
+
+    for filename in os.listdir(path):
+        # for filename in filename_sum:
+            if "2" in filename and filename.endswith("profile.jsonl"):
+                key_word=filename.split("20")[0]
+                if key_word not in profile_dcit:
+                    profile_dcit[key_word]=[]
+                profile_dcit[key_word].append(filename)
+    for key_word in profile_dcit:
+        for filename in profile_dcit[key_word]:
+            file_path=path+"\\"+filename
+            content_dict = {}
+            sentiment_dict={}
+            sentiment_ori_dict={}
+            sentiment_index=[]
+            print(filename,"==========")
+            with open(file_path,"r", encoding='utf-8') as file:
+                for num, line in enumerate(file):
+                    # 解析 JSON
+                    data = json.loads(line)
+
+                    content_dict[num] = data['content']
+            with open(file_path.replace(".jsonl","_sentiment.jsonl"), "r", encoding='utf-8') as file:
+                for num, line in enumerate(file):
+                    # 解析 JSON
+                    try:
+                        data = json.loads(line)
+                        # sentiment_index.append(data['num'])
+                        sentiment_ori_dict[data['num']]=data['sentiment']
+                        sentiment_dict[ content_dict[data['num']]] = data['sentiment']
+                    except:
+                        print("json error",num)
+            print(len(content_dict),len(sentiment_ori_dict))
+            missing_indexes=find_missing_elements(list(content_dict.keys()),list(sentiment_ori_dict.keys()))
+            missing_number = 0
+            if missing_indexes!=[]:
+
+                for missing_index in missing_indexes:
+                    missing_content=content_dict[missing_index]
+                    try:
+                        sentiment_missing_content=sentiment_dict[missing_content]
+                        sentiment_ori_dict[missing_index] = sentiment_missing_content
+                    except KeyError:
+                        # print(missing_index,"missing_content:",missing_content)
+                        missing_number+=1
+            with open(file_path.replace(".jsonl","_complete.jsonl"),'w') as file:
+                for s in tqdm(sentiment_ori_dict,desc='write'):
+                    file.write(json.dumps({'num':s,'sentiment':sentiment_ori_dict[s]})+"\n")
+
+            print(len(sentiment_ori_dict),"missing_number",missing_number)
+fill_sentiment_up(r"C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2")

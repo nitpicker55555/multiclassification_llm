@@ -63,7 +63,7 @@ def xlsx_to_json(xlsx_file_path, json_file_path):
         for _, row in df.iterrows():
             # 将行转换为JSON格式，并写入文件
             file.write(row.to_json(force_ascii=False) + '\n')
-def sentiment_model(file_name,col_nmae):
+def sentiment_model(file_name,col_nmae,thread_num):
     if ".xlsx" in file_name:
         xlsx_to_json(file_name,file_name.replace("xlsx","jsonl"))
         file_name=file_name.replace("xlsx","jsonl")
@@ -109,7 +109,7 @@ def sentiment_model(file_name,col_nmae):
 
     if not data_queue.empty():
 
-        for i in range(8):
+        for i in range(thread_num):
             t = threading.Thread(target=thread_target, args=(
                 data_queue, lock,file_name, i, pbar))
             t.start()
@@ -146,4 +146,22 @@ def with_model(text):
     s = scores[ranking[0]]
 
     return {l:s}
-sentiment_model(r"/content/Ethical AI2019-1-1_2019-5-31_without_profile.jsonl","content")
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Example Script with Named Arguments')
+
+
+    parser.add_argument('--file_path', type=str, help='file_path')
+    parser.add_argument('--col_name', type=str, help='col_name')
+    parser.add_argument('--processes_num', type=int, help='processes_num')
+    # parser.add_argument('--max_out_put_length', type=int, help='max_out_put_length')
+    # parser.add_argument('--num_beams', type=int, help='num_beams')
+    args = parser.parse_args()
+
+    if args.col_name==None:
+        args.col_name="content"
+    if args.processes_num==None:
+        args.processes_num=8
+    sentiment_model(args.file_path,args.col_name,args.processes_num)
+# sentiment_model(r"/content/Ethical AI2019-1-1_2019-5-31_without_profile.jsonl","content")

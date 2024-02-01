@@ -83,6 +83,9 @@ start /B python eee_calculate_and_draw.py --year_str 16
 
 +
 scp  C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\*.py TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
+scp -r "C:\Users\Morning\Desktop\hiwi\gpt_score\twitter_spider\Ethical AI2019-1-1_2019-5-31_without_profile.jsonl" C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\twitter_data2
+scp -r TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\graph\ C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\graph
+scp  "C:\Users\Morning\Downloads\Ethical AI2019-1-1_2019-5-31_without_profile_sentiment.jsonl" TUM_LfK@10.162.94.1:D:\puzhen\hi_structure\twitter_data2
 scp -r C:\Users\Morning\Desktop\hiwi\heart\paper\hi_structure\tem_file TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 scp -r "C:\Users\Morning\Documents\WeChat Files\wxid_pv2qqr16e4k622\FileStorage\File\2023-12\twitter data2\twitter_data2" TUM_LfK@10.162.94.1:D:\puzhen\hi_structure
 python ggg_panel.py --py_file bbb_clean_and_alignment.py --folder twitter_files
