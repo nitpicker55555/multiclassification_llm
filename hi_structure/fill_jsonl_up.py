@@ -192,7 +192,7 @@ def fill_sentiment_up(path):
                     except KeyError:
                         # print(missing_index,"missing_content:",missing_content)
                         missing_number+=1
-            with open(file_path.replace(".jsonl","_complete.jsonl"),'w') as file:
+            with open(file_path.replace(".jsonl","_sentiment_complete.jsonl"),'w') as file:
                 for s in tqdm(sentiment_ori_dict,desc='write'):
                     file.write(json.dumps({'num':s,'sentiment':sentiment_ori_dict[s]})+"\n")
 
