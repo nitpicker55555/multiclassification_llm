@@ -82,41 +82,49 @@ def calculate_and_draw_func(data_structure,merged_dict,file_path,final_mapping_d
               result_labels.append(item)
           return result_labels,discard_word
     def label_list_2_mapped_list(file_path):
+        mapped_label_list=[]
         try:
             with open("%s_hierarchy_labels.jsonl" % file_path,
-                      'w',
+                      'r',
                       encoding='utf-8') as f:
-                pass
+                for line in f:
+                    # 将每行的内容从JSON字符串转换为字典
+                    data = json.loads(line)
+                    mapped_label_list.append(data)
         except:
             pass
         discard_word=[0,0,[]]
-        mapped_label_list=[]
+
         print(file_path,"label_list_2_mapped_list")
         if "merged" in file_path:
             file_name_str = file_path + ".jsonl"
         else:
             file_name_str=file_path+"_labels.jsonl"
         # file_name_str=r"C:\Users\Morning\Desktop\hiwi\heart\paper\output_labels_list.jsonl"
-
+        processed_mapped_label=len(mapped_label_list)
         with open(file_name_str, 'r',
                   encoding='utf-8') as file:
             # 遍历文件中的每一行
-            for line in tqdm(file,desc="map_label"):
+            for num,line in enumerate(tqdm(file,desc="map_label")):
                 # 解析每一行的JSON内容
-                json_obj = json.loads(line)
+                if num>=processed_mapped_label:
+                    try:
+                        json_obj = json.loads(line)
 
-                # 检查'content'键是否在JSON对象中
-                if 'label_list' in json_obj:
-                    # 将content键的值附加到列表中
-                    mapped_labels,discard_word = map_label(json_obj['label_list'], merged_dict,discard_word)
-                    json_obj['mapped_labels'] = mapped_labels
+                        # 检查'content'键是否在JSON对象中
+                        if 'label_list' in json_obj:
+                            # 将content键的值附加到列表中
+                            mapped_labels,discard_word = map_label(json_obj['label_list'], merged_dict,discard_word)
+                            json_obj['mapped_labels'] = mapped_labels
 
-                    with open("%s_hierarchy_labels.jsonl" % file_path,
-                              'a',
-                              encoding='utf-8') as f:
-                        json_str = json.dumps(json_obj)
-                        f.write(json_str + '\n')
-                mapped_label_list.append(json_obj)
+                            with open("%s_hierarchy_labels.jsonl" % file_path,
+                                      'a',
+                                      encoding='utf-8') as f:
+                                json_str = json.dumps(json_obj)
+                                f.write(json_str + '\n')
+                        mapped_label_list.append(json_obj)
+                    except:
+                        print(line,"error")
         print(len(mapped_label_list),"sum value")
         # print(discard_word,"discard_word")
         all_num_keys = return_label_analyse(mapped_label_list)

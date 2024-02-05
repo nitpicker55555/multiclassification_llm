@@ -14,6 +14,7 @@ def count_positive_in_jsonl(folder_path):
                 topic_list[filename.split("20")[0]].append(filename)
     for topic in topic_list:
         print(topic)
+        sum_counts={}
         positive_counts = {}
         negative_counts = {}
         neutral_counts = {}
@@ -44,15 +45,14 @@ def count_positive_in_jsonl(folder_path):
 
                             try:
                                 time_str=time_dict[filename.split("_without")[0]][data['num']]
-                                if time_str not in positive_counts:
+                                if time_str not in sum_counts:
+                                    sum_counts[time_str]=0
                                     positive_counts[time_str]=0
-                                if time_str not in negative_counts:
                                     negative_counts[time_str]=0
-
-                                if time_str not in neutral_counts:
                                     neutral_counts[time_str]=0
 
                                 # 检查并计数 "positive" 键
+                                sum_counts[time_str]+=1
                                 if 'positive' in data['sentiment']:
                                     positive_counts[time_str] += 1
                                 elif 'negative' in data['sentiment']:
@@ -70,7 +70,7 @@ def count_positive_in_jsonl(folder_path):
                 # negative_counts[filename] = negative_count
         print(positive_counts)
         print(negative_counts)
-        plot_multiple_line_charts({"positive_counts":positive_counts,"negative_counts":negative_counts,"neutral_counts":neutral_counts},topic)
+        plot_multiple_line_charts({"sum_counts":sum_counts,"positive_counts":positive_counts,"negative_counts":negative_counts,"neutral_counts":neutral_counts},topic)
     # return positive_counts
 import plotly.graph_objs as go
 
